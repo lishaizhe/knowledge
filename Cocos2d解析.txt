@@ -1,0 +1,24 @@
+CCPlatformConfig.h	=> 该文件为定义平台类型 IOS/ANDROID/WP/WIN32
+ccConfig.h	=>定义引擎中的锁
+		CC_ENABLE_STACKABLE_ACTIONS  如果开启 则会执行action的队列
+									如果锁上，则当执行两个及以上的action时，只有最后一个起作用
+
+		CC_ENABLE_GL_STATE_CACHE  OpenGL效率优化
+
+
+		CC_FIX_ARTIFACTS_BY_STRECHING_TEXEL 地图的每个图块之间有一些细密的间隔。原理是将纹理的周边缩小1%
+
+		CC_DIRECTOR_STATS_INTERVAL  多久更新一次FPS数据
+
+		CC_DIRECTOR_FPS_POSITION  FPS坐标位置
+
+		CC_DIRECTOR_DISPATCH_FAST_EVENTS  是否急速分发事件，如果当有很多消息模式的情况下，这个也可以是一个不错的选择，如果开启则	
+			每0.04s就分发事件，如果关闭则，每1s执行一次
+
+		CC_NODE_RENDER_SUBPIXEL 如果启用，Node则会以亚像素的形式启用，如果禁用则会以整像素的形式
+
+		CC_TEXTURE_ATLAS_USE_VAO  VAO(定点数组) 不过如果开启会消耗大量内存，如果VAO太多的时候，建议关闭
+
+		CC_SPRITE_DEBUG_DRAW  开启sprite边框
+
+		CC_SPRITEBATCHNODE_DEBUG_DRAW 所有渲染使用 SpriteBatchNode 的 Sprite 的子类都将绘制一个边界框(bounding box)

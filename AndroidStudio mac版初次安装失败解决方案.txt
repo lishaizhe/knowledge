@@ -1,0 +1,29 @@
+AndroidStudio 在mac上首次安装需要设置proxy,但是不知道怎么设置才对，所以，直接修改第一次的设置，让他不要第一次就检测sdk
+ 
+解决方案如下
+
+
+1. 到androidStudio安装目录  打开  bin   文件，找到 idea.properties，在文件末尾添加
+		disable.android.first.run=true     这个是用来禁用第一次运行sdk监测的
+
+2.进入androidStudio，新建工程，会提示设置sdk，按照要求，设置sdk路径
+
+3.设置proxy,点击preparence,在 System Setting 中有一个http_proxy,设置
+	HTTP Proxy Server: mirrors.neusoft.edu.cn
+	HTTP Proxy Port: 80
+
+4.修改hosts文件
+	sudo vim hosts
+
+	添加
+	#Google主页
+	203.208.46.146 www.google.com
+	##这行是为了方便打开Android开发官网 现在好像不翻也可以打开
+	74.125.113.121 developer.android.com
+	##更新的内容从以下地址下载
+	203.208.46.146 dl.google.com
+	203.208.46.146 dl-ssl.google.com
+
+5.回复第一步，将添加的
+	disable.android.first.run=true
+	删除
