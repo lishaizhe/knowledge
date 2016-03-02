@@ -1,0 +1,13 @@
+lua -- mac版环境配置
+
+1.首先下载lua.tar.gz
+
+2.进入lua 目录下
+
+3.make macosx
+
+4. sudo make install
+
+
+验证：
+lua -v
