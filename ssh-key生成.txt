@@ -3,4 +3,4 @@ git config --global user.email "435832656@qq.com"
 
 cd ~./ssh
 
-ssh-keygen -t rsa -C "lishuaizhe"  //这个地方lishuaizhe 为在git中的名字
+ssh-keygen -t rsa -C "lishuaizhe"  //这个地方lishuaizhe 为在git中的名字 
