@@ -11,3 +11,34 @@ sudo mkdir /usr/local/git/share/git-core
 sudo mkdir /usr/local/git/share/git-core/templates
 
 sudo chmod -R 755 /usr/local/git/share/git-core/templates
+
+
+
+
+还有一种更为严谨的做法： 安装git环境
+
+今天在 Mac 上用 SourceTree 克隆 svn 的时候, 出现了 warning: templates not found /usr/local/git/share/git-core/templates 警告,导致克隆失败. 怎么办呢.
+
+在终端输入 
+
+open /usr/local/
+
+在打开的目录中可以看到:
+
+如果没有 git 目录
+
+打开下面的地址,下载 git-osx 并安装,
+
+http://git-scm.com/download/mac
+
+如果有 git 目录
+
+并且相应的 share,git-core,templates 目录都有,,说明是权限的问题.
+
+在终端输入:
+
+sudo chmod -R 755 /usr/local/git/share/git-core/templates
+
+ 注意 sudo 创建目录需要输入当前 Mac 用户的密码
+
+ 最后重新 clone 项目
