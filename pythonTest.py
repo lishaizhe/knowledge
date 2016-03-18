@@ -72,5 +72,9 @@ print dic.values();
 str = "ABCDEF"
 print str.capitalize()
 
+sex=raw_input()
+nsex=int(sex)
+print nsex
+
 
 
