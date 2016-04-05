@@ -1,0 +1,4 @@
+json.dump( [str], [sort_keys=True], ... )  打印json
+
+
+json.loads( str | filepath )    解析json

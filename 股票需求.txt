@@ -1,0 +1,62 @@
+首先通过
+# 行业分类
+# df=ts.get_industry_classified()
+
+# 概念分类
+# df=ts.get_concept_classified()
+
+收集到所有股票的代码，然后需要过滤掉创业板，港股等 只留0/6开头的股票
+
+将这些信息以struct的形式存储=》不保存到本地文件
+
+	=》 list = 	{	
+					[0]	= 	{
+								["name"] = xx,
+								["code"] = xx,
+								["area"] = xx,
+								[data]	= 	{
+												[0] = 	{
+															...
+														},
+												[1]	=	{
+															...
+														}
+
+											}
+							}
+					[1]	= 	{
+								["name"] = xx,
+								["code"] = xx,
+								["area"] = xx,
+								[data]	= 	{
+												[0] = 	{
+															...
+														},
+												[1]	=	{
+															...
+														}
+
+											}
+							}
+					...
+					}
+
+通过 
+ts.get_hist_data('600848',start='2015-01-05',end='2015-01-09')
+获取这段时间的股票信息
+
+data 			日期
+open			开盘价
+high			最高价
+close			收盘价
+low				最低价
+volume			成交量
+price_change	价格变动
+p_charge		涨跌幅
+ma5				5日均价
+ma10			10日均价
+ma20			20日均价
+v_ma5			5日均量
+v_ma10			10日均量
+v_ma20			20日均量
+turnover		换手率

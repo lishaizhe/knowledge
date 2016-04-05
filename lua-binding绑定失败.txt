@@ -1,0 +1,7 @@
+
+
+LibclangError: dlopen(libclang.dylib, 6): image not found. To provide a path to libclang use Config.set_library_path() or Config.set_library_file().
+解决方案:
+	这样可以解决：./frameworks/cocos2d-x/tools/bindings-generator/clang/cindex.py 第 3395 行 改为 ： library = cdll.LoadLibrary("../bindings-generator/libclang/" + self.get_filename()) 
+
+

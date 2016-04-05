@@ -1,0 +1,5 @@
+【量化杂谈之基础篇1】获取所有股票的代码和名字——一个爬虫的简单例子
+http://bbs.pinggu.org/thread-4145710-1-1.html
+
+股票信息sdk
+http://tushare.org/trading.html#id2

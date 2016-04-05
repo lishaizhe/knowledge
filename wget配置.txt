@@ -1,0 +1,31 @@
+ftp://ftp.gnu.org/gnu/wget/下载源码包。这里面找到最新版本，直接下载安装就行了
+
+我下载的wget-1.9.tar.gz版本
+
+2、解压, cd到该目录下
+
+
+3、./configure，这个过程第一次是不成功的，然后提示你下载安装一个make，这个后面马上用到，直接安装说明，下载安装就好了
+
+
+然后，再运行一下./configure
+
+
+4、make
+
+会有一长串的执行操作，这个不用管他
+
+
+5、make install 安装就完成了
+
+
+6、测试是否安装成功：命令行下输入wget，然后回车，提示如下
+
+
+wget: missing URL
+Usage: wget [OPTION]... [URL]...
+
+Try `wget --help' for more options.
+
+
+表示安装已经成功，可以使用这个命令了！

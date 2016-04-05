@@ -1,0 +1,5 @@
+在工程build Setting处
+Apple LLVM 7.0 - Custom Compiler Flags 处
+找到Other C++ Flags
+设置
+-Wno-inconsistent-missing-override

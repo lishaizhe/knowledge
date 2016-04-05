@@ -1,0 +1,1 @@
+find / -name rpm* -print命令查找rpm在哪个路径下。

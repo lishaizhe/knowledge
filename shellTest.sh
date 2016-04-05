@@ -22,7 +22,47 @@
 #不能使用标点符号
 #不能使用bash中的关键字
 
+# s={"rv":0,flag:1,"url":"http://www.jinhill.com","msg":"test"}  
+s={"open":11.58,"high":11.99,"close":11.92,"low":11.48,"volume":86681.38,"price_change":0.31,"p_change":2.67,"ma5":11.366,"ma10":11.251,"ma20":11.543,"v_ma5":55049.74,"v_ma10":61628.07,"v_ma20":103010.58,"turnover":2.97}
+parse_json(){  
+  
+echo $1 | sed 's/.*'$2':\([^,}]*\).*/\1/'  
+  
+}  
+  
+echo $s  
+  
+value=$(parse_json $s "open")  
+  
+echo $value
+
+
+is_spine=false
+if [[ is_spine == true ]]; then
+	echo "is_spine true"
+else
+	echo "is false"
+fi
+# spine_prefix="ico107"
+# fullFileName="_alpha_ico107000"
+# for index in 0 2; do
+# 	for (( i = 0; i < 10; i++ )); do
+# 		spineName="_alpha_"${spine_prefix}${index}"0"${i}
+# 		if [[ "$fullFileName" == $spineName ]]; then
+# 			is_spine=true
+# 			echo $spineName
+# 			break
+# 		fi
+# 	done
+# done
+# echo $is_spine
+
+
+
 my_name="li shuai zhe"
+echo $my_name
+data=1
+my_name=${my_name}${data}
 echo $my_name
 #***************************************************#
 

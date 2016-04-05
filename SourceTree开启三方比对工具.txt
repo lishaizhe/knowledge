@@ -1,0 +1,5 @@
+打开设置  比较  下边两个都选其他
+
+/usr/local/bin/bcomp
+
+$LOCAL $REMOTE $BASE $MERGED
