@@ -1,80 +1,268 @@
-#!/user/bin/python
-# -*- coding:UTF-8 -*-
-import random, math
+#!/usr/bin/python
+# _*_ coding:utf-8 _*_
 
-dic = {};
-dic["one"] = 1;
-dic["two"] = "2"
-dic["three"] = "three"
+import collections
 
-print dic.values();
+# dic = {}
+# dic["name"] = "xx"
+# dic["age"] = 10
 
-#类型转换
-#convert
+# if isinstance(dic, collections.Iterable):
+# 	print "this is Iterable"
+# else:
+# 	print "this is not Iterable"
 
-# print( int('0101', 2) )
+#遍历key
+# for k in dic:
+# 	print ">>> k: ", k
 
-# #convert to int
-# print('int()默认情况下为：', int())
-# print('str字符型转换为int：', int('010'))
-# print('float浮点型转换为int：', int(234.23))
-# #十进制数10，对应的2进制，8进制，10进制，16进制分别是：1010,12,10,0xa
-# print('int(\'0xa\', 16) = ', int('0xa', 16))
-# print('int(\'10\', 10) = ', int('10', 10))
-# print('int(\'12\', 8) = ', int('12', 8))
-# print('int(\'1010\', 2) = ', int('1010', 2))
+#获取键值对
+# for k, v in dic.items():
+# 	print ">>k: ", k, " ... v: ", v
 
-# #convert to long
-# print('int浮点型转换为int：', int(23))
+# for k, v in enumerate(dic):
+# 	print ">>>k : ", k , "  v: ", v
 
-# #convert to float
-# print('float()默认情况下为：', float())
-# print('str字符型转换为float：', float('123.01'))
-# print('int浮点型转换为float：', float(32))
+# 遍历值
+# for k in dic.itervalues():
+# 	print "k: ", k
+# 	
 
-# #covert to complex
-# print('创建一个复数(实部+虚部)：', complex(12, 43))
-# print('创建一个复数(实部+虚部)：', complex(12))
+# L = [ x*x for x in range(10) if x%2 != 0 ]
+# for k in L:
+# 	print ">>> k: ", k
 
-# #convert to str
-# print('str()默认情况下为：', str())
-# print('float字符型转换为str：', str(232.33))
-# print('int浮点型转换为str：', str(32))
-# lists = ['a', 'b', 'e', 'c', 'd', 'a']
-# print('列表list转换为str:', ''.join(lists))
+# g = ( x*x for x in range(10) )
+# for k in g: 
+# 	print "g: k: ", k
 
-# #covert to list
-# strs = 'hongten'
-# print('序列strs转换为list:', list(strs))
+# def char_change(c):
+# 	return c.lower()
 
-# #covert to tuple 
-# print('列表list转换为tuple:', tuple(lists))
-
-# #字符和整数之间的转换
-# #char coverted to int
-# print('整数转换为字符chr:', chr(67))
-# print('字符chr转换为整数:', ord('C'))
-
-# print('整数转16进制数:', hex(12))
-# print('整数转8进制数:', oct(12))
+# l=['adam', 'LISA', 'barT']
+# newl = map(char_change, l)
+# print newl
 
 
-# list = [1,2,3,4,5]
+# def is_odd(n):
+# 	return n%2==0
 
-# for letter in list:
-# 	if letter == 1:
-# 		pass
-# 		print "this is pass block"
-# 	print "letter is ", letter
+# l=filter(is_odd, [x for x in range(100)])
+# print l
 
-# print "bye"
+
+# def fib():
+#     a,b= 0,1
+#     while 1:
+#         yield b 			b=1  1  2  3
+#         i = b 				i=1  1  2  3
+#         b = a + b 			b=1  2  3  5
+#         a = i 				a=1  1  2  
+# def gnext(x = 0,y = 1):  	x = 3, y = 10
+#     g = fib()
+#     max = y + 1				max = 11
+#     n = 1
+#     l = []
+#     while n <= max:
+#         l.append(g.next())	1 
+#         n = n + 1
+#     print l[x:y]
+
+
+# gnext(3, 10)
+
+
+
+# from collections import namedtuple
+
+# websites = [
+#     ('Sohu', 'http://www.google.com/', u'张朝阳'),
+#     ('Sina', 'http://www.sina.com.cn/', u'王志东'),
+#     ('163', 'http://www.163.com/', u'丁磊')
+# ]
+# Website = namedtuple('Website', ['name', 'url', 'founder'])
+# for website in websites:
+#     website = Website._make(website)
+#     print website.founder
+
+
+# class Employee:
+# 	empCount=0
+# 	def __init__(self, name, salary):
+# 		self.name=name
+# 		self.salary=salary
+# 		Employee.empCount += 1
+
+# 	def displayCount(self):
+# 		print "Total Employee %d" % Employee.empCount
+
+# 	def displayEmployee(self):
+# 		print "Name: ", self.name, ", Salary: ", self.salary
+
+# emp1 = Employee("Zara", 2000)
+# emp2 = Employee("Zara1", 3000)
+
+# emp1.displayEmployee()
+
+# print "empCount: %d" % Employee.empCount
+# emp1.age=10
+# print "age: %d" % emp1.age
+
+# print ">>>>>>>>>>>>>"
+# emp2.displayEmployee()
+# emp2.displayCount()
+
+
+# class Student(object):
+# 	"""docstring for ClassName"""
+# 	def __init__(self, arg):
+# 		print ">>> init Student"
+# 		self.name = arg["name"]
+# 		self.age = arg["age"]
+
+# 	def showName(self):
+# 		print "this student name: ", self.name
+
+# 	def showClassName(self):
+# 		print ">>> this is Student"
+
+# class Petrel(Student):
+# 	"""docstring for Petrel"""
+# 	def __init__(self, arg):
+# 		super(Petrel, self).__init__(arg)
+# 		print ">>> init Petrel"
+# 		self.__sex=arg["sex"]
+
+# 	def showInfo(self):
+# 		print ">>> name: ", self.name, ">>> age: ", self.age, ">>> sex: ", self.__sex
+
+# 	def showClassName(self):
+# 		print ">>> this is Petrel"
+
+
+# dic={}
+# dic["name"]="小李子"
+# dic["age"]="28"
+# dic["sex"]='M'
+# stud = Petrel(dic)
+# stud.showName()	
+# super(Petrel,stud).showClassName()	#调用基类的方法
+# 
+
+
+
+# class Student(object):
+# 	__slots__ = ("name", "age", "_score", "_sex")
+
+# 	@property
+# 	def score(self):
+# 	    return self._score
+
+# 	@score.setter
+# 	def score(self, value):
+# 		if value >0 and value < 100:
+# 			self._score = value
+# 		else:
+# 			raise ValueError("max");
+
+# 	@property
+# 	def sex(self):
+# 	    return self._sex
 	
-str = "ABCDEF"
-print str.capitalize()
+# 	@sex.setter
+# 	def sex(self, value):
+# 		self._sex = value
 
-sex=raw_input()
-nsex=int(sex)
-print nsex
+# 	def __init__(self):
+# 		super(Student, self).__init__()
+
+# s = Student()
+# s.sex=12
+# print s.sex
+# 
+# 
+# 
+
+# path="/Users/lishuaizhe/Documents/knowledge/shellTest.sh"
+
+# print os.path.split(path)
+# print os.path.join(path, 'haha')
 
 
+# from multiprocessing import Process
+# import os
+
+# def run_proc(name):
+# 	print "Run child process %s (%s)" % (name, os.getpid())
+
+# if __name__=="__main__":
+# 	print "Parent process %s." % os.getpid()
+# 	p = Process(target=run_proc, args=('test',))
+# 	print "Process will start"
+# 	p.start()
+# 	p.join()
+# 	print "Process end"
+
+
+
+
+
+# from multiprocessing import Pool
+# import os, time, random
+
+# def long_time_task(name):
+# 	print 'Run task %s(%s)...' % (name, os.getpid())
+# 	start = time.time()
+# 	time.sleep(random.random()*3)
+# 	end=time.time()
+# 	print "Task %s runs %0.2f seconds." % (name, end-start)
+
+
+# if __name__ == "__main__":
+# 	print "Parent process %s." % os.getpid()
+# 	p=Pool()
+# 	for i in range(5):
+# 		p.apply_async(long_time_task, args(i,))
+# 	print "Wait for ..."
+# 	p.close()
+# 	p.join()
+# 	print "All DDone"
+# 	
+
+
+from collections import namedtuple
+
+Point = namedtuple("Point", ['x', 'y', 'z'])
+p = Point(2, 3, 4)
+print p.x, p.y, p.z
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		
 

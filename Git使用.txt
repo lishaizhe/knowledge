@@ -1,3 +1,92 @@
 git clone xx	--这种情况为，本地无项目，知道gitHub的仓库地址
 
 git init xx		--本地存在项目，但是没有在CVS中进行管理
+
+
+< 远程 - remote >
+git remote 为了便于管理，Git要求每个远程主机都必须指定一个主机名。
+git remote 命令就用于管理主机名
+	git remote命令列出所有远程主机
+	git remote -v 查看远程主机的网址
+	git clone -o
+		克隆版本库的时候，所使用的远程主机自动被Git命名为origin，如果想要其他的主机名，需要用git clone命令的 -o 选项指定
+		git clone -o jQuery https://github.com/jquery/jquery.git  克隆的时候，指定远程主机叫 jQuery
+	git remote show <主机名> 查看远程仓库的具体状态
+		git remote show origin
+	git remote add <主机名><网址> 添加远程主机
+	git remote rm <主机名> 删除远程主机
+	git remote rename <原主机名> <现主机名> 修改主机名字
+
+
+< 抓取 - fetch >
+	git fetch <远程主机名>  将某个远程主机的更新,全部取回本地
+	git fetch <远程主机名> <分支名> 取回origin主机的master分支
+
+	<git branch>
+	git branch -r 查看远程分支
+	git branch -a 查看所有分支
+
+	<git checkout>创建新的远程分支
+	git checkout -b newBranch origin/master 	表示在origin/master的基础上创建一个新的分支
+
+
+< 拉取 - pull >
+	git pull 取回远程主机某个分支的更新，再与本地分支合并
+	git pull <远程主机名> <远程分支名>:<本地分支名>  
+		git pull origin next:master  --表示取回origin主机的next分支，并与本地master分支合并
+		git pull origin next 不加 : 表示与当前分支合并
+	参数 -p 
+	git pull -p 在不加 -p 的情况下，如果远程删除了分支，git不会删除本地对应的分支，但是如果加上了 -p 则，本地也会对应的删除该分支
+
+
+< 推送 - push >
+	用于将本地分支的更新，推送到远程主机
+	git push <远程主机> <本地分支名>:<远程分支名>
+	注意：
+	git pull <远程主机> <远程分支名>:<本地分支名>
+
+	!!!
+	如果省略本地分支名,则表示删除指定的远程分支
+		git push origin :master
+
+
+< 不同 - diff >
+	如果一个文件还未commit过，没有放在暂存区，这个时候，我们想看到底修改了什么东西，这个时候使用 git diff
+	但是如果已经commit过，这个时候应该使用 git diff --staged
+
+
+参考网站:
+http://www.ruanyifeng.com/blog/2014/06/git_remote.html
+
+
+
+
+Git文件中的状态
+	已跟踪
+	未跟踪  =>	未修改
+				已修改
+				已放入暂存区
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
