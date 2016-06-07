@@ -16,7 +16,7 @@ bool NetController::isConnectedToNetwork()
         CFRelease(defaultRouteReachability);
     }
     
-    if (!didRetrieveFlags)
+    if (!didRetrieveFlags) 
     {
 //        std::string strMsg = BALanguage::shared()->getMessages("connection_unavailable");
 //        NSString *theErrMsg = [[[NSString alloc] initWithBytes:strMsg.c_str()
