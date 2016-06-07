@@ -1,0 +1,12 @@
+创建项目...
+...
+...
+
+app/src/main/res/layout/activity_my.xml
+	这个文件是在建立Android工程的时候 studio 提供的，在这里包含文字信息和UI布局
+
+app/src/main/res/layout/content_my.xml
+	包含一些文字信息
+
+app/src/main/java/com.mycompany.myfirstapp/MyActivity.java
+	

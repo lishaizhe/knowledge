@@ -239,9 +239,10 @@ print p.x, p.y, p.z
 
 
 
-
-
-
+sum = 0
+for x in range(100):
+	sum = sum + x
+print "sum is %d" % sum
 
 
 

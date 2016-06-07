@@ -1,0 +1,156 @@
+以下代码设置IOS Document和Library目录下的文件禁止同步到iCloud
+
+//设置禁止云同步
+
+-(void)addNotBackUpiCloud{
+
+
+    NSArray *docPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask,YES);
+
+    NSArray *libPaths = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);
+
+    NSString *docPath = [docPaths objectAtIndex:0];
+
+    NSString *libPath = [libPaths objectAtIndex:0];
+
+
+    [self fileList:docPath];
+
+    [self fileList:libPath];
+
+
+}
+
+- (void)fileList:(NSString*)directory{
+
+
+    NSError *error = nil;
+
+    NSFileManager * fileManager = [NSFileManager defaultManager];
+
+    NSArray *fileList = [fileManager contentsOfDirectoryAtPath:directory error:&error];
+
+    for (NSString* each in fileList) {
+
+        NSMutableString* path = [[NSMutableString alloc]initWithString:directory];
+
+        [path appendFormat:@"/%@",each];
+
+
+        NSURL *filePath = [NSURL fileURLWithPath:path];
+
+
+        [self addSkipBackupAttributeToItemAtURL:filePath];
+
+        [self fileList:path];
+
+
+    }
+
+}
+
+//设置禁止云同步
+
+-(BOOL)addSkipBackupAttributeToItemAtURL:(NSURL *)URL{
+
+
+    double version = [[UIDevice currentDevice].systemVersion doubleValue];//判定系统版本。
+
+
+
+    if(version >=5.1f){
+
+
+        NSError *error = nil;
+
+        BOOL success = [URL setResourceValue: [NSNumber numberWithBool: YES]
+
+                                      forKey: NSURLIsExcludedFromBackupKey error: &error];
+
+        if(!success){
+
+            NSLog(@"Error excluding %@ from backup %@", [URL lastPathComponent], error);
+
+        }
+
+
+        return success;
+
+
+    }
+
+    const char* filePath = [[URL path] fileSystemRepresentation];
+
+
+    const char* attrName = "com.apple.MobileBackup";
+
+    u_int8_t attrValue = 1;
+
+
+    int result = setxattr(filePath, attrName, &attrValue, sizeof(attrValue), 0, 0);
+
+    return result == 0;
+
+
+}
+setxattr 需要包含头文件 sys/xattr.h
+
+void doFileList(NSString* directory);
+bool addSkipBackupAttributeToItemAtURL(NSURL *URL);
+void CCFileUtilsIOS::addNotBackUpiCloud()
+{
+    NSArray *docPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask,YES);
+    NSArray *libPaths = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);
+    NSString *docPath = [docPaths objectAtIndex:0];
+    NSString *libPath = [libPaths objectAtIndex:0];
+    doFileList(docPath);
+    doFileList(libPath);
+//    [self fileList:docPath];
+//    [self fileList:libPath];
+}
+
+void doFileList(NSString* directory){
+
+    NSError *error = nil;
+    NSFileManager * fileManager = [NSFileManager defaultManager];
+    NSArray *fileList = [fileManager contentsOfDirectoryAtPath:directory error:&error];
+
+    for (NSString* each in fileList) {
+        NSMutableString* path = [[NSMutableString alloc]initWithString:directory];
+        [path appendFormat:@"/%@",each];
+        NSURL *filePath = [NSURL fileURLWithPath:path];
+//        NSLog(@"===== %@ from backup %@ --- %a", path, each,filePath);
+        addSkipBackupAttributeToItemAtURL(filePath);
+        doFileList(path);
+//        [self addSkipBackupAttributeToItemAtURL:filePath];
+//        [self fileList:path];
+    }
+
+}
+
+    //设置禁止云同步
+
+bool addSkipBackupAttributeToItemAtURL(NSURL *URL)
+{
+    double version = [[UIDevice currentDevice].systemVersion doubleValue];//判定系统版本。
+
+    if(version >=5.1f){
+        NSError *error = nil;
+
+        BOOL success = [URL setResourceValue: [NSNumber numberWithBool: YES]
+
+                                      forKey: NSURLIsExcludedFromBackupKey error: &error];
+
+        if(!success){
+
+            NSLog(@"Error excluding %@ from backup %@", [URL lastPathComponent], error);
+
+        }
+        return success;
+    }
+    const char* filePath = [[URL path] fileSystemRepresentation];
+    const char* attrName = "com.apple.MobileBackup";
+    u_int8_t attrValue = 1;
+    int result = setxattr(filePath, attrName, &attrValue, sizeof(attrValue), 0, 0);
+    return result == 0;
+}

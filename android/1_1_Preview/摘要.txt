@@ -1,0 +1,153 @@
+首先看AndroidManifest.xml文件
+<Manifest>层
+	xmlns:android 
+		定义android命名空间
+	package	
+		本java主程序包的包名
+	android:sharedUserId="xx" 
+		表明数据权限,默认情况下Android给每个APK分配一个唯一的UserID,所以默认禁止不同的APK访问共享数据。若要共享数据，第一可以采用Share Preference方法，第二种就可以采用sharedUserId了，将不同的APK的sharedUserId设为相同的，则这些APK之间就可以共享数据了。用法见 http://wallage.blog.163.com/blog/static/17389624201011010539408/
+	sharedUserLabel
+		一个共享的用户名，他只有在设置了sharedUserId属性的前提下才会有意义
+	versionCode
+		app版本号[必须是一个整形] 1，2，3，4...
+	versionName
+		app版本号，给用户看的 1.1.0
+	installLocation
+		安装参数,Android2.2中的一个新特性
+			internalOnly	
+			auto
+			preferExternal 系统会优先考虑将APK安装到SD卡上(当然最终用户可以选择为内部ROM存储上，如果SD存储已满，也会安装到内部存储上)
+		【如果要把App安在SD卡上，1.将sdk版本号设置为8以上，2.installLocation为preferExternal】
+
+<Application>层
+	android:allowClearUserData('true' 'false')
+		设置用户是否能够自行清除数据
+	android:allowTaskReparenting('true' 'false')
+		是否允许activity更换从属任务，比如从短信息任务切换到浏览器任务
+	android:backupAgent
+		Android2.2的一个新特性，设置该App的备份,属性值应该是一个完整的类名，如com.project.TestCase,此属性并没有默认值，必须指定类名
+	android:debugable
+		表示该App是否可以在手机上进行调试
+	android:description/android:label
+		这两个属性都是为许可提供的，均为字符串。当用户去看 许可列表(android:label)或者某个 许可的详细信息(android:description)时，这些字符串资源就可以显示给用户。
+	android:enabled
+		Android系统是否能够实例化该应用程序的组件，如果为true则每个组件的enabled属性决定哪个组件是否可以被enabled，如果为false,则他将覆盖组件指定的值，所有组件都未disabled
+	android:hasCode('true' or 'false')
+		是否包含任何代码，默认值为true.如果为false,不会尝试加载任何App代码
+	android:icon
+		声明整个App的图标，图片一般都在drawable文件夹下
+	android:name
+		为应用程序所实现的Application子类的全名。当应用程序进程开始时，该类在所有应用程序组件之前被实例化
+	android:permission
+		设置许可
+	android:presistent
+		该应用程序是否应该在任何时候都保持运行状态，默认是false
+	android:process
+		应用程序的进程名，他的默认值是<manifest>元素设置的包名，当然每个组件都可以通过设置该属性来覆盖默认值，如果想两个应用程序公用一个进程的话，可以设置他们的android:process相同，但前提是他们共享一个用户ID及被赋予了相同的证书
+	android:theme
+		是一个资源的风格，他定义了一个默认的主题风格给所有的activity,当然也可以在自己的theme里面去设置他
+
+<Activity>
+	android:alwaysRetainTaskState
+		是否保留状态不变， 比如切换回home, 再从新打开，activity处于最后的状态。比如一个浏览器拥有很多状态(当打开了多个TAB的时候)，用户并不希望丢失这些状态时，此时可将此属性设置为true
+	android:clearTaskOnLaunch
+		如果P是activity，Q是被P触发的activity,然后返回Home，重新启动P，是否显示Q
+	android:configChanges
+		当配置list发生修改时， 是否调用 onConfigurationChanged() 方法  比如 "locale|navigation|orientation". 
+		这个我用过,主要用来看手机方向改变的. android手机在旋转后,layout会重新布局, 如何做到呢?
+		正常情况下. 如果手机旋转了.当前Activity后杀掉,然后根据方向重新加载这个Activity. 就会从onCreate开始重新加载.
+		如果你设置了 这个选项, 当手机旋转后,当前Activity之后调用onConfigurationChanged() 方法. 而不跑onCreate方法等.
+	android:finishOnTaskLaunch
+		当用户重新启动这个任务的时候，是否关闭已经打开的activity。默认是false
+	android:launchMode(Activity加载模式)
+		Activity有四种通用的加载模式
+			standard: 就是intent讲发送给新的实例，所以每次跳转都会生成新的activity
+			singleTop: 也是发送新的实例，但是不同的standard的一点是，在请求的Activity正好位于栈顶时(配置成singleTop的Activity)不会构造新的实例
+			singleTask 和后面的singleInstance都只创建一个实例，当intent到来，需要创建设置为singleTask的Activity的时候，系统会检查站里面是否已经有该Acitivity的实例，如果有则直接将intent发送给他
+			singleInstance
+
+	android:multiprocess
+		是否允许多进程，默认是false		
+	android:noHistory
+		当用户从Activity上离开并在屏幕上不可再见时，Acitivity是否从ActivityStack中清除并结束，默认是false，Activity不会留下历史记录
+	android:screenOrientation
+		unspecified: 由系统判断显示方向
+		landscape: 横屏
+		portrait:竖屏
+		user: 用户当前首选方向
+		behind:和该Activity下面的那个Activity的方向一致
+		sensor: 由物理感应器来决定
+		nosensor:忽略物理感应器
+	android:stateNotNeeded
+		activity被销毁或者成功重启时是否保存状态
+	android:windowSoftInputMode
+		activity主窗口与软键盘的交互模式，可以用来避免输入法面板遮挡问题，这个是Android1.5后的一个新特性
+
+
+<intent-filter>
+	android:priority (解释：有序广播主要是按照声明的优先级别，如A的级别高于B，那么，广播先传给A，再传给B。优先级别就是用设置priority属性来确定，范围是从-1000～1000，数越大优先级别越高)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

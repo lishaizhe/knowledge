@@ -1,5 +1,8 @@
 打开设置  比较  下边两个都选其他
 
-/usr/local/bin/bcomp
+/usr/local/bin/bcomp $LOCAL $REMOTE $BASE $MERGED
 
-$LOCAL $REMOTE $BASE $MERGED
+/usr/local/bin/bcomp $LOCAL $REMOTE
+
+
+http://blog.csdn.net/cuin123/article/details/50618963

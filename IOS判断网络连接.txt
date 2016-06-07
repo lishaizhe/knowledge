@@ -1,0 +1,37 @@
+//官方提供的测试网络状态是否正常代码
+bool NetController::isConnectedToNetwork()
+{
+    // Create zero addy
+    struct sockaddr_in zeroAddress;
+    bzero(&zeroAddress, sizeof(zeroAddress));
+    zeroAddress.sin_len = sizeof(zeroAddress);
+    zeroAddress.sin_family = AF_INET;
+    
+    // Recover reachability flags
+    SCNetworkReachabilityRef defaultRouteReachability = SCNetworkReachabilityCreateWithAddress(NULL, (struct sockaddr *)&zeroAddress);
+    SCNetworkReachabilityFlags flags;
+    
+    BOOL didRetrieveFlags = SCNetworkReachabilityGetFlags(defaultRouteReachability, &flags);
+    if(defaultRouteReachability != NULL){
+        CFRelease(defaultRouteReachability);
+    }
+    
+    if (!didRetrieveFlags)
+    {
+//        std::string strMsg = BALanguage::shared()->getMessages("connection_unavailable");
+//        NSString *theErrMsg = [[[NSString alloc] initWithBytes:strMsg.c_str()
+//                                                        length:strMsg.length()
+//                                                      encoding:NSUTF8StringEncoding] autorelease];
+//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Warning!" message:theErrMsg delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+//        [alert show];
+//        [alert release];
+    }
+    
+    BOOL isReachable = flags & kSCNetworkFlagsReachable;
+    BOOL needsConnection = flags & kSCNetworkFlagsConnectionRequired;
+    bool isConnected = (isReachable && !needsConnection) ? true : false;
+//    if(!isConnected) {
+//        [RootViewController showAlert];
+//    }
+    return isConnected;
+}
