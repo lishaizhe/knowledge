@@ -1,0 +1,14 @@
+因为Linux的Shell中使用的是命令行方式，有时候会忘记执行特定任务的命令，就可以使用apropos找出来。
+等同于
+man -k，
+在使用的时候还是觉得用man -k来的好，毕竟apropos这个命令有些难记。
+
+
+用法：
+apropos who
+<=>
+man -k who
+
+该命令会列举出和该关键字相关的linux命令。
+
+apropos 和 man -k的作用是相同的

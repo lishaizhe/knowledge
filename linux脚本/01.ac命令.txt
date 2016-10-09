@@ -1,0 +1,27 @@
+ac在线时间统计
+
+ac命令根据当前的/var/log/wtmp文件中的登陆进入和退出报告用户连接的时间(小时)
+	如果不适用标志，则报告总的时间
+
+也就是统计用户在线时间
+
+
+
+常用参数
+-d  每天的统计数据输出
+	
+		Mar 27  total       72.00
+		Mar 28  total       24.00
+		Mar 29  total       24.00
+		Mar 30  total       24.00
+		Mar 31  total       24.00
+		Apr  4  total       96.00
+		Apr  5  total       24.00
+
+
+-p 	输出每个用户的在线时间
+	
+		lishuaizhe  1757.58
+		_mbsetupuser     1.44
+		root         0.07
+		total     1759.09

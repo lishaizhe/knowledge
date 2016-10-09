@@ -1,0 +1,17 @@
+ACCESS_NETWORK_STATE 			获取网络状态
+
+ACCESS_WIFI_STATE 				获取当前wifi介入的状态以及WLAN热点的信息
+
+BATTERY_STATS					获取电池电量
+
+CAMERA							允许访问摄像头进行拍照
+
+READ_SMS						读取短信内容
+
+MOUNT_UNMOUNT_FILESYSTEMS		在SD卡中创建/删除文件
+
+WRITE_EXTERNAL_STORAGE			往SD卡中写入数据权限
+
+VIBRATE							震动
+
+WAKE_LOCK						允许程序在手机屏幕关闭后，后台程序仍然运行

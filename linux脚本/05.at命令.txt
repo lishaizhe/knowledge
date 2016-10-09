@@ -1,0 +1,30 @@
+at命令:
+	at命令用于在指定时间执行一次任务，如果任务需要重复执行，则需要使用crontab
+
+	遇到的问题，at -f ./test.sh now+5 minutes 在指定时间没有执行任务	
+		apple的at命令默认使用的是美国时间，需要重新加载下 com.apple.atrun.plist
+		sudo launchctl unload -F /System/Library/LaunchDaemons/com.apple.atrun.plist
+		sudo launchctl load -F /System/Library/LaunchDaemons/com.apple.atrun.plist
+
+	常见命令
+		atq:查看当前有哪些挂载的任务
+		atrm: 删除任务
+
+	命令格式:
+		at [参数] [时间]
+
+	命令功能:
+		在一个指定的时间执行一个指定任务,只能执行一次，且需要开启atd进程
+			[ 使用 ps -ef | grep atd 查看]
+			[ 开启使用 /etc/init.d/atd start 或者 restart ]
+
+	命令参数
+		-m 	当指定的任务被完成之后,将给用户发送邮件,即时没有标准输出
+		-l  atq的别名
+		-d 	atrm的别名
+		-v 	显示任务被执行的时间
+		-c 	打印任务的内容到标准输出
+		-v 	显示版本信息
+		-q<队列> 	使用指定的队列
+		-f 	从指定文件读入任务而非标准输入输出
+		-t<时间参数> 	以时间参数的形式提交要运行的任务

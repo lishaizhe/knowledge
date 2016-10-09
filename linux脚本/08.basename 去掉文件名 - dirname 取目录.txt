@@ -1,0 +1,12 @@
+basename: 	用于去掉文件名的目录和后缀
+dirname: 	用于截取目录
+
+basename /Users/lishuaizhe/Documents/knowledge/Android唯一标识符.txt 
+-> Android唯一标识符.txt
+
+basename /Users/lishuaizhe/Documents/knowledge/
+-> knowledge
+
+
+dirname /Users/lishuaizhe/Documents/azclient/CCB/IF/IF.ccbproj 
+-> /Users/lishuaizhe/Documents/azclient/CCB/IF

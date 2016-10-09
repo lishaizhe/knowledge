@@ -1,0 +1,15 @@
+在我们使用cocos2dx引擎的时候，我们如果使用eclipse打包，会影响我们的开发速度，所以，我们也可以采用Ant打包的形式
+操作步骤如下:
+
+1.创建项目
+
+2.进入项目中的proj.android工程中，执行 android update project -t 3 -p ./ 用于初始化ant，产生property文件
+
+3.进入cocos2d/cocos/platform/android/java 执行 android update project -t 3 -p ./ 这个地方需要注意这个地方的 sdk版本号
+	需要和项目中的相同，如果需要查看版本号列表，可以通过 android list targets查看
+
+4.进入工程中 执行 ./build_native.py 用于编译文件 生成 so文件
+
+5.执行 ant debug/release
+
+详见: http://www.cnblogs.com/songcf/p/4040302.html

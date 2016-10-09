@@ -1,0 +1,55 @@
+cat的三大功能:
+
+1.一次显示整个文件  cat filename
+2.从键盘创建一个文件  cat > filename
+	只能创建，不能编译已有文件
+3.将几个文件合并成一个文件  cat file1 file2 > file
+	将file1, file2填充到file文件内
+
+
+参数:
+	-n 或 --number 由1开始对所有输出的函数进行编号
+	-n 或 --number-nonblank 和-n类似，只不过对于空白行不进行编号
+	-s 或 --squeeze-blank 当遇到有连续两行以上的空白行，就代换为一行的空白行
+	-v 或 --show-nonprinting
+
+
+cat -b textfile1 textfile2 >> textfile3
+	把 textfile1 和 textfile2 的档案内容加上行号（空白行不加）之后将内容附加到 textfile3 里
+
+cat /dev/null > /etc/test.txt
+	把test.txt文件的内容清空
+
+
+详解:
+	输出文件内容
+		1.显示文件FILE的内容
+			cat FILE
+		2.输出文件FILE的内容加上行号，行号从1开始，使用 -n 参数时，空白行也会显示行号
+			cat -n FILE
+		3.忽略掉空行  -b
+			cat -b FILE
+		4.当遇到有连续两行以上的空白行，就代换为一行的空白行，使用 -s
+			cat -s FILE
+
+	保存内容
+		1.将标准输入保存到文件FILE中，如果文件已经存在，则覆盖掉原来的
+			cat > FILE
+		2.将标准输入追加到文件FILE末尾
+			cat >> FILE
+		3.合并文件， 将FILE1/FILE2的内容合并为一个文件FILE
+			cat FILE1 FILE2 > FILE
+
+特别注意：
+	在这个时候需要特别注意 > 和 >> 的区别
+
+
+
+EOF
+	EOF在这里没有特殊的含义，你可以使用FOE或OOO等(当然也不仅仅限制于这几个字母或大写)
+		可以吧EOF替换成其他的东西，意思是把内容当做标准输入传给程序，
+		结合这两个标识，不仅可以避免使用多行echo命令的方式，并实现多行输出的结果
+		
+		个人理解为，在控制台，或者某些情况下，需要一个代码块集体执行，尤其是在终端情况下，EOF就
+			等价于ctrl+D,否则的话，每输入一句话就会执行。
+

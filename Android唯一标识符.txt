@@ -1,0 +1,65 @@
+1.DEVICE_ID
+	这个是Android系统为开发者提供的用于标识手机设备的串号，也是各种方法中使用较多的一种做法。
+	TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+	String DEVICE_ID = tm.getDeviceId();
+
+	缺点:
+		非手机设备:最开始搭载Android系统的都是手机设备，二现在的平板电脑，电子书，电视，这些设备都没有通话的硬件功能，系统中也就没有
+			TELEPHONY_SERVICE,所以通过上述方式无法获取deviceID
+		权限问题:	获取DEVICE_ID需要 READ_PHONE_STATE 权限
+		厂商bug:	少数手机设备上，由于该实现有漏洞，会返回垃圾，如zeros/asterisks
+
+
+2.SIM 序列号
+	装有SIM卡的设备，可以获取SIM卡的序列号
+	TelephonyManager tm = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+	String simCode = tm.getSimSerialNumber();
+
+	缺点:对于CDMA的设备，返回值为null
+
+
+
+3.ANDROID_ID
+	在设备首次启动时，系统会随机生成一个64位的数字，并把这个数字以16进制字符串的形式保存下来，这个16进制的字符串就是ANDROID_ID,当设备
+	被wipe后该值会被重置
+	import android.provider.Settings;
+	String ANDROID_ID = Settings.System.getString( getContentResolver(), Settings.System.ANDROID_ID );
+	注意:
+		1.不同设备可能获取相同的ANDROID_ID
+		2.有些设备会返回null
+		3.对于CDMA的设备 ANDROID_ID和TelephonyManager.getDeviceId()返回值相同
+
+
+4.INSTALLATIOIN ID
+	这个是由Google Developer Blog提供了这么一个框架
+	private static String SID = null;
+	private static final String INSTALLATION="INSTALLATION";
+	public synchronized static String id(Context context){
+		if (SID==null){
+			File installation = new File(context.getFilesDir(), INSTALLATION);
+			try {
+				if (!installation.exists()){
+					writeInstallationFile(installation);
+				SID=readInstallationFile(installation);
+				}
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		}
+		return SID;
+	}
+	
+	private static String readInstallationFile(File installation) throws IOException {
+        RandomAccessFile f = new RandomAccessFile(installation, "r");
+        byte[] bytes = new byte[(int) f.length()];
+        f.readFully(bytes);
+        f.close();
+        return new String(bytes);
+    }
+
+    private static void writeInstallationFile(File installation) throws IOException {
+        FileOutputStream out = new FileOutputStream(installation);
+        String id = UUID.randomUUID().toString();
+        out.write(id.getBytes());
+        out.close();
+    }

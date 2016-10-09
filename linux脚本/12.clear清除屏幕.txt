@@ -1,0 +1,5 @@
+clear命令
+等价于
+CTRL+L
+等价于CTRL+K
+都是清空屏幕

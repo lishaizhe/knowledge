@@ -1,0 +1,19 @@
+是由于在 adb_usb.ini中没有对应的厂商ID，所以看不到
+
+mac下:
+	1.把Android手机开启调试模式，然后连接到 MAC OS 上
+	2.选择MAC 关于本机 -> 系统报告 -> 找打USB选项，找到对应的USB厂商
+	3.例如 我的MX4显示供应商为 0x2a45 
+	4.在终端出输入 echo 0x2a45>>~/.android/adb_usb.ini
+	重启adb即可
+
+
+Win7的设置方法:
+
+	1.安装adb驱动，最简单的方法是用豌豆荚或91助手之类的，只要连上一次，就安装成功了.
+	2.打开“设备管理器”，找到里面的mx4设备(Android Composite ADB Interface)，右键属性，选“详细信息”标签，“属性”选“硬件ID”，下面会有两行值，
+		我的其中一行是 “USB\VID_2A45&PID_0C02&MI_01”
+		看到其中VID_XXXX了吧，把XXXX值记下来。
+	3.找到C:\Users\XXX\.android\adb_usb.ini文件（XXX是你的当前操作系统用户名），在里面另起一行追加 “0xXXXX”（不含引号）。
+		前面的0x表示是16进制数，把后面的XXXX替换成上面你记下来的值。
+		重启电脑 或者 退出eclipse，再在任务管理器里把“adb”进程杀掉再重进eclipse。即可。

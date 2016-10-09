@@ -1,0 +1,11 @@
+cat命令的用途是连接文件或标准输出并打印，这个命令常用来显示文件内容，或者将几个文件连接起来显示，或者从标准输入读取内容并显示，它常与重定向符号配合使用
+
+cat>FILE 将标准输入保存到文件FILE中，如果文件已经存在，则覆盖原来的
+
+cat>>FILE 将标准输入追加到文件FILE末尾
+
+cat FILE 打印FILE的内容
+
+cat -n FILE 打印FILE,并显示行号
+
+cat FILE1 FILE2>FILE 将FILE1, FILE2的内容合并到FILE中

@@ -1,0 +1,83 @@
+awk是一个强大的文本分析工具，相对于grep的查找,sed的编辑，awk在其对数据分析并生成报告时，显得尤其强大，
+	简单来说awk就是把文件逐行的读入，以空格为默认分隔符将每行切片，切开的部分在进行各种分析处理
+
+使用方法
+	awk '{pattern + action}' {filenames}
+	尽管操作可能会比较复杂，但语法大体是这样的,其中
+		pattern表示AWK在数据中查找的内容
+		action是在匹配内容时所执行的一系列命令
+		花括号{}不需要再程序中始终出现，但他们用于根据特定的模式对一系列指令进行分组
+		pattern就是要表示的的正则表达式，用斜杠括起来
+
+	调用awk
+		1.命令行方式
+			awk [-F field-separator] 'commands' input-file(s)
+			其中 commands是真正awk命令 [-F域分隔符]是可选的 input-file(s) 是待处理的文件
+			在awk中，文件的每一行中，由域分隔符分开的每一项称为一个域。通常，在不指明-F域分隔符的情况下，默认的域分隔符是空格
+		2.shell脚本方式
+			将所有的awk命令插入一个文件,并使用awk程序可执行，然后awk命令解释器作为脚本的首行，一遍通过键入脚本名称来调用
+			相当于shell脚本的 #!/bin/sh  替换成 #!/bin/awk
+		3.将所有的awk命令插入一个单独文件，然后调用
+			awk -f awk-script-file input-file(s)
+			其中 -f 选项加载awk-script-file中的awk脚本, input-file(s)跟上面的是一样的。
+
+入门实例
+	last -4  最后4个登陆的信息
+		lishuaizhe  ttys001                   Sun Jun 12 22:09   still logged in
+		lishuaizhe  ttys000                   Sun Jun 12 19:09   still logged in
+		lishuaizhe  tty??                     Sun Jun 12 16:29 - 16:29  (00:00)
+		lishuaizhe  console                   Sun Jun 12 09:17   still logged in
+	显示最后4个登陆信息的用户名
+	last -4 | awk '{print $1}'
+		lishuaizhe
+		lishuaizhe
+		lishuaizhe
+		lishuaizhe
+	
+		如果只是显示/etc/passwd的账户
+			cat /etc/passwd |awk  -F ':'  '{print $1}' 
+		
+		如果只是显示/etc/passwd的账户和账户对应的shell,而账户与shell之间以tab键分割
+			cat /etc/passwd |awk  -F ':'  '{print $1"\t"$7}'
+		
+		如果只是显示/etc/passwd的账户和账户对应的shell,而账户与shell之间以逗号分割,而且在所有行添加列名name,shell,在最后一行添加"blue,/bin/nosh"
+			cat /etc/passwd |awk  -F ':'  'BEGIN {print "name,shell"}  {print $1","$7} END {print "blue,/bin/nosh"}'
+		
+		搜索/etc/passwd有root关键字的所有行
+			awk -F: '/root/' /etc/passwd
+
+		搜索/etc/passwd有root关键字的所有行，并显示对应的shell
+			awk -F: '/root/{print $7}' /etc/passwd 
+
+
+awk内置变量
+	ARGC               命令行参数个数
+	ARGV               命令行参数排列
+	ENVIRON            支持队列中系统环境变量的使用
+	FILENAME           awk浏览的文件名
+	FNR                浏览文件的记录数
+	FS                 设置输入域分隔符，等价于命令行 -F选项
+	NF                 浏览记录的域的个数
+	NR                 已读的记录数
+	OFS                输出域分隔符
+	ORS                输出记录分隔符
+	RS                 控制记录分隔符
+
+
+	统计/etc/passwd:文件名，每行的行号，每行的列数，对应的完整行内容:
+		awk  -F ':'  '{print "filename:" FILENAME ",linenumber:" NR ",columns:" NF ",linecontent:"$0}' /etc/passwd
+		使用printf替代print,可以让代码更加简洁，易读
+			awk  -F ':'  '{printf("filename:%10s,linenumber:%s,columns:%s,linecontent:%s\n",FILENAME,NR,NF,$0)}' /etc/passwd
+
+awk编程
+	统计/etc/passwd的账户人数
+		awk '{count++;print $0;} END{print "user count is ", count}' /etc/passwd
+	这里没有初始化count，虽然默认是0，但是妥当的做法还是初始化为0:
+		awk 'BEGIN {count=0;print "[start]user count is ", count} {count=count+1;print $0;} END{print "[end]user count is ", count}' /etc/passwd
+
+
+
+
+
+
+

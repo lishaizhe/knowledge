@@ -1,0 +1,9 @@
+关于phthon下yaml cheetah 的安装：
+
+yaml下，google搜索 yaml phthon 进入官方界面: http://pyyaml.org/wiki/PyYAML
+	下载zip文件，解压后，
+	执行sudo python setup.py install 安装成功
+
+同样cheetah, 进入 https://pypi.python.org/pypi/Cheetah/2.4.4
+	下载tar.gz文件，解压后，照样执行
+		sudo python setup.py install 安装成功

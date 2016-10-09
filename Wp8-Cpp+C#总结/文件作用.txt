@@ -1,0 +1,55 @@
+Direct3DInterop.h   这个文件是用来给C#调用的
+
+定义：
+void onCocos2dPostInputData(Cocos2dKeyEvent key, Platform::String^ text);
+void onCocos2dPurchaseDone(Cocos2dKeyEvent key, Platform::String^ text);
+用来给C#调用
+
+
+在Direct3DInterop接收到消息后，Draw=>ProcessEvents 抛到消息队列，给InputEvent接收对应的消息消息队列，
+
+在InputEvent中的void KeyboardEvent::execute(Cocos2dRenderer ^ renderer)根据key分别处理消息，抛给Cocos2dRenderer
+
+Cocos2dRenderer.h
+void onPurchaseDone();
+void onInputDone(Platform::String^ text);
+
+void Cocos2dRenderer::onInputDone(Platform::String^ text)
+{
+    std::wstring t = std::wstring(text->Data());
+
+	std::string ret;
+	do
+	{
+		if(! t.c_str()) break;
+		size_t len = wcslen(t.c_str());
+		if (len <= 0) break;
+		
+		size_t convertedChars = 0;
+		char * pszUtf8Str = new char[len*3 + 1];
+		WideCharToMultiByte(CP_UTF8, 0, t.c_str(), len+1, pszUtf8Str, len*3 + 1, 0, 0);
+		ret = pszUtf8Str;
+		CC_SAFE_DELETE_ARRAY(pszUtf8Str);
+	}while(0);
+
+	CCString* pObjString = CCString::create(ret);
+	CCNotificationCenter::sharedNotificationCenter()->postNotification("onInputDone",pObjString);
+}
+
+void Cocos2dRenderer::onPurchaseDone()
+{
+	CCNotificationCenter::sharedNotificationCenter()->postNotification("onPurchaseDone"); 
+}
+作用是向我们自己实现的接口处抛出消息
+
+App.Xaml   定义全局变量
+/*to get Common URL*/
+    public string BuyURL { set; get; }
+
+/*to get D3D*/
+    public Direct3DInterop m_d3dInterop { set; get; }
+
+
+MainPage.xaml
+添加C#回调C++的接口代码
+

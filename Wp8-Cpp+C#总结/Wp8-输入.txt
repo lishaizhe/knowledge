@@ -1,0 +1,117 @@
+Wp8-输入：
+
+在目前为止，cocos2d-x还没有解决CCTextFieldTTF的问题，所以，我们需要调用Windows Phone的虚拟键盘，然后在点击完成之后，回调参数给C++，
+以上为主要思路，下面我们就问题进行详细解释：
+
+1.首先自己写一个控件CCLableTTFEX,可以实现点击，并且在他的回调方法中启动XAML页面，因为如果只是这样实现的话，我们很难对同时存在多个控件的页面进行控制
+所以，个人做法是，建立一个单例XamlPageMgr.h，并且在其中做启动XAML页面的处理，并且采用委托模式进行处理，所以，
+在CCLableTTFEX增加delegate=>
+
+class CCLableTTFEXDelegate
+{
+public:
+	virtual void onSetString(const char* text) = 0;
+};
+
+则在XAML中需要做的处理应该是，在调用界面的时候，将_delegate = this,而在消息返回后[因为此时我们的做法是将XAML页面关闭之后，才会设置lable的TEXT]，设置_delegate = null
+这样，我们就可以很轻松的定位到具体是哪一个lable在响应输入，我们就可以对其进行输入的控制
+
+具体做法：
+XamlPageMgr.h
+class XamlPageMgr : public CCObject
+{
+	CCLableTTFEXDelegate* m_InputLableDelegate;
+public:
+	static XamlPageMgr* _inst;
+	static XamlPageMgr* getInst();
+
+	void onOpenInputXamlPage(CCLableTTFEXDelegate* _delegate);
+	void onInputDone(CCObject* pObj);
+};
+
+XamlPageMgr.cpp
+void XamlPageMgr::onOpenInputXamlPage(CCLableTTFEXDelegate* _delegate)
+{
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WP8)
+	m_InputLableDelegate = _delegate;
+	InputEventHelper^ helper = ref new InputEventHelper();
+	helper->callInputXAML();
+#endif
+}
+
+void XamlPageMgr::onInputDone(CCObject* pObj)
+{
+	CCString* pString = (CCString*)pObj;
+	m_InputLableDelegate->onSetString(pString->getCString());
+}
+
+在对WP8支付的时候，我们就已经说过，C#通知C++目前我的做法是在Direct3DInterop进行修改，[目前尚未找到其他好的做法]
+我们在C#通知C++的时候，在Direct3DInterop定义
+void onCocos2dPostInputData(Cocos2dKeyEvent key, Platform::String^ text);
+用来接收C#发送过来的消息
+在InputPage.xaml中的调用方法是：
+ string szTextBox = m_TextBox.Text;
+(Application.Current as App).m_d3dInterop.onCocos2dPostInputData(PhoneDirect3DXamlAppComponent.Cocos2dKeyEvent.Individual, szTextBox);
+ this.NavigationService.GoBack();   /**切记需要加上这句话，不然lable不会及时响应，因为上述只是将这个消息放松到了消息队列，但是此时并没有调用DRAW方法，没有
+ 检测消息队列，所以不会响应，如果调用了此方法，当这个界面显示出来的时候，我们的消息就会立刻被处理，所以，我们就可以立刻看到了**/
+
+ 同样，我们的消息在处理之后，我们的回调方法会在KeyboardEvent.cpp中被处理
+void KeyboardEvent::execute(Cocos2dRenderer ^ renderer)
+{
+    switch(m_type)
+    {
+    case Cocos2dKeyEvent::Text:
+        renderer->OnKeyPressed(m_text.Get());
+        break;
+	case Cocos2dKeyEvent::Individual:   /**我们自己定义的输入事件**/
+		{
+			Platform::String^ _Data = m_text.Get();
+			renderer->onInputDone(_Data);  /**看到这，我们应该会想到，我是将事件的处理放在了Cocos2dRenderer中，所以看下述**/
+		}
+    default:
+        renderer->OnCocos2dKeyEvent(m_type);
+        break;      
+    }
+}
+
+
+在Cocos2dRenderer.h中定义
+void onInputDone(Platform::String^ text);
+
+Cocos2dRenderer.cpp
+void Cocos2dRenderer::onInputDone(Platform::String^ text)
+{
+    std::wstring t = std::wstring(text->Data());   /**获取C#端抛出的事件**/
+/**begin****/
+	std::string ret;
+	do
+	{
+		if(! t.c_str()) break;
+		size_t len = wcslen(t.c_str());
+		if (len <= 0) break;
+		
+		size_t convertedChars = 0;
+		char * pszUtf8Str = new char[len*3 + 1];
+		WideCharToMultiByte(CP_UTF8, 0, t.c_str(), len+1, pszUtf8Str, len*3 + 1, 0, 0);
+		ret = pszUtf8Str;
+		CC_SAFE_DELETE_ARRAY(pszUtf8Str);
+	}while(0);
+/**end******/  //其实这段代码就是将Unicode编码格式转换成Utf-8
+	CCString* pObjString = CCString::create(ret);
+	CCNotificationCenter::sharedNotificationCenter()->postNotification("onInputDone",pObjString);  //将消息抛出去
+}
+
+正如我们上面说的，目前我们已经获取到了输入的内容了，那么我们应该怎么样去传递给对应的lable呢，现在我们就应该利用XamlPageMgr了，在其中，我们
+的这个单例是继承与CCObject的，所以他可以建立监听事件
+在getInst()方法中，我们建立监听
+CCNotificationCenter::sharedNotificationCenter()->addObserver(_inst,callfuncO_selector(XamlPageMgr::onInputDone),"onInputDone",NULL);
+这样，我们就可以在我们自己写的代码中获取到了输入内容，还记得我们上面写过的在XamlPageMgr中的delegate了吗？那么现在我们就要使用它了，
+void XamlPageMgr::onInputDone(CCObject* pObj)
+{
+	CCString* pString = (CCString*)pObj;
+	m_InputLableDelegate->onSetString(pString->getCString());
+}
+这样，我们就可以使用到了和CCTextFieldTTF一样的功能了。。。
+
+
+缺陷：不会保存上次的内容，而且不能对长度进行控制。

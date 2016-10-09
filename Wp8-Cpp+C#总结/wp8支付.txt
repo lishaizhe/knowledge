@@ -1,0 +1,66 @@
+支付问题
+流程：
+    C++接收到服务器返回的URL地址，那这个地址传给C#，并且加载XAML页面，通过WebBroswer加载网页
+
+具体调取网页的方式参照blog中的讲述，那么现在主要介绍C#怎么样通知C++，由于尚未在网上找到相关的例子，
+所以按照Wp8KeyBoard中做法，在Direct3DInterop中定义消息机制，进行返回
+
+具体做法：
+在Direct3DInterop.h
+定义
+    void onCocos2dPurchaseDone(Cocos2dKeyEvent key, Platform::String^ text);
+
+在Direct3DInterop.cpp
+/*通过消息的形式传递给消息队列，在代码中有Draw方法不断的在遍历该队列，所以可以找到，但是如果当前页面被遮盖住，则，停止遍历*/
+void Direct3DInterop::onCocos2dPurchaseDone(Cocos2dKeyEvent key, Platform::String^ text)
+{
+    std::lock_guard<std::mutex> guard(mMutex);
+    std::shared_ptr<KeyboardEvent> e(new KeyboardEvent(key,text));
+    mInputEvents.push(e);
+}
+
+遍历中的方法为  =》 ProcessEvents();
+
+在InputEvent中响应
+void KeyboardEvent::execute(Cocos2dRenderer ^ renderer)
+{
+    switch(m_type)
+    {
+    case Cocos2dKeyEvent::Text:
+        renderer->OnKeyPressed(m_text.Get());
+        break;
+	case Cocos2dKeyEvent::Individual:
+		{
+			Platform::String^ _Data = m_text.Get();
+			std::wstring t = std::wstring(_Data->Data());
+			std::string _szUtf(t.begin(),t.end());
+			OutputDebugStringA(_szUtf.c_str());
+		}
+	case Cocos2dKeyEvent::PurchaseDone:
+		{
+			renderer->onPurchaseDone();   /*****/(1)
+		}
+		break;
+    default:
+        renderer->OnCocos2dKeyEvent(m_type);
+        break;      
+    }
+}
+
+注意（1），此时传递到了Cocos2dRenderer中
+void Cocos2dRenderer::onPurchaseDone()
+{
+	CCNotificationCenter::sharedNotificationCenter()->postNotification("onPurchaseDone"); 
+}
+通过消息机制抛出去
+
+例外注意，首先我们需要注意一点，我们在webBroswer中怎么样调用onCocos2dPurchaseDone()，方法，该方法可以使用
+m_d3dInterop调用，但是这个方法在Mainpage中定义成了局部变量，所以，我们需要做一些修改
+
+因为App.XAML为公用的，所以，我们在其中定义为
+public Direct3DInterop m_d3dInterop { set; get; }
+
+在调用的时候，使用
+ (Application.Current as App).m_d3dInterop 即可
+ 所以上述调用方法应该为
+ (Application.Current as App).m_d3dInterop.onCocos2dPurchaseDone(Cocos2dKeyEvent.PurchaseDone, _szNull);

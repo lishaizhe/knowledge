@@ -1,0 +1,16 @@
+https://github.com/DayS/androidannotations/wiki/Configuration  参考文献
+
+Eclipse下配置
+
+1.下载androidannotations
+2.其中分为 androidannotations-xxx-api.jar    androidannotations-xxx.jar
+
+Put androidannotations-X.X.X-api.jar in the libs folder
+Put androidannotations-X.X.X.jar in a different folder, such as compile-libs. androidannotations-X.X.X.jar must not go in the libs folder.
+Right-click on your project, choose "Properties"
+Go to Java Compiler and make sure that Compiler compliance level is set to 1.6, otherwise the processor won't be activated
+Go to Java Compiler > Annotation Processing and choose Enable annotation processing
+Go to Java Compiler > Annotation Processing > Factory Path and add the processor JAR : androidannotations-X.X.X.jar.
+Confirm the workspace rebuild
+Go to Java Build Path > Libraries and add the API JAR : androidannotations-X.X.X-api.jar, unless it's already in the build path (ADT 17 automatically adds JARs that are in the libs folder).
+You can start using AndroidAnnotations
