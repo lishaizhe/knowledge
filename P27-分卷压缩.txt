@@ -1,0 +1,30 @@
+创建分卷压缩文件
+将目录分卷压缩
+
+zip -s 100m -x "*.DS_Store" -r split-foo.zip foo/
+	-s 切分单元的大小，可选的单位有k(kB), m(MB), g(GB), t(TB),默认为m
+	-r 或者 --recurse-paths 递归目录
+	-x 或者 --exclude 忽略文件
+	切分已有zip文件
+
+zip existing.zip --out new.zip -s 50m
+	将创建
+
+new.zip 
+new.z01 
+new.z02 
+new.z03 
+…
+
+
+
+
+解压分卷压缩文件
+还原分为两步
+
+1.将切分文件合并成单一zip文件
+zip -s 0 split.zip --out single.zip
+	-s 0 表示合并
+	
+2.解压
+	unzip single.zip 

@@ -1,0 +1,34 @@
+http://www.race604.com/android-auto-version/
+
+gradle打包提速	https://medium.com/@shelajev/6-tips-to-speed-up-your-gradle-build-3d98791d3df9#.ojpjc71gs
+
+使用了Android Studio 或者Gradle 编译之后，我们通常在build.gradle中定义这两个值
+
+	android{
+		...
+		defaultConfig{
+			...
+			versionCode 1
+			versionName "1.0"
+		}
+	}
+
+	可以使用Git中commit的数量来作为版本号
+	def cmd = `git rev-list HEAD --count`   //表示获取当前分支的commit数量
+	def gitVersion = cmd.execute().text.trim().toInteger()
+	android{
+		defaultConfig{
+			versionCode gitVersion
+		}
+	}
+
+
+	版本名字
+		def pattern = "-(\\d+)-g"  
+		def matcher = version =~ pattern
+
+		if (matcher) {  
+		    version = version.substring(0, matcher.start()) + "." + matcher[0][1]
+		} else {
+		    version = version + ".0"
+		}
