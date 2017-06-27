@@ -28,3 +28,10 @@ zip -s 0 split.zip --out single.zip
 	
 2.解压
 	unzip single.zip 
+
+
+
+文件拆分:
+split -b X filename outputfilename
+	X是文件分隔大小,比如10k,1m 
+cat filename.01  filename.02 ... filename.20 > filename 合并

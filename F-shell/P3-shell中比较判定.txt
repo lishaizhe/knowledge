@@ -1,0 +1,20 @@
+if [ -f file]   判定文件存在
+if [ -d ... ]   判定目录存在
+if [ -s file]   如果文件存在并且非空
+if [ -r file]   如果文件存在并可读
+if [ -w file]	如果文件存在并可写
+if [ -x file] 	如果文件存在并可以执行
+
+if [int1 -eq int2] 如果int1 等于 int2
+if [int1 -ne int2] 如果int1 不等于 int2
+if [int1 -ge int2] 如果int1 大于等于 int2
+if [int1 -le int2] 如果int1 小于等于 int2
+if [int1 -lt int2] 如果int1 小于 int2
+
+if [ $a = $b ] 如果string1等于string2
+if [ $a != $b ] 如果string1不等于string2
+if [-n $string] 如果string非空(非0),返回0(true)
+if [-z $string] string是否为空
+if [$string]
+
+具体可以通过 man test 查看

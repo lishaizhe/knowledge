@@ -1,0 +1,32 @@
+1.
+	SDK工具会根据build.gradle文件中的 debuggable true 设置是否使用调试秘钥自动签署.apk文件
+
+
+2.通过配置 DEX 资源缩短构建时间
+	部署整洁的构建时，Android Studio 会将您的应用设置为允许 Instant Run 推送代码和资源更新。尽管更新正在运行的应用要快得多，第一次构建却可能需要较长的时间才能完成。您可以通过配置多个 DexOptions 设置来加快构建流程：
+
+	maxProcessCount
+		设置可以并行启动的 DEX 进程的最大数量。如果 Gradle 后台进程已在运行，您需要先停止此进程，然后使用新的最大进程数进行初始化。您可以从 Terminal 窗口中调用下面的一种函数来终止 Gradle 后台进程：
+			在 Windows 上，请调用 gradlew --stop
+			在 Linux/Mac OSX 上，请调用 ./gradlew --stop
+	javaMaxHeapSize
+		设置 dex 操作的最大内存分配池大小。传递值时，您可以附加字母“k”来表示千字节，附加“m”表示兆字节，或者附加“g”表示千兆字节。
+			下面的示例会在模块级别的 build.gradle 文件中将 maxProcessCount 设为 4，以及将 javaMaxHeapSize 设为“2g”：
+				android {
+				  ...
+				  dexOptions {
+				    maxProcessCount 4 // this is the default value
+				    javaMaxHeapSize "2g"
+				  }
+				}
+			您应增大设置的值并观察对构建时间产生的影响，对这些设置进行测试。如果您向 dexing 进程分配过多的资源，则可能导致性能下降。
+
+			启用 dexing-in-process 和增量 Java 编译
+			Android Plugin for Gradle 版本 2.1.0 及更高版本还引入了其他的构建流程改进，包括增量 Java 编译和 dexing-in-process。增量 Java 编译默认情况下处于启用状态，这种编译方式仅对发生变化或需要重新编译的源代码部分进行重新编译，可以缩短开发过程中的编译时间。
+
+			dexing-in-process 在构建流程而不是单独的外部 VM 流程中执行 dexing。这样不仅可以让增量构建更快，也可以显著提高完整构建的速度。要启用此功能，您需要将 Gradle 后台进程的最大堆大小设置为至少 2048 MB。要进行设置，您可以将以下代码包含到项目的 gradle.properties 文件中：
+
+			org.gradle.jvmargs = -Xmx2048m
+			如果您已经在模块级别的 build.gradle 文件中为 javaMaxHeapSize 定义值，则需要将后台进程的最大堆大小设置为 javaMaxHeapSize 的值 + 1024 MB。例如，如果您已将 javaMaxHeapSize 设为“2g”，则需要将以下代码添加到项目的 gradle.properties 文件中：
+
+			org.gradle.jvmargs = -Xmx3072m

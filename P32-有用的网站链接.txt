@@ -1,0 +1,2 @@
+Xcode打包ipa的基本步骤(有证书和无证书)
+	http://www.cocoachina.com/ios/20170623/19623.html

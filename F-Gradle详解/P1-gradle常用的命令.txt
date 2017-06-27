@@ -1,0 +1,9 @@
+./gradlew -v  版本号
+./gradlew clean 清除app目录下的build文件夹
+./gradlew build  检查依赖并编译打包
+	注意 ./gradlew build是吧debug release包都打出来,如果正式发布只需要打release包
+	介绍一个很有用的命令assemble
+	./gradlew assembleDebug 编译并打debug包
+	./gradlew assembleRelease 编译并打release包
+	./gradlew installRelease  Release模式打包并安装
+	./gradlew uninstallRelease 卸载release包

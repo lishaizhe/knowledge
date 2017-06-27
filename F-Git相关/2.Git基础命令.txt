@@ -1,0 +1,104 @@
+2.Git基础命令.txt
+	
+	git add 添加文件到缓存区
+		1.在Git中有三种状态   [工作目录下] [暂存区] [本地仓库], 该操作为 添加文件到 暂存区
+
+	git status 查看当前git目录下的文件状态
+
+	忽略文件
+		创建文件名为 .gitignore
+			所有空行或者以注释符号#开头的行都会被Git忽略
+			可以使用标准的glob模式匹配
+			匹配模式最后跟反斜杠/，表明这个需要忽略的是目录
+			在要忽略的前面加上 ! 表示取反
+				.a  忽略所有 .a文件
+				!lib.a 但lib.a文件除外
+				/FILE 仅仅忽略FILE文件
+				build/ 忽略build/目录下的所有文件
+				doc/*.txt 忽略doc文件夹下的所有.txt文件，但不包括 doc/subdir/下的文件
+
+
+	git log 输入git 日志
+		-p 展开显示每次提交的内容差异
+		-2  [-n] 最近的几次提交
+		--stat  仅显示简要的增改行数统计
+
+		按照固定个数输出
+		git log --pretty=oneline
+		git log --pretty=format:"%h - %au, %s"
+			%H 提交对象（commit）的完整哈希字串
+		    %h 提交对象的简短哈希字串
+		    %T 树对象（tree）的完整哈希字串
+		    %t 树对象的简短哈希字串
+		    %P 父对象（parent）的完整哈希字串
+		    %p 父对象的简短哈希字串
+		    %an 作者（author）的名字
+		    %ae 作者的电子邮件地址
+		    %ad 作者修订日期（可以用 -date= 选项定制格式）
+		    %ar 作者修订日期，按多久以前的方式显示
+		    %cn 提交者(committer)的名字
+		    %ce 提交者的电子邮件地址
+		    %cd 提交日期
+		    %cr 提交日期，按多久以前的方式显示
+		    %s 提交说明
+
+	git 撤销操作
+		git commit --amend
+			这个的作用为，当我们commit文件到本地数据库内时，如果这个时候发现，我们的注释信息或者是文件没有提全，这个时候使用这个命令
+			1.注释错了，在本地执行， git commit --amend方法，这个时候会打开vim编辑器，进行修改，保存即可
+			2.漏提文件了，这个时候，我们把缺少提交的文件 git add到暂存区，这个时候执行 git commit --amend方法
+
+	在上述做法中，如果我们已经提交到本地数据库后，发现不应该提交，怎么把该记录删除
+		git reset --hard git_id
+			git_id 通过 git log查看到SHA-1编码
+
+	如果我们已经把文件提交到暂存区内，怎么样可以取消
+		git reset HEAD [file] 例如： git reset HEAD text.txt
+
+	怎么样放弃本地的修改
+		git checkout -- file  例如 git checkout -- text.txt
+
+
+
+远程仓库
+	git remote 查看[当前]的远程库
+	git remote -v [v: verbose 具体信息] 查看当前远程库的具体信息
+	git remote add [shortname] [url] 添加远程库
+	git fetch remote 从远程库中抓取数据
+	git push [remote-name] [branch-name]： 推送数据到远程库中
+	git remote show [remote-name] 显示指定远程库的详细信息
+	git remote rename [old-name] [new-name] 修改远程库名字
+	git remote rm [remote-name] 删除远程库
+
+查看分支
+ 	git branch -a 查看远程分支
+ 	git branch 查看本地分支
+ 	git branch [name] 创建分支name
+ 	git push [remote-name] [branch-name]推送到远端分支
+ 	git checkout [branch-name] 切换分支
+ 	git branch -d [branch-name] 删除分支
+
+ 标签：
+ 	git tag 查看所有标签
+ 	git tag v1.4 打1.4的标签
+ 	git show v1.4 显示v1.4标签的详细信息
+ 	git tag -a v1.4 git_id 补标签  这个时候表示已经提交了，但是忘记打标签了，所以拿指定的git_id来打这个标签
+ 	<=> 默认情况下，git push并不会把标签传送到远程服务器上，只有通过显示的push才行 
+ 	git push origin [tagname]将tag推送到远程数据库
+ 	git push origin --tags 推送所有的tag到远程数据库
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
