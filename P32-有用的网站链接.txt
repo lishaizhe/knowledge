@@ -3,3 +3,10 @@ Xcode打包ipa的基本步骤(有证书和无证书)
 
 自动上传IPA
 https://www.jianshu.com/p/38cae160cb92
+
+git push mirror  带着log推送到新的仓库
+https://dinos80152.wordpress.com/2015/09/21/%E4%BD%BF%E7%94%A8-git-mirror-%E7%84%A1%E7%97%9B%E8%BD%89%E7%A7%BB-git-server/
+
+
+android   max_aspect  适配长屏手机
+http://www.jb51.net/article/129633.htm

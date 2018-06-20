@@ -1,0 +1,6 @@
+Git添加子模块
+首先要添加的子模块需要有master分支，也就是说不能是空仓库
+
+采用
+git submodule add http:git....  CCB
+					链接         子模块名称
