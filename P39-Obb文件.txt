@@ -1,0 +1,1 @@
+obb文件会放置在 /sdCard/Android/obb 文件夹下

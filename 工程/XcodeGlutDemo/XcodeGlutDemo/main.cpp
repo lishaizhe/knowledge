@@ -8,13 +8,47 @@
 
 //#include "FirstWindows.h"
 //#include "FirstDot.h"
-#include "Pologon.h"
+//#include "Pologon.h"
 //#include "RGBA.h"
 //#include "Sphere.h"
 //#include "RotateSphere.h"
 //#include "Light.h"
+//#include "GlewSample.h"
+
+//shader测试
+//#include "SGlew/Sample3.h"
+//#include "WindowViewPort.h"
+#include "OpenUT/Triangle.h"
 
 int main(int argc, char * argv[]) {
     initHook(argc, argv);
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

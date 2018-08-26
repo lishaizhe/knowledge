@@ -1,0 +1,7 @@
+对有的时候需要 brew update 但是因为系统文件读写问题，所以直接采取卸载重装的形式
+
+卸载
+/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall)"
+
+安装
+/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"

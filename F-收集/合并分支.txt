@@ -1,0 +1,114 @@
+
+#核心思路，是在远程将个人分支删除后再拉一个分支做个人分支
+
+#清理变更
+PROJ_DIR="/Users/Shared/Jenkins/git/azclient_v3_"
+
+cd $PROJ_DIR$name
+git fetch -p
+branch=person/$name
+orginbranch=origin/person/$name
+#切换代码
+git reset -q --hard HEAD -- 
+git submodule update --init --recursive 
+echo "1"
+#切换ccb
+cd CCB
+git reset -q --hard HEAD -- 
+git submodule update --init --recursive 
+echo "2"
+#切换代码
+cd ..
+if [ -n "$(git branch | grep $branch)" ]; then
+    echo "local branch exits"
+    git checkout person/$name  
+	git submodule update --init --recursive 
+else
+    echo "local branch not exist"
+fi
+
+
+echo "2.5"
+git checkout master_v3 
+#git checkout -b master_v3 --track origin/master_v3 
+git submodule update --init --recursive 
+echo "3"
+#更新代码
+git fetch --prune origin
+git fetch origin 
+git pull --no-commit origin master_v3 
+echo "4"
+#删除本地release_v3
+if [ -n "$(git branch | grep $branch)" ]; then
+    echo "local branch exits"
+    git branch -D person/$name 
+else
+    echo "local branch not exist"
+fi
+
+if [ -n "$(git branch -a| grep $orginbranch)" ]; then
+    echo "origin branch exits"
+    git branch -D -r origin/person/$name
+git push origin :person/$name 
+else
+    echo "origin branch not exist"
+fi
+
+
+echo "5"
+#生成最新的master_v3转换成的release
+git branch person/$name 
+git checkout person/$name 
+git submodule update --init --recursive 
+echo "6"
+#推送到远端
+git push -v  --set-upstream origin refs/heads/person/$name:refs/heads/person/$name 
+
+echo "7"
+#切换ccb
+cd CCB
+if [ -n "$(git branch | grep $branch)" ]; then
+    echo "local branch exits"
+    git checkout person/$name  
+	git submodule update --init --recursive 
+else
+    echo "local branch not exist"
+fi
+echo "7.5"
+git checkout master_v3 
+#git checkout -b master_v3 --track origin/master_v3 
+git submodule update --init --recursive 
+echo "8"
+#更新ccb
+git fetch --prune origin 
+git fetch origin 
+git pull --no-commit origin master_v3 
+echo "9"
+#删除本地release_v3
+if [ -n "$(git branch | grep $branch)" ]; then
+    echo "local branch exits"
+    git branch -D person/$name 
+else
+    echo "local branch not exist"
+fi
+
+if [ -n "$(git branch -a| grep $orginbranch)" ]; then
+    echo "origin branch exits"
+    git branch -D -r origin/person/$name
+git push origin :person/$name 
+else
+    echo "origin branch not exist"
+fi
+echo "10"
+#生成最新的master_v3转换成的release
+git branch person/$name 
+git checkout person/$name 
+git submodule update --init --recursive 
+echo "11"
+#推送到远端
+git push -v --set-upstream origin refs/heads/person/$name:refs/heads/person/$name 
+echo "12"
+
+
+
+
