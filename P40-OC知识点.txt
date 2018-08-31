@@ -1,0 +1,21 @@
+//类文件 .h
+@interface xx
+@end
+.cpp
+@implementation
+@end
+
+
++(instancetype) shared{
+    static dispatch_once_t token;
+    dispatch_once(&token, ^{
+        if ([NSThread isMainThread]){
+            _inst = [[ServiceInterface alloc]init];
+        }else{
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                _inst = [[ServiceInterface alloc]init];
+            })
+        }
+    })
+    return _inst;
+}

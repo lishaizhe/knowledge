@@ -1,0 +1,14 @@
+文件名是test.aar
+
+1.在app中的build.gradle中添加
+
+repositories{
+    flatDir {
+        dirs 'libs'  //aar目录
+    }
+}
+
+2. 将aar文件拷贝到app/libs目录下
+
+3.在dependencies中加入aar引用
+compile(name: 'test', ext: 'aar')
