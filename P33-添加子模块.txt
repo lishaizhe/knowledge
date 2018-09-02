@@ -4,3 +4,9 @@ Git添加子模块
 采用
 git submodule add http:git....  CCB
 					链接         子模块名称
+
+
+如果在引入的时候报
+	'CCB' already exists in the index
+	这个时候需要移除CCB子模块重新引入
+		git rm -r --cached CCB
