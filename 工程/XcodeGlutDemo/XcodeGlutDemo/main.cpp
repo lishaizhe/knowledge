@@ -18,7 +18,10 @@
 //shader测试
 //#include "SGlew/Sample3.h"
 //#include "WindowViewPort.h"
-#include "OpenUT/Triangle.h"
+//#include "OpenUT/Triangle.h"
+
+//按照OpenGL超级宝典图书
+#include "OpenUT/P2_1.h"
 
 int main(int argc, char * argv[]) {
     initHook(argc, argv);

@@ -11,11 +11,9 @@
 #include <GLTools.h>
 #include <GLUT/GLUT.h>
 
-int main(int argc, const char * argv[]) {
-//    gltSetWorkingDirectory(argv[0]);
-//    glutInit(&argc, argv);
+int main(int argc, char * argv[]) {
+    gltSetWorkingDirectory(argv[0]);
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE|GLUT_RGBA|GLUT_DEPTH);
-    glutInitWindowSize(800, 600);
     return 0;
 }
