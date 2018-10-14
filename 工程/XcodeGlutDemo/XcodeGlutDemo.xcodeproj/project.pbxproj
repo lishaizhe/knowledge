@@ -28,9 +28,12 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		84215D9D2172DD8000A5725C /* P2_1.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = P2_1.h; sourceTree = "<group>"; };
+		84215D9E2172EDE500A5725C /* P2_2.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = P2_2.h; sourceTree = "<group>"; };
+		84215DA02173359000A5725C /* Primitive.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Primitive.h; sourceTree = "<group>"; };
 		84B6E67D213BDB7A00B77EF2 /* libglfw.3.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglfw.3.2.dylib; path = ../../../../../../usr/local/Cellar/glfw/3.2.1/lib/libglfw.3.2.dylib; sourceTree = "<group>"; };
 		84B6E680213BDBBE00B77EF2 /* libGLEW.2.1.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libGLEW.2.1.0.dylib; path = ../../../../../../usr/local/Cellar/glew/2.1.0/lib/libGLEW.2.1.0.dylib; sourceTree = "<group>"; };
-		84B6E682213BE03D00B77EF2 /* P2_1.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = P2_1.h; sourceTree = "<group>"; };
+		84B6E682213BE03D00B77EF2 /* P2_1-1-1-1-1.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "P2_1-1-1-1-1.h"; sourceTree = "<group>"; };
 		CD01623A2092B7CA001FA30C /* RGBA.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RGBA.h; sourceTree = "<group>"; };
 		CD29392D20948F3200E6C1C3 /* Light.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Light.h; sourceTree = "<group>"; };
 		CD6CE4AF20DCFF7A00949F41 /* GlewSample.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GlewSample.h; sourceTree = "<group>"; };
@@ -68,10 +71,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		84215D9F2173354B00A5725C /* Ex */ = {
+			isa = PBXGroup;
+			children = (
+				84215DA02173359000A5725C /* Primitive.h */,
+			);
+			path = Ex;
+			sourceTree = "<group>";
+		};
 		CD47804820EA6C3B006FE6FC /* OpenUT */ = {
 			isa = PBXGroup;
 			children = (
-				84B6E682213BE03D00B77EF2 /* P2_1.h */,
+				84B6E682213BE03D00B77EF2 /* P2_1-1-1-1-1.h */,
+				84215D9D2172DD8000A5725C /* P2_1.h */,
+				84215D9E2172EDE500A5725C /* P2_2.h */,
 			);
 			path = OpenUT;
 			sourceTree = "<group>";
@@ -96,6 +109,7 @@
 		CD795B6A209021B200B88221 /* XcodeGlutDemo */ = {
 			isa = PBXGroup;
 			children = (
+				84215D9F2173354B00A5725C /* Ex */,
 				CD47804820EA6C3B006FE6FC /* OpenUT */,
 				CDF1EFB120E2A350002BD68D /* SGlew */,
 				CD795B6B209021B200B88221 /* main.cpp */,

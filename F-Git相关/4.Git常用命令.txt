@@ -1,0 +1,12 @@
+1.强制删除指定分支
+git branch -d tilemap  指定强制删除本地tilemap分支
+
+2.拉去指定远程分支
+git pull origin tilemap
+
+3.
+.ignore文件的处理
+我们在之前已存储过的文件后再配置ignore文件,会导致无法正常忽略
+所以这个时候需要使用
+git rm -r --cached (file/path/to/be/ignored[文件夹的名字]) 比如
+git rm -r --cached ./CCB/dynAuto/  会产生一堆删除,但是这个时候并不是真的删除文件，直接提交

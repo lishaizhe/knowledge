@@ -1,0 +1,12 @@
+
+CCShader.h
+CCShader.cpp
+定义shader的frag, vert
+
+CCGLProgram.h  
+CCGLProgram.cpp
+定义新shader的名字key
+
+CCGLProgramCache.cpp
+1.定义自己的枚举类型
+2.加载shader

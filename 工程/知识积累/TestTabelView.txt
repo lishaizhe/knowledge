@@ -1,0 +1,27 @@
+1.启动页
+[[UIScreen mainScreen] bounds]获取尺寸不对
+https://www.cnblogs.com/Fc-ios/p/4132296.html
+
+2. UITableView 中的问题
+if ([self.tableView respondsToSelector:@selector(setCellLayoutMarginsFollowReadableWidth:)]) { // Adjust for iPad
+    self.tableView.cellLayoutMarginsFollowReadableWidth = YES;
+}
+tableview中的cell有个默认距边界15个像素，但是明显在pad上边界要大的多,所以在这个地方需要做修改
+
+3.[][][][][][][][][][][][[][][][语法糖][][][][][][[][][][][][][][][][]
+	(1)对于不可变数组
+		NSArray *array1 = [[NSArray alloc] initWithObjects:@"aaa", @"bbb", @"ccc", nil];
+		NSArray *array1 = @[@"aaa", @"bbb", @"ccc"];
+	(2)对于不可变字典
+		NSDictionary *dictionay = [NSDictionary dictionaryWithObjectsAndKeys:@"value1", @"key1", 
+@"value2", @"key2", nil];
+		NSDictionary *dictionay = @{
+									@"key1" : @"value1",
+									@"key2" : @"value2"
+									}
+	(3)针对于NSNumber
+		NSNumber* num = @123;   //这样就可以正常使用
+		也可以 NSNumber* num = @('a')  //输出97 让其转化
+	(4)针对于可变类型的来讲
+		NSMutableString *mString = @"大爱中华".mutableCopy;//后缀不能丢
+		NSMutableArray *mArray = @[@"1",@"2",@"3",@"4"].mutableCopy;
