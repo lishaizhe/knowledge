@@ -393,7 +393,6 @@ void initHook(int argc, char* argv[]) {
     GLfloat step;
     glGetFloatv(GL_POINT_SIZE, sizes);
     glGetFloatv(GL_POINT_SIZE_GRANULARITY, &step);
-    glBlendEquation(GL_FUNC_ADD);
     
     //确保驱动程序的初始化中没有出现任何问题。
     GLenum err = glewInit();

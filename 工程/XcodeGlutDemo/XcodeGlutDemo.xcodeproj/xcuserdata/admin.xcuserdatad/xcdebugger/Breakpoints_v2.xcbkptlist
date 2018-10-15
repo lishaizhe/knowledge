@@ -23,29 +23,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "XcodeGlutDemo/Ex/Primitive.h"
-            timestampString = "561201887.783815"
+            filePath = "XcodeGlutDemo/OpenUT/P2_2.h"
+            timestampString = "561303960.879824"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "279"
-            endingLineNumber = "279"
-            landmarkName = "RenderScene(void)"
-            landmarkType = "9">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "XcodeGlutDemo/Ex/Primitive.h"
-            timestampString = "561201887.78405"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "398"
-            endingLineNumber = "398"
-            landmarkName = "initHook(int argc, char* argv[])"
+            startingLineNumber = "39"
+            endingLineNumber = "39"
+            landmarkName = "RenderScene()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>

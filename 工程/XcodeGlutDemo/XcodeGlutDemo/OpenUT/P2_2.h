@@ -15,7 +15,6 @@
 
 GLBatch triangleBatch;
 GLShaderManager shaderManager;
-//GLfloat blockSize =
 
 GLfloat vVerts[] = {-0.3, 0.3f, 0.0f,
     0.3, 0.3f, 0.0f,
@@ -31,17 +30,17 @@ void SetupRC(){
     glClearColor(0.0, 0.0, 1.0, 1.0); //设置背景的颜色
     shaderManager.InitializeStockShaders();
     
-    triangleBatch.Begin(GL_POLYGON, 4); //设置绘制的模式
-    triangleBatch.CopyVertexData3f(vVerts);//拷贝数据
-    triangleBatch.End();//设置完成
+//    triangleBatch.Begin(GL_POLYGON, 4); //设置绘制的模式
+//    triangleBatch.CopyVertexData3f(vVerts);//拷贝数据
+//    triangleBatch.End();//设置完成
 }
 
 void RenderScene(){
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT|GL_STENCIL_BUFFER_BIT);//清空屏幕
-    GLfloat vRed[] = {1.0f, 0.0f, 0.0f, 1.0f};
-    shaderManager.UseStockShader(GLT_SHADER_IDENTITY, vRed); //表示使用什么颜色对图形进行填充
-    triangleBatch.Draw();
-    glutSwapBuffers();
+//    GLfloat vRed[] = {1.0f, 0.0f, 0.0f, 1.0f};
+//    shaderManager.UseStockShader(GLT_SHADER_IDENTITY, vRed); //表示使用什么颜色对图形进行填充
+//    triangleBatch.Draw();
+//    glutSwapBuffers();
 }
 
 void SpecialKeys(int key, int x, int y){
@@ -91,7 +90,7 @@ void SpecialKeys(int key, int x, int y){
 void initHook(int argc, char * argv[]){
     gltSetWorkingDirectory(argv[0]); //设置shader的当前工作目录
     glutInit(&argc, argv);
-    glutInitWindowSize(800, 600);
+    glutInitWindowSize(200, 150);
     glutInitDisplayMode(GLUT_DOUBLE|GLUT_RGBA|GLUT_DEPTH|GLUT_STENCIL);  //GLUT_STENCIL  模板测试
     glutCreateWindow("P2_1");
     
@@ -102,8 +101,8 @@ void initHook(int argc, char * argv[]){
     }
     SetupRC();
     glutDisplayFunc(RenderScene);
-    glutReshapeFunc(changeSize);
-    glutSpecialFunc(SpecialKeys);
+//    glutReshapeFunc(changeSize);
+//    glutSpecialFunc(SpecialKeys);
     glutMainLoop();
 }
 
