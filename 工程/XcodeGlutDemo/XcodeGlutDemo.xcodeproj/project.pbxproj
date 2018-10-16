@@ -46,6 +46,7 @@
 		CD795B7A20906CB400B88221 /* FirstWindows.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FirstWindows.h; sourceTree = "<group>"; };
 		CD795B7B209077E300B88221 /* FirstDot.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FirstDot.h; sourceTree = "<group>"; };
 		CD795B7C2090B15B00B88221 /* Pologon.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Pologon.h; sourceTree = "<group>"; };
+		CDC88424217574A500193BE7 /* P4_6.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = P4_6.h; sourceTree = "<group>"; };
 		CDF1EFA520E2283A002BD68D /* libGLEW.1.13.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libGLEW.1.13.0.dylib; path = ../../../../../../usr/local/Cellar/glew/1.13.0/lib/libGLEW.1.13.0.dylib; sourceTree = "<group>"; };
 		CDF1EFAD20E23928002BD68D /* libglfw3.3.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglfw3.3.1.dylib; path = ../../../../../../usr/local/Cellar/glfw3/3.1.2/lib/libglfw3.3.1.dylib; sourceTree = "<group>"; };
 		CDF1EFAF20E2393F002BD68D /* libgltools.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libgltools.dylib; path = ../../../../../../usr/local/lib/libgltools.dylib; sourceTree = "<group>"; };
@@ -96,6 +97,7 @@
 				84215D9D2172DD8000A5725C /* P2_1.h */,
 				84215D9E2172EDE500A5725C /* P2_2.h */,
 				847474A82174CBA400AC0D86 /* P4_5.h */,
+				CDC88424217574A500193BE7 /* P4_6.h */,
 			);
 			path = OpenUT;
 			sourceTree = "<group>";

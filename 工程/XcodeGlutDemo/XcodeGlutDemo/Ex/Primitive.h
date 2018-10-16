@@ -278,11 +278,11 @@ void RenderScene(void) {
     M3DMatrix44f mCamera;
     cameraFrame.GetCameraMatrix(mCamera);
     modelViewMatrix.MultMatrix(mCamera);
-//
-//    //处理模型自身的旋转
-//    M3DMatrix44f mObjectFrame;
-//    objectFrame.GetCameraMatrix(mObjectFrame);
-//    modelViewMatrix.MultMatrix(mObjectFrame);
+
+    //处理模型自身的旋转
+    M3DMatrix44f mObjectFrame;
+    objectFrame.GetCameraMatrix(mObjectFrame);
+    modelViewMatrix.MultMatrix(mObjectFrame);
     
     //画图
     switch(nStep) {

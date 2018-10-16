@@ -22,8 +22,9 @@
 
 //按照OpenGL超级宝典图书
 //#include "OpenUT/P2_2.h"
-#include "OpenUT/P4_5.h"
+//#include "OpenUT/P4_5.h"
 //#include "Ex/Primitive.h"
+#include "OpenUT/P4_6.h"
 
 int main(int argc, char * argv[]) {
     initHook(argc, argv);
