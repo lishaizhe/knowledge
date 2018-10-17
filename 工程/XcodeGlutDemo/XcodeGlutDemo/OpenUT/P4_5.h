@@ -24,6 +24,33 @@
  */
 
 
+/**
+ 矩阵行主序/列主序
+ 解释
+ __inline void m3dTransformVector4(M3DVector4f vOut, const M3DVector4f v, const M3DMatrix44f m)
+ {
+ vOut[0] = m[0] * v[0] + m[4] * v[1] + m[8] *  v[2] + m[12] * v[3];
+ vOut[1] = m[1] * v[0] + m[5] * v[1] + m[9] *  v[2] + m[13] * v[3];
+ vOut[2] = m[2] * v[0] + m[6] * v[1] + m[10] * v[2] + m[14] * v[3];
+ vOut[3] = m[3] * v[0] + m[7] * v[1] + m[11] * v[2] + m[15] * v[3];
+ }
+ 为什么是 m[0] * v[0] + m[4] * v[1] + m[8] *  v[2] + m[12] * v[3];
+ 而不是   m[0] * v[0] + m[1] * v[1] + m[2] *  v[2] + m[3] * v[3];
+ 对于正常矩阵相乘来讲应该是 m[0] * v[0] + m[1] * v[1] + m[2] *  v[2] + m[3] * v[3];
+ 但是请注意,opengl关于矩阵的存储并不是二维数组,而是一维数组,所以在这个时候，出现了行优先,列优先的规则，比如
+ | 1  2 |
+ | 3  4 |
+ 这个时候在Opengl中存储的是 {1，3， 2， 4} 所以就会出现上面的疑问,在DX中是和正常相同的，这和计算效率有关
+ 在这个时候我们可以发现 矩阵的行主序等于其转置矩阵的列主序
+ 具体可参考 https://www.jianshu.com/p/bfc8327eaad3
+ 
+ 
+ 
+ 
+ 
+ 
+ */
+
 
 
 
@@ -299,7 +326,9 @@ void initHook(int argc, char* argv[])
         fprintf(stderr, "GLEW Error: %s\n", glewGetErrorString(err));
         return;
     }
-    
+    M3DMatrix44f m4f;
+    m3dLoadIdentity44(m4f);
+    m3dTranslationMatrix44(m4f, 3, 0, 0);
     SetupRC();
     glutMainLoop();
 }
