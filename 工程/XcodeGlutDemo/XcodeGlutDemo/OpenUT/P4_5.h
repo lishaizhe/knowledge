@@ -45,8 +45,49 @@
  具体可参考 https://www.jianshu.com/p/bfc8327eaad3
  
  
+ float m3dDotProduce3(u,v) 返回两个单位向量的余弦值
+ float m3dCrossProduce3(result, u, v) 返回垂直于两个向量的向量
+ 
+ 视觉坐标：一个虚拟的固定坐标系，作为参考坐标系使用
+ 视图变换：其实就是照相机在场景中的位置变换，忧郁视图变换会移动当前的工作坐标系，所以视图变换必须在其他模型变换之前
+ 模型变换：场景中的对象的变换，变换的结果与变换的顺序相关
+ 模型视图：就是视图矩阵和 模型矩阵的结合
+ 投影变换：定义了视景体并创建了裁剪平面。
+ 视口变换：剪裁平面和物理窗口的映射过程
+
+ 4、模型视图矩阵变换的函数：
+ 快速或获取一个单位矩阵：void m3dLoadIdentity44(m)
+ 平移矩阵：void m3dTranslationMatrix44(m,x,y,z)
+ 旋转矩阵：void m3dRotationMatrix44(m,angle,x,y,z):逆时针，弧度，xyz指定各轴上的分量
+ 如果需要按角度选择，可以这样调用m3dRotationMatrix44(m,m3dDegToRad(angle),x,y,z)
+ 缩放矩阵：void m3dScaleMatrix44(m,xScale,yScale,zScale)
+ 矩阵相乘：void m3dMatrixMultiply44(product,a,b)->product = a*b
+
+ 6、矩阵堆栈的使用：GLMatrixStack,初始化时已经在堆栈中包含了单位矩阵
+ 载入单位矩阵：GLMatrixStack::LoadIdentity()
+ 载入任何矩阵：GLMatrixStack::LoadMatrix(m)
+ 任何矩阵乘以栈顶元素并压栈：GLMatrixStack::MultMatrix(m)
+ 获取栈顶矩阵：1.const M3DMatrix44f& GLMatrixStack::GetMatrix()
+  2.void GLMatrixStack::GetMatrix(m)
+ 压栈：复制当前矩阵（或指定矩阵），压入栈顶
+ 1、GLMatrixStack::PushMatrix()
+ 2、GLMatrixStack::PushMatrix(m)
+ 3、GLMatrixStack::PushMatrix(frame)
+ 出栈：GLMatrixStack::PopMatrix()
+ 栈顶变换：对当前栈顶矩阵进行变换
+ Rotate(angle,x,y,z)
+ Translate(x,y,z)
+ Scale(x,y,z)
+ 3D渲染的流程
+https://blog.csdn.net/zh13544539220/article/details/45505655
  
  
+ */
+
+
+/**
+ 需要解决
+ GLFrustum SetPerspective(float fFov, float fAspect, float fNear, float fFar) 参数的定义
  
  
  */
@@ -70,24 +111,8 @@
 #include <stdio.h>
 
 #include <math.h>
-#define GLUT_DISABLE_ATEXIT_HACK
 #include <GLUT/GLUT.h>
 
-/*
- * 当libjpeg-turbo为vs2010编译时，vs2015下静态链接libjpeg-turbo会链接出错:找不到__iob_func,
- * 增加__iob_func到__acrt_iob_func的转换函数解决此问题,
- * 当libjpeg-turbo用vs2015编译时，不需要此补丁文件
- */
-#if _MSC_VER>=1900
-#include "stdio.h"
-_ACRTIMP_ALT FILE* __cdecl __acrt_iob_func(unsigned);
-#ifdef __cplusplus
-extern "C"
-#endif
-FILE* __cdecl __iob_func(unsigned i) {
-    return __acrt_iob_func(i);
-}
-#endif /* _MSC_VER>=1900 */
 
 #define NUM_SPHERES 50
 GLFrame disk[NUM_SPHERES/2];
@@ -209,7 +234,7 @@ void RenderScene(void)
     
     
     // 保存当前模型视图矩阵 (单位矩阵)
-    modelViewMatrix.PushMatrix();
+    modelViewMatrix.PushMatrix(); //将上一个Matrix进行再次压栈,压栈最多压64层，初始层0为单位矩阵
     
     M3DMatrix44f mCamera;
     cameraFrame.GetCameraMatrix(mCamera);
