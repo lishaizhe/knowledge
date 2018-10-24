@@ -84,10 +84,25 @@ https://blog.csdn.net/zh13544539220/article/details/45505655
  
  */
 
+/*
+ 需要注意
+ 1.OpenGL的模型视图变换矩阵(顶点对象)都是右乘当前变化矩阵
+ 2.摄像机矩阵和模型矩阵用的是同一个矩阵就是GL_MODELVIEW model是模型的矩阵,view是摄像机的矩阵,modelview其实就是两者的矩阵积 [讲的有点蹩脚]
+ */
+
 
 /**
  需要解决
  GLFrustum SetPerspective(float fFov, float fAspect, float fNear, float fFar) 参数的定义
+ 这个地方是设置平截头体的方法
+         |
+    |    |
+    |    |
+         |
+ fFov 是设置初识的高度
+ fAspect 是设置张开度  为float(nWidth) / float(nHeight)
+ fNear 是离摄像机最近的距离
+ fFar 是离摄像机最远的距离
  
  
  */
@@ -351,9 +366,6 @@ void initHook(int argc, char* argv[])
         fprintf(stderr, "GLEW Error: %s\n", glewGetErrorString(err));
         return;
     }
-    M3DMatrix44f m4f;
-    m3dLoadIdentity44(m4f);
-    m3dTranslationMatrix44(m4f, 3, 0, 0);
     SetupRC();
     glutMainLoop();
 }
