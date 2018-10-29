@@ -10,6 +10,17 @@
 		84B6E67E213BDB7A00B77EF2 /* libglfw.3.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 84B6E67D213BDB7A00B77EF2 /* libglfw.3.2.dylib */; };
 		84B6E67F213BDB8900B77EF2 /* libgltools.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = CDF1EFAF20E2393F002BD68D /* libgltools.dylib */; };
 		84B6E681213BDBBE00B77EF2 /* libGLEW.2.1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 84B6E680213BDBBE00B77EF2 /* libGLEW.2.1.0.dylib */; };
+		84F2B2CC2187444E005141A7 /* LoadTGA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84F2B2CA2187444E005141A7 /* LoadTGA.cpp */; };
+		84F2B2DA218744A7005141A7 /* torus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84F2B2CD218744A7005141A7 /* torus.cpp */; };
+		84F2B2DB218744A7005141A7 /* VectorMath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84F2B2CF218744A7005141A7 /* VectorMath.cpp */; };
+		84F2B2DC218744A7005141A7 /* MatrixMath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84F2B2D0218744A7005141A7 /* MatrixMath.cpp */; };
+		84F2B2DD218744A7005141A7 /* sphere.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84F2B2D1218744A7005141A7 /* sphere.cpp */; };
+		84F2B2DE218744A7005141A7 /* IsExtSupported.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84F2B2D2218744A7005141A7 /* IsExtSupported.cpp */; };
+		84F2B2DF218744A7005141A7 /* UnitAxes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84F2B2D5218744A7005141A7 /* UnitAxes.cpp */; };
+		84F2B2E0218744A7005141A7 /* WriteTGA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84F2B2D6218744A7005141A7 /* WriteTGA.cpp */; };
+		84F2B2E1218744A7005141A7 /* GetExtensionPointer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84F2B2D7218744A7005141A7 /* GetExtensionPointer.cpp */; };
+		84F2B2E2218744A7005141A7 /* Stopwatch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84F2B2D8218744A7005141A7 /* Stopwatch.cpp */; };
+		84F2B2E3218744A7005141A7 /* FrameMath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84F2B2D9218744A7005141A7 /* FrameMath.cpp */; };
 		CD795B6C209021B200B88221 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CD795B6B209021B200B88221 /* main.cpp */; };
 		CD795B74209021C600B88221 /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD795B73209021C600B88221 /* GLUT.framework */; };
 		CD795B76209064FB00B88221 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD795B75209064FB00B88221 /* OpenGL.framework */; };
@@ -36,6 +47,21 @@
 		84B6E67D213BDB7A00B77EF2 /* libglfw.3.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglfw.3.2.dylib; path = ../../../../../../usr/local/Cellar/glfw/3.2.1/lib/libglfw.3.2.dylib; sourceTree = "<group>"; };
 		84B6E680213BDBBE00B77EF2 /* libGLEW.2.1.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libGLEW.2.1.0.dylib; path = ../../../../../../usr/local/Cellar/glew/2.1.0/lib/libGLEW.2.1.0.dylib; sourceTree = "<group>"; };
 		84B6E682213BE03D00B77EF2 /* P2_1-1-1-1-1.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "P2_1-1-1-1-1.h"; sourceTree = "<group>"; };
+		84F2B2C8218743F7005141A7 /* P5_4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = P5_4.h; sourceTree = "<group>"; };
+		84F2B2CA2187444E005141A7 /* LoadTGA.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = LoadTGA.cpp; sourceTree = "<group>"; };
+		84F2B2CD218744A7005141A7 /* torus.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = torus.cpp; sourceTree = "<group>"; };
+		84F2B2CE218744A7005141A7 /* WGLEXT.H */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = WGLEXT.H; sourceTree = "<group>"; };
+		84F2B2CF218744A7005141A7 /* VectorMath.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VectorMath.cpp; sourceTree = "<group>"; };
+		84F2B2D0218744A7005141A7 /* MatrixMath.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MatrixMath.cpp; sourceTree = "<group>"; };
+		84F2B2D1218744A7005141A7 /* sphere.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sphere.cpp; sourceTree = "<group>"; };
+		84F2B2D2218744A7005141A7 /* IsExtSupported.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IsExtSupported.cpp; sourceTree = "<group>"; };
+		84F2B2D3218744A7005141A7 /* GLEXT.H */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = GLEXT.H; sourceTree = "<group>"; };
+		84F2B2D4218744A7005141A7 /* GLTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLTools.h; sourceTree = "<group>"; };
+		84F2B2D5218744A7005141A7 /* UnitAxes.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UnitAxes.cpp; sourceTree = "<group>"; };
+		84F2B2D6218744A7005141A7 /* WriteTGA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WriteTGA.cpp; sourceTree = "<group>"; };
+		84F2B2D7218744A7005141A7 /* GetExtensionPointer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GetExtensionPointer.cpp; sourceTree = "<group>"; };
+		84F2B2D8218744A7005141A7 /* Stopwatch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Stopwatch.cpp; sourceTree = "<group>"; };
+		84F2B2D9218744A7005141A7 /* FrameMath.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FrameMath.cpp; sourceTree = "<group>"; };
 		CD01623A2092B7CA001FA30C /* RGBA.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RGBA.h; sourceTree = "<group>"; };
 		CD29392D20948F3200E6C1C3 /* Light.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Light.h; sourceTree = "<group>"; };
 		CD6CE4AF20DCFF7A00949F41 /* GlewSample.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GlewSample.h; sourceTree = "<group>"; };
@@ -90,9 +116,31 @@
 			path = ReadMe;
 			sourceTree = "<group>";
 		};
+		84F2B2C921874422005141A7 /* GLTools */ = {
+			isa = PBXGroup;
+			children = (
+				84F2B2D9218744A7005141A7 /* FrameMath.cpp */,
+				84F2B2D7218744A7005141A7 /* GetExtensionPointer.cpp */,
+				84F2B2D3218744A7005141A7 /* GLEXT.H */,
+				84F2B2D4218744A7005141A7 /* GLTools.h */,
+				84F2B2D2218744A7005141A7 /* IsExtSupported.cpp */,
+				84F2B2D0218744A7005141A7 /* MatrixMath.cpp */,
+				84F2B2D1218744A7005141A7 /* sphere.cpp */,
+				84F2B2D8218744A7005141A7 /* Stopwatch.cpp */,
+				84F2B2CD218744A7005141A7 /* torus.cpp */,
+				84F2B2D5218744A7005141A7 /* UnitAxes.cpp */,
+				84F2B2CF218744A7005141A7 /* VectorMath.cpp */,
+				84F2B2CE218744A7005141A7 /* WGLEXT.H */,
+				84F2B2D6218744A7005141A7 /* WriteTGA.cpp */,
+				84F2B2CA2187444E005141A7 /* LoadTGA.cpp */,
+			);
+			path = GLTools;
+			sourceTree = "<group>";
+		};
 		CD47804820EA6C3B006FE6FC /* OpenUT */ = {
 			isa = PBXGroup;
 			children = (
+				84F2B2C8218743F7005141A7 /* P5_4.h */,
 				84B6E682213BE03D00B77EF2 /* P2_1-1-1-1-1.h */,
 				84215D9D2172DD8000A5725C /* P2_1.h */,
 				84215D9E2172EDE500A5725C /* P2_2.h */,
@@ -122,6 +170,7 @@
 		CD795B6A209021B200B88221 /* XcodeGlutDemo */ = {
 			isa = PBXGroup;
 			children = (
+				84F2B2C921874422005141A7 /* GLTools */,
 				847474A22174A39100AC0D86 /* ReadMe */,
 				84215D9F2173354B00A5725C /* Ex */,
 				CD47804820EA6C3B006FE6FC /* OpenUT */,
@@ -221,7 +270,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				84F2B2E1218744A7005141A7 /* GetExtensionPointer.cpp in Sources */,
+				84F2B2DD218744A7005141A7 /* sphere.cpp in Sources */,
+				84F2B2E2218744A7005141A7 /* Stopwatch.cpp in Sources */,
+				84F2B2DB218744A7005141A7 /* VectorMath.cpp in Sources */,
+				84F2B2CC2187444E005141A7 /* LoadTGA.cpp in Sources */,
+				84F2B2DE218744A7005141A7 /* IsExtSupported.cpp in Sources */,
+				84F2B2E0218744A7005141A7 /* WriteTGA.cpp in Sources */,
+				84F2B2E3218744A7005141A7 /* FrameMath.cpp in Sources */,
 				CD795B6C209021B200B88221 /* main.cpp in Sources */,
+				84F2B2DA218744A7005141A7 /* torus.cpp in Sources */,
+				84F2B2DF218744A7005141A7 /* UnitAxes.cpp in Sources */,
+				84F2B2DC218744A7005141A7 /* MatrixMath.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -336,7 +396,7 @@
 		CD795B70209021B200B88221 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = ZZWU2687KV;
 				HEADER_SEARCH_PATHS = (
@@ -361,7 +421,7 @@
 		CD795B71209021B200B88221 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = ZZWU2687KV;
 				HEADER_SEARCH_PATHS = (

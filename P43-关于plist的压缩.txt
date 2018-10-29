@@ -1,0 +1,9 @@
+
+plutil 是MAC下对于plist文件的工具
+
+plist 可以有三种形式的存在 
+	1.xml1  2.binary1  3.json 
+
+plutil -convert json example.plist
+plutil -convert xml1 example.plist
+plutil -convert binary1 example.plist
