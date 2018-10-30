@@ -13,6 +13,7 @@
 #include "GLTools.h"
 #include <GLShaderManager.h>
 #include <GLUT/GLUT.h>
+#include "GLToolEx.h"
 
 static GLfloat zPos = -60.0f;
 
@@ -21,7 +22,7 @@ static GLfloat zPos = -60.0f;
 #define TEXTURE_CEILING 2
 #define TEXTURE_COUNT 3
 GLuint textures[TEXTURE_COUNT];
-const char *szTextureFiles[TEXTURE_COUNT] = { "brick.tga", "floor.tga", "ceiling.tga" };
+const char *szTextureFiles[TEXTURE_COUNT] = { "/Users/admin/Documents/knowledge/工程/XcodeGlutDemo/brick.tga", "/Users/admin/Documents/knowledge/工程/XcodeGlutDemo/floor.tga", "/Users/admin/Documents/knowledge/工程/XcodeGlutDemo/ceiling.tga" };
 
 //为每个纹理对象个性纹理过滤器
 void ProcessMenu( int value )
@@ -70,8 +71,21 @@ void SetupRC()
     
     glEnable( GL_TEXTURE_2D );
     glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL );
+    /*glTexEnvi(GLenum target, GLenum pname, GLint param)
+     纹理环境指定在对片段进行纹理处理时如何解释纹理值。
+     target 纹理环境 - 必须是 GL_TEXTURE_ENV
+     pname  单值纹理环境参数的符号名称。必须是 GL_TEXTURE_ENV_MODE
+     param  单个符号常量 GL_MODULATE  GL_DECAL, GL_BLEND, GL_REPLACE 之一
+     */
     
     //载入纹理
+    /*
+     glGenTextures (GLsizei n, GLuint *textures)
+     1.n 个数  2.textures 可用纹理索引数组
+     返回纹理名数组.
+     在调用glGenTextures函数之前，没有任何返回的名称可以立即使用
+     glGenTextures返回的纹理名称不会被后续的glGenTextures调用返回，除非它们首先通过调用glDeleteTextures删除
+     */
     glGenTextures( TEXTURE_COUNT, textures );
     for ( iLoop = 0; iLoop < TEXTURE_COUNT; iLoop++ )
     {
@@ -89,13 +103,13 @@ void SetupRC()
     }
     
     //开启各向异性过滤
-    //if ( gltIsExtSupported( "GL_EXT_texture_filter_anisotropic" ) )
-    //{
-    //    GLfloat fLargest;
-    //    glGetFloatv( GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &fLargest );
-    
-    //    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, fLargest );
-    //}
+//    if ( gltIsExtSupported( "GL_EXT_texture_filter_anisotropic" ) )
+//    {
+//        GLfloat fLargest;
+//        glGetFloatv( GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &fLargest );
+//
+//        glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, fLargest );
+//    }
 }
 
 void ShutdownRC()
@@ -230,14 +244,15 @@ void initHook( int argc, char **argv )
     glutSpecialFunc( SpecialKeys );
     glutDisplayFunc( RenderScene );
     
-    glutCreateMenu( ProcessMenu );
-    glutAddMenuEntry( "GL_NEAREST", 0 );
+    //创建菜单
+    glutCreateMenu( ProcessMenu ); //设置回调
+    glutAddMenuEntry( "GL_NEAREST", 0 ); //设置选项
     glutAddMenuEntry( "GL_LINEAR", 1 );
     glutAddMenuEntry( "GL_NEAREST_MIPMAP_NEAREST", 2 );
     glutAddMenuEntry( "GL_NEAREST_MIPMAP_LINEAR", 3 );
     glutAddMenuEntry( "GL_LINEAR_MIPMAP_NEAREST", 4 );
     glutAddMenuEntry( "GL_LINEAR_MIPMAP_LINEAR", 5 );
-    glutAttachMenu( GLUT_RIGHT_BUTTON );
+    glutAttachMenu( GLUT_RIGHT_BUTTON ); //设置怎么样可以响应菜单//这个是鼠标右键
     
     SetupRC();
     glutMainLoop();

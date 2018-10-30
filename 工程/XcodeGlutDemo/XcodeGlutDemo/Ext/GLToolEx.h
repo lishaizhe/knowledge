@@ -1,15 +1,13 @@
-// GLTools.h
-// OpenGL SuperBible
-// Copyright 1998 - 2003 Richard S. Wright Jr..
-// Code by Richard S. Wright Jr.
-// All Macros prefixed with GLT_, all functions prefixed with glt... This
-// should avoid most namespace problems
-// Some of these functions allocate memory. Use CRT functions to free
-// Report bugs to rwright@starstonesoftware.com
+//
+//  GLToolEx.h
+//  XcodeGlutDemo
+//
+//  Created by admin on 2018/10/30.
+//  Copyright © 2018年 李帅哲. All rights reserved.
+//
 
-#ifndef __GLTOOLS__LIBRARY
-#define __GLTOOLS__LIBRARY
-
+#ifndef GLToolEx_h
+#define GLToolEx_h
 // Windows
 #ifdef WIN32
 #include <windows.h>
@@ -34,15 +32,15 @@
 
 ///////////////////////////////////////////////////////
 // Useful constants
-#define GLT_PI	3.14159265358979323846
+#define GLT_PI    3.14159265358979323846
 #define GLT_PI_DIV_180 0.017453292519943296
 #define GLT_INV_PI_DIV_180 57.2957795130823229
 
 ///////////////////////////////////////////////////////////////////////////////
 // Useful shortcuts and macros
 // Radians are king... but we need a way to swap back and forth
-#define gltDegToRad(x)	((x)*GLT_PI_DIV_180)
-#define gltRadToDeg(x)	((x)*GLT_INV_PI_DIV_180)
+#define gltDegToRad(x)    ((x)*GLT_PI_DIV_180)
+#define gltRadToDeg(x)    ((x)*GLT_INV_PI_DIV_180)
 
 
 ///////////////////////////////////////////////////////
@@ -56,18 +54,18 @@ typedef struct{                     // The Frame of reference container
     GLTVector3 vLocation;
     GLTVector3 vUp;
     GLTVector3 vForward;
-    } GLTFrame;
+} GLTFrame;
 
-typedef struct 			    // High resolution timer
-    {
-    #ifdef WIN32
+typedef struct                 // High resolution timer
+{
+#ifdef WIN32
     LARGE_INTEGER m_LastCount;
-    #else
+#else
     struct timeval last;
-    #endif
-    } GLTStopwatch;
-    
-    
+#endif
+} GLTStopwatch;
+
+
 ///////////////////////////////////////////////////////
 // Macros for big/little endian happiness
 #define BYTE_SWAP(x)    x = ((x) >> 8) + ((x) << 8)
@@ -77,7 +75,7 @@ typedef struct 			    // High resolution timer
 //         THE LIBRARY....
 ///////////////////////////////////////////////////////////////////////////////
 
-// vector functions in VectorMath.c 
+// vector functions in VectorMath.c
 void gltAddVectors(const GLTVector3 vFirst, const GLTVector3 vSecond, GLTVector3 vResult);
 void gltSubtractVectors(const GLTVector3 vFirst, const GLTVector3 vSecond, GLTVector3 vResult);
 void gltScaleVector(GLTVector3 vVector, const GLfloat fScale);
@@ -106,7 +104,7 @@ void gltTransposeMatrix(GLTMatrix mTranspose);
 void gltInvertMatrix(const GLTMatrix m, GLTMatrix mInverse);
 
 /////////////////////////////////////////
-// Frames and frame stuff. All in FrameMath.c 
+// Frames and frame stuff. All in FrameMath.c
 void gltInitFrame(GLTFrame *pFrame);
 void gltGetMatrixFromFrame(GLTFrame *pFrame, GLTMatrix mMatrix);
 void gltApplyActorTransform(GLTFrame *pFrame);
@@ -154,4 +152,4 @@ int gltIsWGLExtSupported(HDC hDC, const char *szExtension);
 #endif
 
 
-#endif
+#endif /* GLToolEx_h */

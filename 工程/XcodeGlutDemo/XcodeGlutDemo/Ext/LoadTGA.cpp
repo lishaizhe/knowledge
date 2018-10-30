@@ -2,13 +2,11 @@
 //  LoadTGA.cpp
 //  XcodeGlutDemo
 //
-//  Created by admin on 2018/10/29.
+//  Created by admin on 2018/10/30.
 //  Copyright © 2018年 李帅哲. All rights reserved.
 //
 
-#include "GLTools.h"
-#include <stdio.h>
-#include <iostream>
+#include "GLToolEx.h"
 
 // Define targa header.
 #pragma pack(1)
@@ -53,7 +51,7 @@ GLbyte *gltLoadTGA(const char *szFileName, GLint *iWidth, GLint *iHeight, GLint 
     
     // Attempt to open the fil
          pFile = fopen(szFileName, "rb");
-//    fopen( &pFile, szFileName, "rb" );
+//    fopen_s( &pFile, szFileName, "rb" );
     if(pFile == NULL)
         return NULL;
     
