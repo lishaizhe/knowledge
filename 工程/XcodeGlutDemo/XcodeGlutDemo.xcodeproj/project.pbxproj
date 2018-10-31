@@ -45,6 +45,7 @@
 		84F2B2C8218743F7005141A7 /* P5_4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = P5_4.h; sourceTree = "<group>"; };
 		CD01623A2092B7CA001FA30C /* RGBA.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RGBA.h; sourceTree = "<group>"; };
 		CD29392D20948F3200E6C1C3 /* Light.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Light.h; sourceTree = "<group>"; };
+		CD643B4D218145C000419337 /* P5_1.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = P5_1.h; sourceTree = "<group>"; };
 		CD6CE4AF20DCFF7A00949F41 /* GlewSample.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GlewSample.h; sourceTree = "<group>"; };
 		CD795B68209021B200B88221 /* XcodeGlutDemo */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = XcodeGlutDemo; sourceTree = BUILT_PRODUCTS_DIR; };
 		CD795B6B209021B200B88221 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
@@ -115,6 +116,7 @@
 				84215D9E2172EDE500A5725C /* P2_2.h */,
 				847474A82174CBA400AC0D86 /* P4_5.h */,
 				CDC88424217574A500193BE7 /* P4_6.h */,
+				CD643B4D218145C000419337 /* P5_1.h */,
 			);
 			path = OpenUT;
 			sourceTree = "<group>";
