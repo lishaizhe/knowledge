@@ -86,6 +86,16 @@ void SetupRC()
      在调用glGenTextures函数之前，没有任何返回的名称可以立即使用
      glGenTextures返回的纹理名称不会被后续的glGenTextures调用返回，除非它们首先通过调用glDeleteTextures删除
      */
+    
+    /*
+     glBindTexture (GLenum target, GLuint texture) 绑定纹理
+     将纹理名称绑定到相应的纹理目标。当纹理绑定到目标时，该目标的先前绑定不再有效。
+     target 的参数为 GL_TEXTURE_1D  GL_TEXUTURE_2D
+     texture 为无符号整数
+     ！！！一定不能放在glBegin()   glEnd()中否则绑定无效
+     glBindTexture实际上是改变了OpenGL的状态，告诉Opengl下面对纹理的任何操作都是基于当前所绑定纹理对象的
+     有个重复绑定的坑 https://www.cnblogs.com/vernon/articles/1885223.html
+     */
     glGenTextures( TEXTURE_COUNT, textures );
     for ( iLoop = 0; iLoop < TEXTURE_COUNT; iLoop++ )
     {
