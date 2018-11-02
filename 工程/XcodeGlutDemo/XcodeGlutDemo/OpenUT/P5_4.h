@@ -22,7 +22,7 @@ static GLfloat zPos = -60.0f;
 #define TEXTURE_CEILING 2
 #define TEXTURE_COUNT 3
 GLuint textures[TEXTURE_COUNT];
-const char *szTextureFiles[TEXTURE_COUNT] = { "/Users/admin/Documents/knowledge/工程/XcodeGlutDemo/brick.tga", "/Users/admin/Documents/knowledge/工程/XcodeGlutDemo/floor.tga", "/Users/admin/Documents/knowledge/工程/XcodeGlutDemo/ceiling.tga" };
+const char *szTextureFiles[TEXTURE_COUNT] = { "/Users/lishuaizhe/Documents/knowledge/工程/XcodeGlutDemo/brick.tga", "/Users/lishuaizhe/Documents/knowledge/工程/XcodeGlutDemo/floor.tga", "/Users/lishuaizhe/Documents/knowledge/工程/XcodeGlutDemo/ceiling.tga" };
 
 //为每个纹理对象个性纹理过滤器
 void ProcessMenu( int value )
@@ -95,6 +95,28 @@ void SetupRC()
      ！！！一定不能放在glBegin()   glEnd()中否则绑定无效
      glBindTexture实际上是改变了OpenGL的状态，告诉Opengl下面对纹理的任何操作都是基于当前所绑定纹理对象的
      有个重复绑定的坑 https://www.cnblogs.com/vernon/articles/1885223.html
+     */
+    /*
+     GLint gluBuild2DMipmaps (GLenum target, GLint internalFormat, GLsizei width, GLsizei height, GLenum format, GLenum type, const void *data)
+     创建2D的minimap
+     target目标纹理,必须是GL_TEXTURE_2D
+     internalFormat 为什么样的组合形式GL_RGBA8  GL_RGB8
+     format 像素数据的格式。必须是以下之一：GL_COLOR_INDEX，GL_RED，GL_GREEN，GL_BLUE，GL_ALPHA，GL_RGB，GL_RGBA，GL_BGR_EXT，GL_BGRA_EXT，GL_LUMINANCE或GL_LUMINANCE_ALPHA
+     type 为数据类型数据。必须是以下之一：GL_UNSIGNED_BYTE，GL_BYTE，GL_BITMAP，GL_UNSIGNED_SHORT，GL_SHORT，GL_UNSIGNED_INT，GL_INT或GL_FLOAT
+     data 指向内存中图像数据的指针
+     */
+    
+    /*
+     glTexParameteri (GLenum target, GLenum pname, GLint param)
+     设置纹理参数
+     target 目标纹理，必须是GL_TEXTURE_1D  GL_TEXTURE_2D
+     pname 单值纹理参数的符号名称
+        GL_TEXUTRE_WRAP_S  s方向上拉伸
+        GL_TEXTURE_WRAP_T  t方向上拉伸
+        GL_TEXTURE_MAG_FILTER  当纹理小于要映射的对象时使用 是一张放大处理  magnification
+        GL_TEXTURE_MIN_FILTER  当纹理大于要映射的对象时使用 是一种缩小处理  minify
+     param 拉伸方式
+        
      */
     glGenTextures( TEXTURE_COUNT, textures );
     for ( iLoop = 0; iLoop < TEXTURE_COUNT; iLoop++ )
