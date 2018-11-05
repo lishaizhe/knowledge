@@ -161,7 +161,7 @@ void SpecialKeys( int key, int x, int y )
         zPos -= 1.0f;
     }
     
-    glutPostRedisplay();
+    glutPostRedisplay(); //重新绘制
 }
 
 void ChangeSize( int w, int h )
@@ -180,7 +180,7 @@ void ChangeSize( int w, int h )
     glMatrixMode( GL_PROJECTION );
     glLoadIdentity();
     
-    gluPerspective( 90.0f, fAspect, 1, 120 );
+    gluPerspective( 90.0f, fAspect, 1, 120 ); //设置透视摄像机
     
     glMatrixMode( GL_MODELVIEW );
     glLoadIdentity();
@@ -195,22 +195,33 @@ void RenderScene()
     glPushMatrix();
     glTranslatef( 0.0f, 0.0f, zPos );
     
+    /*
+     glTexCoord2f (GLfloat s, GLfloat t) 设置纹理坐标系
+     s: 0代表纹理左侧  1代表纹理右侧
+     t: 0代表纹理底部  1代表纹理上部
+     这个函数一般和glVertex3f组合使用,需要把对应的纹理贴合到指定的地方
+     必须左上、左下、右上、右下 对应的贴合
+     glTexCoord2f( 0.0, 0.0 ); glVertex3f( -1.0, -1.0, 1.0 );
+     glTexCoord2f( 1.0, 0.0 ); glVertex3f( 1.0, -1.0, 1.0 );
+     glTexCoord2f( 1.0, 1.0 ); glVertex3f( 1.0, 1.0, 1.0 );
+     glTexCoord2f( 0.0, 1.0 ); glVertex3f( -1.0, 1.0, 1.0 );
+     */
     for ( z = 60.0f; z >= 0.0f; z -= 10 )
     {
         //地面
         glBindTexture( GL_TEXTURE_2D, textures[TEXTURE_FLOOR] );
         glBegin( GL_QUADS );
-        glTexCoord2f( 0.0f, 0.0f );
-        glVertex3f( -10.0f, -10.0f, z );
+        glTexCoord2f( 0.0f, 0.0f ); //设置纹理坐标
+        glVertex3f( -10.0f, -10.0f, z/2 );
         
         glTexCoord2f( 1.0f, 0.0f );
-        glVertex3f( 10.0f, -10.0f, z );
-        
+        glVertex3f( 10.0f, -10.0f, z/2 );
+
         glTexCoord2f( 1.0f, 1.0f );
-        glVertex3f( 10.0f, -10.0f, z - 10.0f );
+        glVertex3f( 10.0f, -10.0f, (z - 10.0f)/2 );
         
         glTexCoord2f( 0.0f, 1.0f );
-        glVertex3f( -10.0f, -10.0f, z - 10.0f );
+        glVertex3f( -10.0f, -10.0f, (z - 10.0f)/2 );
         glEnd();
         
         //天花板
@@ -218,44 +229,44 @@ void RenderScene()
         glBegin( GL_QUADS );
         glTexCoord2f( 0.0f, 1.0f );
         glVertex3f( -10.0f, 10.0f, z - 10.0f );
-        
+
         glTexCoord2f( 1.0f, 1.0f );
         glVertex3f( 10.0f, 10.0f, z - 10.0f );
-        
+
         glTexCoord2f( 1.0f, 0.0f );
         glVertex3f( 10.0f, 10.0f, z );
-        
+
         glTexCoord2f( 0.0f, 0.0f );
         glVertex3f( -10.0f, 10.0f, z );
         glEnd();
-        
+
         //左墙
         glBindTexture( GL_TEXTURE_2D, textures[TEXTURE_BRICK] );
         glBegin( GL_QUADS );
         glTexCoord2f( 0.0f, 0.0f );
         glVertex3f( -10.0f, -10.0f, z );
-        
+
         glTexCoord2f( 1.0f, 0.0f );
         glVertex3f( -10.0f, -10.0f, z - 10.0f );
-        
+
         glTexCoord2f( 1.0f, 1.0f );
         glVertex3f( -10.0f, 10.0f, z - 10.0f );
-        
+
         glTexCoord2f( 0.0f, 1.0f );
         glVertex3f( -10.0f, 10.0f, z );
         glEnd();
-        
+
         //右墙
         glBegin( GL_QUADS );
         glTexCoord2f( 0.0f, 1.0f );
         glVertex3f( 10.0f, 10.0f, z );
-        
+
         glTexCoord2f( 1.0f, 1.0f );
         glVertex3f( 10.0f, 10.0f, z - 10.0f );
-        
+
         glTexCoord2f( 1.0f, 0.0f );
         glVertex3f( 10.0f, -10.0f, z - 10.0f );
-        
+
         glTexCoord2f( 0.0f, 0.0f );
         glVertex3f( 10.0f, -10.0f, z );
         glEnd();
