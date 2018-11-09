@@ -1,0 +1,21 @@
+
+目前新建了两个工程 proj1,  proj2
+
+我们想要让proj2依赖于proj1,那么这个时候就需要让proj1作为lib被引入
+
+1.进入proj1 文件中的app目录下 
+	改成  apply plugin: 'com.android.library'  -> 指明为library
+	同时删除  applicationId "user.individual.com.test2"  否则会产生两个icon
+
+2.进入proj2文件中 
+	修改setting文件 
+		include ':module_lib'
+		project(':module_lib').projectDir = new File(settingsDir, './../modulelib/module_lib')
+		=》 注意这个时候的./../  settingDir为当前文件的目录
+
+	进入app目录下 build.gradle文件
+		添加 dependencies
+			implementation project(':module_lib')
+
+
+这样就引入了proj1文件了
