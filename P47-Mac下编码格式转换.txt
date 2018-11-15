@@ -1,0 +1,11 @@
+Mac上自带的工具 iconv  这个工具可以装换文本的编码格式 
+
+使用实例：
+
+iconv -f GB18030 -t UTF-8 /Users/admin/Documents/2323.csv > /Users/admin/Documents/111.csv
+
+-f  原编码格式
+
+-t  目标编码格式
+
+icon -f [原编码] -t [目标编码] 源文件 > 目标文件
