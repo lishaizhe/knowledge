@@ -1,0 +1,28 @@
+
+执行如下操作:
+
+1.进入Beyond Compare应用程序MacOS目录下(/Applications/Beyond Compare.app/Contents/MacOS)
+2.将主启动程序BCompare重命名为BCompare.real
+3.在同级目录下新建一个脚本文件命名为BCompare，文件内容往下看
+4.给新建的文件BCompare，授权文件执行权限
+
+1.创建BCompare文件命令如下：
+
+在这个脚本里面写如下代码，第一行是注明解释器，第二行是删除注册信息，第三行是启动真正的主程序。
+
+
+ 
+#!/bin/bash
+
+rm "/Users/$(whoami)/Library/Application Support/Beyond Compare/registry.dat"
+
+"`dirname "$0"`"/BCompare.real $@
+
+
+2.授权文件执行权限
+
+chmod a+x /Applications/Beyond\ Compare.app/Contents/MacOS/BCompare
+ 
+
+参见 ：
+https://blog.csdn.net/tanningzhong/article/details/81285278
