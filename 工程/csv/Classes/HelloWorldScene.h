@@ -26,6 +26,8 @@
 #define __HELLOWORLD_SCENE_H__
 
 #include "cocos2d.h"
+#include "CSVReaderController.hpp"
+using namespace cocos2d;
 
 class HelloWorld : public cocos2d::Scene
 {
@@ -33,9 +35,17 @@ public:
     static cocos2d::Scene* createScene();
 
     virtual bool init();
-    
+    int m_index{0};
+    std::function<void(int)> m_lamb;
+    std::vector<csvdata> tmp;
+    std::map<std::string, std::string> _changemap;
+    Sprite* blank_image;
     // a selector callback
     void menuCloseCallback(cocos2d::Ref* pSender);
+    
+    void _addFontTTF(std::string data, std::string fontname, int fontsize, Vec2 pos);
+    void _addFontSys(std::string data, std::string fontname, int fontsize, Vec2 pos, Vec2 anchorPos=Vec2(0.5, 0.5), TextHAlignment alignment = TextHAlignment::CENTER, Size dimension = Size::ZERO);
+    RenderTexture* render;
     
     // implement the "static create()" method manually
     CREATE_FUNC(HelloWorld);

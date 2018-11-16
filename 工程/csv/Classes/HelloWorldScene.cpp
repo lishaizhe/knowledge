@@ -24,7 +24,7 @@
 
 #include "HelloWorldScene.h"
 #include "SimpleAudioEngine.h"
-#include "CSVReaderController.hpp"
+
 
 USING_NS_CC;
 
@@ -40,6 +40,26 @@ static void problemLoading(const char* filename)
     printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in HelloWorldScene.cpp\n");
 }
 
+void HelloWorld::_addFontTTF(std::string data, std::string fontname, int fontsize, Vec2 pos){
+    auto bsize = blank_image->getContentSize();
+    auto lab = Label::createWithTTF(data, fontname, fontsize);
+    lab->enableBold();
+    lab->setColor(Color3B::BLACK);
+    lab->setPosition(bsize.width*pos.x, bsize.height*pos.y);
+    blank_image->addChild(lab);
+};
+
+void HelloWorld::_addFontSys(std::string data, std::string fontname, int fontsize, Vec2 pos, Vec2 anchorPos, TextHAlignment alignment, Size dimension){
+    auto bsize = blank_image->getContentSize();
+    auto lab = Label::createWithSystemFont(data, fontname, fontsize);
+    lab->enableBold();
+    lab->setAnchorPoint(anchorPos);
+    lab->setColor(Color3B::BLACK);
+    lab->setDimensions(dimension.width, dimension.height);
+    lab->setPosition(bsize.width*pos.x, bsize.height*pos.y);
+    blank_image->addChild(lab);
+};
+
 // on "init" you need to initialize your instance
 bool HelloWorld::init()
 {
@@ -52,50 +72,72 @@ bool HelloWorld::init()
 
     auto size = Director::getInstance()->getVisibleSize();
 
-    std::vector<csvdata> tmp = CSVReaderController::getInst()->readCSV("timecsv.csv");
+    tmp = CSVReaderController::getInst()->readCSV("timecsv.csv");
     
-    auto blank_image = Sprite::create("blank_image.png");
+    blank_image = Sprite::create("blank_image.png");
     blank_image->setAnchorPoint(Vec2(0.5f, 0.5f));
-    blank_image->setPosition(Vec2(size.width/2, size.height/2));
+    blank_image->setPosition(Vec2(size.width/2-128, size.height/2));
     addChild(blank_image);
     
-    auto _addFont =[=](std::string data, std::string fontname, int fontsize, Vec2 pos){
-        auto bsize = blank_image->getContentSize();
-        auto lab = CCLabelTTF::create(data, fontname, fontsize);
-        lab->setColor(Color3B::BLACK);
-        lab->setPosition(bsize.width*pos.x, bsize.height*pos.y);
-        blank_image->addChild(lab);
-    };
-    for (int i = 0; i < 1; ++i){
-        //月份
-        _addFont(tmp[i].month, "Arial.ttf", 30, Vec2(0.1, 0.85));
-        //农历
-        _addFont("农历", "Arial.ttf", 30, Vec2(0.8, 0.85));
-        //农历日期
-        _addFont(tmp[i].calendar, "Arial.ttf", 30, Vec2(0.8, 0.8));
-        //月份中第几天
-        _addFont(tmp[i].date, "Arial.ttf", 30, Vec2(0.4, 0.75));
-        //周几
-        _addFont(tmp[i].week, "Arial.ttf", 30, Vec2(0.6, 0.75));
-        //宜
-        _addFont(tmp[i].cando, "Arial.ttf", 30, Vec2(0.5, 0.5));
-        //书语
-        _addFont(tmp[i].list, "Arial.ttf", 30, Vec2(0.5, 0.35));
-        //书籍
-        _addFont(tmp[i].book, "Arial.ttf", 30, Vec2(0.5, 0.25));
-    }
-    
     auto blank_size = blank_image->getContentSize();
-    RenderTexture* render = RenderTexture::create(blank_size.width, blank_size.height);
-    render->setPosition(Vec2(size.width/2, size.height/2));
+    render = RenderTexture::create(blank_size.width, blank_size.height);
+//    render->setPosition(Vec2(size.width/2, size.height/2));
     addChild(render);
-    scheduleOnce([=](float t){
+    
+    _changemap["JANUARY"] = "一 月";
+    _changemap["FEBRUARY"] = "二 月";
+    _changemap["MARCH"] = "三 月";
+    _changemap["APRIL"] = "四 月";
+    _changemap["MAY"] = "五 月";
+    _changemap["JUNE"] = "六 月";
+    _changemap["JULY"] = "七 月";
+    _changemap["AUGUST"] = "八 月";
+    _changemap["SEPTEMBER"] = "九 月";
+    _changemap["OCTOBER"] = "十 月";
+    _changemap["NOVEMBER"] = "十一 月";
+    _changemap["DECEMBER"] = "十二 月";
+    
+    std::string writepath = FileUtils::getInstance()->getWritablePath();
+    cocos2d::log(">> %s", writepath.c_str());
+    m_lamb = [this](int i){
+        blank_image->removeAllChildrenWithCleanup(true);
+        //月份
+        _addFontSys(_changemap[tmp[i].month], "Arial.ttf", 50, Vec2(0.15, 0.87), Vec2(0, 0.5));
+        //农历
+        _addFontSys("农     历", "Arial.ttf", 40, Vec2(0.8, 0.875), Vec2(1, 0.5));
+        //农历日期
+        _addFontSys(tmp[i].calendar, "Arial.ttf", 40, Vec2(0.8, 0.855), Vec2(1, 0.5));
+        //月份中第几天
+        _addFontTTF(tmp[i].date, "elephant.otf", 300, Vec2(0.38, 0.68));
+        //周几
+        std::string strWeek = "星\n期\n"+tmp[i].week;
+        _addFontSys(strWeek, "Arial.ttf", 95, Vec2(0.6, 0.66));
+        //计划
+        _addFontSys(tmp[i].list, "Arial.ttf", 55, Vec2(0.5, 0.5));
+        //书语
+        _addFontSys(tmp[i].summary, "Arial.ttf", 45, Vec2(0.5, 0.3), Vec2(0.5, 0.5), TextHAlignment::LEFT, Size(800, 0));
+        //书籍
+        std::string strBook = "——" + tmp[i].book;
+        _addFontSys(strBook, "Arial.ttf", 40, Vec2(0.82, 0.22), Vec2(1, 0.5));
+        
+        render->clear(0, 0, 0, 0);
         render->begin();
         blank_image->visit();
         render->end();
-        std::string writepath = FileUtils::getInstance()->getWritablePath();
-        render->saveToFile("abc.png", Image::Format::PNG);
-    }, 2.0, "123");
+        
+        render->saveToFile(strBook+"123.png", Image::Format::PNG);
+        cocos2d::log(">>>> %d", i);
+    };
+    
+    schedule([this](float t){
+        if (m_index >= 2){
+            MessageBox("done", "make");
+            this->unschedule("update");
+            return;
+        }
+        m_lamb(m_index);
+        m_index++;
+    }, 5.0f, CC_REPEAT_FOREVER, 1.5, "update");
     
     return true;
 }
