@@ -25,6 +25,13 @@ GLuint textures[TEXTURE_COUNT];
 const char *szTextureFiles[TEXTURE_COUNT] = { "/Users/lishuaizhe/Documents/knowledge/工程/XcodeGlutDemo/brick.tga", "/Users/lishuaizhe/Documents/knowledge/工程/XcodeGlutDemo/floor.tga", "/Users/lishuaizhe/Documents/knowledge/工程/XcodeGlutDemo/ceiling.tga" };
 
 //为每个纹理对象个性纹理过滤器
+/*
+ GL_LINEAR 采用插值的原理，填充内部的颜色，这样可以让两者之前平衡过度
+ GL_NEAREST 采用就近色值，所以这种颜色区分较明显，会有锯齿
+ GL_REPEAT: 看名称就能猜出，在纹理没有覆盖的部分重复之前的纹理。
+ GL_CLAMP_TO_EDGE：延续结束时的纹理
+ GL_MIRRORED_REPEAT：将原来的纹理先颠倒再重复。
+ */
 void ProcessMenu( int value )
 {
     GLint iLoop;
@@ -212,16 +219,16 @@ void RenderScene()
         glBindTexture( GL_TEXTURE_2D, textures[TEXTURE_FLOOR] );
         glBegin( GL_QUADS );
         glTexCoord2f( 0.0f, 0.0f ); //设置纹理坐标
-        glVertex3f( -10.0f, -10.0f, z/2 );
+        glVertex3f( -10.0f, -10.0f, z );
         
         glTexCoord2f( 1.0f, 0.0f );
-        glVertex3f( 10.0f, -10.0f, z/2 );
+        glVertex3f( 10.0f, -10.0f, z );
 
         glTexCoord2f( 1.0f, 1.0f );
-        glVertex3f( 10.0f, -10.0f, (z - 10.0f)/2 );
+        glVertex3f( 10.0f, -10.0f, (z - 10.0f) );
         
         glTexCoord2f( 0.0f, 1.0f );
-        glVertex3f( -10.0f, -10.0f, (z - 10.0f)/2 );
+        glVertex3f( -10.0f, -10.0f, (z - 10.0f) );
         glEnd();
         
         //天花板

@@ -49,10 +49,15 @@
 		8428A668219D760100A6C039 /* CSVReaderController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8428A667219D760100A6C039 /* CSVReaderController.cpp */; };
 		8428A66A219D761900A6C039 /* timecsv.csv in Resources */ = {isa = PBXBuildFile; fileRef = 8428A669219D761900A6C039 /* timecsv.csv */; };
 		8428A66E219D771400A6C039 /* blank_image.png in Resources */ = {isa = PBXBuildFile; fileRef = 8428A66D219D771400A6C039 /* blank_image.png */; };
-		8428A679219E612A00A6C039 /* elephant.otf in Resources */ = {isa = PBXBuildFile; fileRef = 8428A677219E612A00A6C039 /* elephant.otf */; };
 		BF171245129291EC00B8313A /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF170DB012928DE900B8313A /* OpenGLES.framework */; };
 		BF1712471292920000B8313A /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BF170DB412928DE900B8313A /* libz.dylib */; };
 		BF1C47F01293687400B63C5D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF1C47EA1293683800B63C5D /* QuartzCore.framework */; };
+		CD77B84821A1BF9B00072F34 /* blank_circle.png in Resources */ = {isa = PBXBuildFile; fileRef = CD77B84621A1BF9B00072F34 /* blank_circle.png */; };
+		CD77B84921A1BF9B00072F34 /* blank_triangle.png in Resources */ = {isa = PBXBuildFile; fileRef = CD77B84721A1BF9B00072F34 /* blank_triangle.png */; };
+		CD77B84D21A1CAE900072F34 /* SimHei.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CD77B84A21A1CAE900072F34 /* SimHei.ttf */; };
+		CD77B84F21A1CAE900072F34 /* STXINWEI.TTF in Resources */ = {isa = PBXBuildFile; fileRef = CD77B84C21A1CAE900072F34 /* STXINWEI.TTF */; };
+		CD9561C221A1A02800C44103 /* ELEPHNT.TTF in Resources */ = {isa = PBXBuildFile; fileRef = CD9561C121A1A02800C44103 /* ELEPHNT.TTF */; };
+		CD957B4121A248E900AD886D /* FZXBSK--GBK1-0.TTF in Resources */ = {isa = PBXBuildFile; fileRef = CD957B4021A248E900AD886D /* FZXBSK--GBK1-0.TTF */; };
 		D44C620C132DFF330009C878 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D44C620B132DFF330009C878 /* OpenAL.framework */; };
 		D44C620E132DFF430009C878 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D44C620D132DFF430009C878 /* AVFoundation.framework */; };
 		D44C6210132DFF4E0009C878 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D44C620F132DFF4E0009C878 /* AudioToolbox.framework */; };
@@ -141,10 +146,15 @@
 		8428A667219D760100A6C039 /* CSVReaderController.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CSVReaderController.cpp; sourceTree = "<group>"; };
 		8428A669219D761900A6C039 /* timecsv.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = timecsv.csv; sourceTree = "<group>"; };
 		8428A66D219D771400A6C039 /* blank_image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = blank_image.png; sourceTree = "<group>"; };
-		8428A677219E612A00A6C039 /* elephant.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = elephant.otf; sourceTree = "<group>"; };
 		BF170DB012928DE900B8313A /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		BF170DB412928DE900B8313A /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		BF1C47EA1293683800B63C5D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		CD77B84621A1BF9B00072F34 /* blank_circle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = blank_circle.png; sourceTree = "<group>"; };
+		CD77B84721A1BF9B00072F34 /* blank_triangle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = blank_triangle.png; sourceTree = "<group>"; };
+		CD77B84A21A1CAE900072F34 /* SimHei.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = SimHei.ttf; sourceTree = "<group>"; };
+		CD77B84C21A1CAE900072F34 /* STXINWEI.TTF */ = {isa = PBXFileReference; lastKnownFileType = file; path = STXINWEI.TTF; sourceTree = "<group>"; };
+		CD9561C121A1A02800C44103 /* ELEPHNT.TTF */ = {isa = PBXFileReference; lastKnownFileType = file; path = ELEPHNT.TTF; sourceTree = "<group>"; };
+		CD957B4021A248E900AD886D /* FZXBSK--GBK1-0.TTF */ = {isa = PBXFileReference; lastKnownFileType = file; path = "FZXBSK--GBK1-0.TTF"; sourceTree = "<group>"; };
 		D44C620B132DFF330009C878 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
 		D44C620D132DFF430009C878 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		D44C620F132DFF4E0009C878 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
@@ -277,7 +287,12 @@
 		46880B7519C43A67006E1F66 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				8428A677219E612A00A6C039 /* elephant.otf */,
+				CD957B4021A248E900AD886D /* FZXBSK--GBK1-0.TTF */,
+				CD77B84A21A1CAE900072F34 /* SimHei.ttf */,
+				CD77B84C21A1CAE900072F34 /* STXINWEI.TTF */,
+				CD77B84621A1BF9B00072F34 /* blank_circle.png */,
+				CD77B84721A1BF9B00072F34 /* blank_triangle.png */,
+				CD9561C121A1A02800C44103 /* ELEPHNT.TTF */,
 				8428A66D219D771400A6C039 /* blank_image.png */,
 				8428A669219D761900A6C039 /* timecsv.csv */,
 				521A8EA819F11F5000D177D7 /* fonts */,
@@ -426,12 +441,17 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CD77B84921A1BF9B00072F34 /* blank_triangle.png in Resources */,
 				46880B8119C43A67006E1F66 /* HelloWorld.png in Resources */,
+				CD957B4121A248E900AD886D /* FZXBSK--GBK1-0.TTF in Resources */,
 				1A88B2641FC3D9C9005C14AE /* Images.xcassets in Resources */,
+				CD77B84F21A1CAE900072F34 /* STXINWEI.TTF in Resources */,
 				46880B7D19C43A67006E1F66 /* CloseSelected.png in Resources */,
+				CD9561C221A1A02800C44103 /* ELEPHNT.TTF in Resources */,
+				CD77B84821A1BF9B00072F34 /* blank_circle.png in Resources */,
 				521A8EA919F11F5000D177D7 /* fonts in Resources */,
+				CD77B84D21A1CAE900072F34 /* SimHei.ttf in Resources */,
 				3EACC98F19EE6D4300EB3C5E /* res in Resources */,
-				8428A679219E612A00A6C039 /* elephant.otf in Resources */,
 				1AF87B891F6F781D007BE51C /* LaunchScreenBackground.png in Resources */,
 				46880B7B19C43A67006E1F66 /* CloseNormal.png in Resources */,
 				8428A66A219D761900A6C039 /* timecsv.csv in Resources */,

@@ -43,8 +43,15 @@ public:
     // a selector callback
     void menuCloseCallback(cocos2d::Ref* pSender);
     
+    std::string getBottomTitle(std::string week);
+    void drawBattery(int index);
+    int getBatteryPieceCount(int index);
+    float getLastBatteryOpacity(int index);
+    
+    void drawCircle(Vec2 pos);
+    
     void _addFontTTF(std::string data, std::string fontname, int fontsize, Vec2 pos);
-    void _addFontSys(std::string data, std::string fontname, int fontsize, Vec2 pos, Vec2 anchorPos=Vec2(0.5, 0.5), TextHAlignment alignment = TextHAlignment::CENTER, Size dimension = Size::ZERO);
+    void _addFontSys(std::string data, std::string fontname, int fontsize, Vec2 pos, Vec2 anchorPos=Vec2(0.5, 0.5), TextHAlignment alignment = TextHAlignment::CENTER, Size dimension = Size::ZERO, Color3B color = Color3B::BLACK, int highlight =0);
     RenderTexture* render;
     
     // implement the "static create()" method manually

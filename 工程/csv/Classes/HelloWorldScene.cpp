@@ -49,16 +49,68 @@ void HelloWorld::_addFontTTF(std::string data, std::string fontname, int fontsiz
     blank_image->addChild(lab);
 };
 
-void HelloWorld::_addFontSys(std::string data, std::string fontname, int fontsize, Vec2 pos, Vec2 anchorPos, TextHAlignment alignment, Size dimension){
+void HelloWorld::_addFontSys(std::string data, std::string fontname, int fontsize, Vec2 pos, Vec2 anchorPos, TextHAlignment alignment, Size dimension, Color3B color, int highlight){
     auto bsize = blank_image->getContentSize();
-    auto lab = Label::createWithSystemFont(data, fontname, fontsize);
+    auto lab = Label::createWithTTF(data, fontname, fontsize);
     lab->enableBold();
     lab->setAnchorPoint(anchorPos);
-    lab->setColor(Color3B::BLACK);
+    lab->setColor(color);
     lab->setDimensions(dimension.width, dimension.height);
     lab->setPosition(bsize.width*pos.x, bsize.height*pos.y);
+    if (highlight != 0){
+        lab->setLineHeight(highlight);
+    }
     blank_image->addChild(lab);
 };
+
+std::string HelloWorld::getBottomTitle(std::string week){
+    if (week.compare("一") == 0){
+        return "蓝色学习日计划:";
+    }else if (week.compare("二") == 0){
+        return "红色热血日计划:";
+    }else if (week.compare("三") == 0){
+        return "绿色乐活日计划:";
+    }else if (week.compare("四") == 0){
+        return "白色思考日计划:";
+    }else if (week.compare("五") == 0){
+        return "黄色能量日计划:";
+    }else if (week.compare("六") == 0){
+        return "周六随心日计划:";
+    }else if (week.compare("日") == 0){
+        return "周日缤纷日计划:";
+    }
+    return "";
+}
+
+void splitWord(const string & word, vector<string> & characters)
+{
+    size_t num = word.size();
+    int i = 0;
+    while(i < num)
+    {
+        int size = 1;
+        if(word[i] & 0x80)
+        {
+            char temp = word[i];
+            temp <<= 1;
+            do{
+                temp <<= 1;
+                ++size;
+            }while(temp & 0x80);
+        }
+        string subWord;
+        subWord = word.substr(i, size);
+        characters.push_back(subWord);
+        i += size;
+    }
+}
+
+void HelloWorld::drawCircle(Vec2 pos){
+    auto blank_size = blank_image->getContentSize();
+    Sprite* circle = Sprite::create("blank_circle.png");
+    circle->setPosition(Vec2(blank_size.width*pos.x, blank_size.height*pos.y));
+    blank_image->addChild(circle);
+}
 
 // on "init" you need to initialize your instance
 bool HelloWorld::init()
@@ -102,46 +154,98 @@ bool HelloWorld::init()
     m_lamb = [this](int i){
         blank_image->removeAllChildrenWithCleanup(true);
         //月份
-        _addFontSys(_changemap[tmp[i].month], "Arial.ttf", 50, Vec2(0.15, 0.87), Vec2(0, 0.5));
+        _addFontSys(_changemap[tmp[i].month], "SimHei.ttf", 50, Vec2(0.15, 0.87), Vec2(0, 0.5));
         //农历
-        _addFontSys("农     历", "Arial.ttf", 40, Vec2(0.8, 0.875), Vec2(1, 0.5));
+        _addFontSys("农    历", "SimHei.ttf", 40, Vec2(0.8, 0.875), Vec2(1, 0.5));
         //农历日期
-        _addFontSys(tmp[i].calendar, "Arial.ttf", 40, Vec2(0.8, 0.855), Vec2(1, 0.5));
+        _addFontSys(tmp[i].calendar, "SimHei.ttf", 40, Vec2(0.8, 0.855), Vec2(1, 0.5));
         //月份中第几天
-        _addFontTTF(tmp[i].date, "elephant.otf", 300, Vec2(0.38, 0.68));
+        _addFontSys(tmp[i].date, "ELEPHNT.TTF", 300, Vec2(0.49, 0.66), Vec2(1, 0.5));
         //周几
-        std::string strWeek = "星\n期\n"+tmp[i].week;
-        _addFontSys(strWeek, "Arial.ttf", 95, Vec2(0.6, 0.66));
+        std::string strWeek = "星期"+tmp[i].week;
+        std::vector<std::string> _vec_week;
+        splitWord(strWeek, _vec_week);
+        _addFontSys(_vec_week[0], "SimHei.ttf", 95, Vec2(0.6, 0.71));
+        _addFontSys(_vec_week[1], "SimHei.ttf", 95, Vec2(0.6, 0.66));
+        _addFontSys(_vec_week[2], "SimHei.ttf", 95, Vec2(0.6, 0.61));
+        
+        //节气
+        std::vector<std::string> _vec_note;
+        splitWord(tmp[i].note, _vec_note);
+        if (_vec_note.size() == 3){
+            drawCircle(Vec2(0.75, 0.71));
+            _addFontSys(_vec_note[0], "SimHei.ttf", 80, Vec2(0.75, 0.71),Vec2(0.5, 0.5),TextHAlignment::CENTER,Size::ZERO,Color3B::WHITE);
+            drawCircle(Vec2(0.75, 0.66));
+            _addFontSys(_vec_note[1], "SimHei.ttf", 80, Vec2(0.75, 0.66),Vec2(0.5, 0.5),TextHAlignment::CENTER,Size::ZERO,Color3B::WHITE);
+            drawCircle(Vec2(0.75, 0.61));
+            _addFontSys(_vec_note[2], "SimHei.ttf", 80, Vec2(0.75, 0.61),Vec2(0.5, 0.5),TextHAlignment::CENTER,Size::ZERO,Color3B::WHITE);
+        }else if (_vec_note.size() == 2){
+            drawCircle(Vec2(0.75, 0.69));
+            _addFontSys(_vec_note[0], "SimHei.ttf", 80, Vec2(0.75, 0.69),Vec2(0.5, 0.5),TextHAlignment::CENTER,Size::ZERO,Color3B::WHITE);
+            drawCircle(Vec2(0.75, 0.63));
+            _addFontSys(_vec_note[1], "SimHei.ttf", 80, Vec2(0.75, 0.63),Vec2(0.5, 0.5),TextHAlignment::CENTER,Size::ZERO,Color3B::WHITE);
+        }
+
+    
         //计划
-        _addFontSys(tmp[i].list, "Arial.ttf", 55, Vec2(0.5, 0.5));
+        _addFontSys(tmp[i].list, "STXINWEI.TTF", 160, Vec2(0.5, 0.5));
         //书语
-        _addFontSys(tmp[i].summary, "Arial.ttf", 45, Vec2(0.5, 0.3), Vec2(0.5, 0.5), TextHAlignment::LEFT, Size(800, 0));
+        _addFontSys(tmp[i].summary, "FZXBSK--GBK1-0.TTF", 45, Vec2(0.5, 0.3), Vec2(0.5, 0.5), TextHAlignment::LEFT, Size(800, 0), Color3B::BLACK, 70);
         //书籍
         std::string strBook = "——" + tmp[i].book;
-        _addFontSys(strBook, "Arial.ttf", 40, Vec2(0.82, 0.22), Vec2(1, 0.5));
+        _addFontSys(strBook, "FZXBSK--GBK1-0.TTF", 40, Vec2(0.82, 0.22), Vec2(1, 0.5));
+        //能量日计划
+        _addFontSys(getBottomTitle(tmp[i].week), "FZXBSK--GBK1-0.TTF", 32, Vec2(0.15, 0.051), Vec2(0, 0.5));
+        
+        
+        drawBattery(i);
         
         render->clear(0, 0, 0, 0);
         render->begin();
         blank_image->visit();
         render->end();
-        
-        render->saveToFile(strBook+"123.png", Image::Format::PNG);
+
+        render->saveToFile(tmp[i].date+".png", Image::Format::PNG);
         cocos2d::log(">>>> %d", i);
     };
     
     schedule([this](float t){
-        if (m_index >= 2){
+        if (m_index >= 32){
             MessageBox("done", "make");
             this->unschedule("update");
             return;
         }
         m_lamb(m_index);
         m_index++;
-    }, 5.0f, CC_REPEAT_FOREVER, 1.5, "update");
+    }, 2.0f, CC_REPEAT_FOREVER, 1.5, "update");
     
     return true;
 }
 
+void HelloWorld::drawBattery(int index){
+    std::map<int, Sprite*> _list;
+    _list.clear();
+    auto blank_size = blank_image->getContentSize();
+    int _count = getBatteryPieceCount(index);
+    for (int i = 0; i < _count; ++i){
+        Sprite* item = Sprite::create("blank_triangle.png");
+        item->setPosition(Vec2(blank_size.width*(0.835-0.015*i), blank_size.height*0.054));
+        blank_image->addChild(item);
+        _list.insert(std::make_pair(i, item));
+    }
+    if (_list.size() > 0){
+        float opa = getLastBatteryOpacity(index);
+        _list[_list.size()-1]->setOpacity(opa);
+    }
+}
+
+int HelloWorld::getBatteryPieceCount(int index){
+    return ceil((float)(365-index)/73);
+}
+
+float HelloWorld::getLastBatteryOpacity(int index){
+    return 255 - 255.0/73 * (index%73);
+}
 
 void HelloWorld::menuCloseCallback(Ref* pSender)
 {

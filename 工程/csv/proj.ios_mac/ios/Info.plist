@@ -28,8 +28,11 @@
 	<true/>
 	<key>UIAppFonts</key>
 	<array>
+		<string>SimHei.ttf</string>
+		<string>STXINWEI.TTF</string>
+		<string>FZXBSK--GBK1-0.TTF</string>
 		<string>fonts/arial.ttf</string>
-		<string>elephant.otf</string>
+		<string>ELEPHNT.TTF</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
