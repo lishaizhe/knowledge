@@ -56,6 +56,7 @@
 		CD77B84921A1BF9B00072F34 /* blank_triangle.png in Resources */ = {isa = PBXBuildFile; fileRef = CD77B84721A1BF9B00072F34 /* blank_triangle.png */; };
 		CD77B84D21A1CAE900072F34 /* SimHei.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CD77B84A21A1CAE900072F34 /* SimHei.ttf */; };
 		CD77B84F21A1CAE900072F34 /* STXINWEI.TTF in Resources */ = {isa = PBXBuildFile; fileRef = CD77B84C21A1CAE900072F34 /* STXINWEI.TTF */; };
+		CD902DBD21AD927800FE2931 /* middle_bar.png in Resources */ = {isa = PBXBuildFile; fileRef = CD902DBB21AD927800FE2931 /* middle_bar.png */; };
 		CD9561C221A1A02800C44103 /* ELEPHNT.TTF in Resources */ = {isa = PBXBuildFile; fileRef = CD9561C121A1A02800C44103 /* ELEPHNT.TTF */; };
 		CD957B4121A248E900AD886D /* FZXBSK--GBK1-0.TTF in Resources */ = {isa = PBXBuildFile; fileRef = CD957B4021A248E900AD886D /* FZXBSK--GBK1-0.TTF */; };
 		D44C620C132DFF330009C878 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D44C620B132DFF330009C878 /* OpenAL.framework */; };
@@ -153,6 +154,7 @@
 		CD77B84721A1BF9B00072F34 /* blank_triangle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = blank_triangle.png; sourceTree = "<group>"; };
 		CD77B84A21A1CAE900072F34 /* SimHei.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = SimHei.ttf; sourceTree = "<group>"; };
 		CD77B84C21A1CAE900072F34 /* STXINWEI.TTF */ = {isa = PBXFileReference; lastKnownFileType = file; path = STXINWEI.TTF; sourceTree = "<group>"; };
+		CD902DBB21AD927800FE2931 /* middle_bar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = middle_bar.png; sourceTree = "<group>"; };
 		CD9561C121A1A02800C44103 /* ELEPHNT.TTF */ = {isa = PBXFileReference; lastKnownFileType = file; path = ELEPHNT.TTF; sourceTree = "<group>"; };
 		CD957B4021A248E900AD886D /* FZXBSK--GBK1-0.TTF */ = {isa = PBXFileReference; lastKnownFileType = file; path = "FZXBSK--GBK1-0.TTF"; sourceTree = "<group>"; };
 		D44C620B132DFF330009C878 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = System/Library/Frameworks/OpenAL.framework; sourceTree = SDKROOT; };
@@ -287,6 +289,7 @@
 		46880B7519C43A67006E1F66 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				CD902DBB21AD927800FE2931 /* middle_bar.png */,
 				CD957B4021A248E900AD886D /* FZXBSK--GBK1-0.TTF */,
 				CD77B84A21A1CAE900072F34 /* SimHei.ttf */,
 				CD77B84C21A1CAE900072F34 /* STXINWEI.TTF */,
@@ -448,6 +451,7 @@
 				CD77B84F21A1CAE900072F34 /* STXINWEI.TTF in Resources */,
 				46880B7D19C43A67006E1F66 /* CloseSelected.png in Resources */,
 				CD9561C221A1A02800C44103 /* ELEPHNT.TTF in Resources */,
+				CD902DBD21AD927800FE2931 /* middle_bar.png in Resources */,
 				CD77B84821A1BF9B00072F34 /* blank_circle.png in Resources */,
 				521A8EA919F11F5000D177D7 /* fonts in Resources */,
 				CD77B84D21A1CAE900072F34 /* SimHei.ttf in Resources */,

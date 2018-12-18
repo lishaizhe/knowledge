@@ -49,7 +49,7 @@ void HelloWorld::_addFontTTF(std::string data, std::string fontname, int fontsiz
     blank_image->addChild(lab);
 };
 
-void HelloWorld::_addFontSys(std::string data, std::string fontname, int fontsize, Vec2 pos, Vec2 anchorPos, TextHAlignment alignment, Size dimension, Color3B color, int highlight){
+Label* HelloWorld::_addFontSys(std::string data, std::string fontname, int fontsize, Vec2 pos, Vec2 anchorPos, TextHAlignment alignment, Size dimension, Color3B color, int highlight){
     auto bsize = blank_image->getContentSize();
     auto lab = Label::createWithTTF(data, fontname, fontsize);
     lab->enableBold();
@@ -61,6 +61,7 @@ void HelloWorld::_addFontSys(std::string data, std::string fontname, int fontsiz
         lab->setLineHeight(highlight);
     }
     blank_image->addChild(lab);
+    return lab;
 };
 
 std::string HelloWorld::getBottomTitle(std::string week){
@@ -160,30 +161,54 @@ bool HelloWorld::init()
         //农历日期
         _addFontSys(tmp[i].calendar, "SimHei.ttf", 40, Vec2(0.8, 0.855), Vec2(1, 0.5));
         //月份中第几天
-        _addFontSys(tmp[i].date, "ELEPHNT.TTF", 300, Vec2(0.49, 0.66), Vec2(1, 0.5));
+        float _PosX = 0.49;
+        std::vector<std::string> _vec_date;
+        splitWord(tmp[i].date, _vec_date);
+//        splitWord("22", _vec_date);
+        if (_vec_date.size() == 1){
+            _addFontSys(_vec_date[0], "ELEPHNT.TTF", 300, Vec2(_PosX, 0.66), Vec2(1, 0.5));
+            _PosX+=0.03;
+        }else{
+            _PosX = 0.35;
+            if (_vec_date[0] == "1"){
+                _PosX = 0.36;
+            }
+            auto lab = _addFontSys(_vec_date[0], "ELEPHNT.TTF", 300, Vec2(_PosX, 0.66), Vec2(0.5, 0.5));
+            lab->setScaleX(0.9);
+            _PosX = 0.5;
+            auto lab2 = _addFontSys(_vec_date[1], "ELEPHNT.TTF", 300, Vec2(_PosX, 0.66), Vec2(0.5, 0.5));
+            lab2->setScaleX(0.9);
+            _PosX+=0.09;
+        }
+        
+        auto blank_size = blank_image->getContentSize();
+        auto mid_line = Sprite::create("middle_bar.png");
+        mid_line->setPosition(Vec2(blank_size.width*_PosX, blank_size.height*0.66));
+        blank_image->addChild(mid_line);
+        _PosX += 0.08;
         //周几
         std::string strWeek = "星期"+tmp[i].week;
         std::vector<std::string> _vec_week;
         splitWord(strWeek, _vec_week);
-        _addFontSys(_vec_week[0], "SimHei.ttf", 95, Vec2(0.6, 0.71));
-        _addFontSys(_vec_week[1], "SimHei.ttf", 95, Vec2(0.6, 0.66));
-        _addFontSys(_vec_week[2], "SimHei.ttf", 95, Vec2(0.6, 0.61));
-        
+        _addFontSys(_vec_week[0], "SimHei.ttf", 95, Vec2(_PosX, 0.71));
+        _addFontSys(_vec_week[1], "SimHei.ttf", 95, Vec2(_PosX, 0.66));
+        _addFontSys(_vec_week[2], "SimHei.ttf", 95, Vec2(_PosX, 0.61)); //0.6
+        _PosX += 0.15;
         //节气
         std::vector<std::string> _vec_note;
         splitWord(tmp[i].note, _vec_note);
         if (_vec_note.size() == 3){
-            drawCircle(Vec2(0.75, 0.71));
-            _addFontSys(_vec_note[0], "SimHei.ttf", 80, Vec2(0.75, 0.71),Vec2(0.5, 0.5),TextHAlignment::CENTER,Size::ZERO,Color3B::WHITE);
-            drawCircle(Vec2(0.75, 0.66));
-            _addFontSys(_vec_note[1], "SimHei.ttf", 80, Vec2(0.75, 0.66),Vec2(0.5, 0.5),TextHAlignment::CENTER,Size::ZERO,Color3B::WHITE);
-            drawCircle(Vec2(0.75, 0.61));
-            _addFontSys(_vec_note[2], "SimHei.ttf", 80, Vec2(0.75, 0.61),Vec2(0.5, 0.5),TextHAlignment::CENTER,Size::ZERO,Color3B::WHITE);
+            drawCircle(Vec2(_PosX, 0.71));
+            _addFontSys(_vec_note[0], "SimHei.ttf", 70, Vec2(_PosX, 0.71),Vec2(0.5, 0.5),TextHAlignment::CENTER,Size::ZERO,Color3B::WHITE);
+            drawCircle(Vec2(_PosX, 0.66));
+            _addFontSys(_vec_note[1], "SimHei.ttf", 70, Vec2(_PosX, 0.66),Vec2(0.5, 0.5),TextHAlignment::CENTER,Size::ZERO,Color3B::WHITE);
+            drawCircle(Vec2(_PosX, 0.61));
+            _addFontSys(_vec_note[2], "SimHei.ttf", 70, Vec2(_PosX, 0.61),Vec2(0.5, 0.5),TextHAlignment::CENTER,Size::ZERO,Color3B::WHITE);
         }else if (_vec_note.size() == 2){
-            drawCircle(Vec2(0.75, 0.69));
-            _addFontSys(_vec_note[0], "SimHei.ttf", 80, Vec2(0.75, 0.69),Vec2(0.5, 0.5),TextHAlignment::CENTER,Size::ZERO,Color3B::WHITE);
-            drawCircle(Vec2(0.75, 0.63));
-            _addFontSys(_vec_note[1], "SimHei.ttf", 80, Vec2(0.75, 0.63),Vec2(0.5, 0.5),TextHAlignment::CENTER,Size::ZERO,Color3B::WHITE);
+            drawCircle(Vec2(_PosX, 0.69));
+            _addFontSys(_vec_note[0], "SimHei.ttf", 70, Vec2(_PosX, 0.69),Vec2(0.5, 0.5),TextHAlignment::CENTER,Size::ZERO,Color3B::WHITE);
+            drawCircle(Vec2(_PosX, 0.63));
+            _addFontSys(_vec_note[1], "SimHei.ttf", 70, Vec2(_PosX, 0.63),Vec2(0.5, 0.5),TextHAlignment::CENTER,Size::ZERO,Color3B::WHITE); //0.75
         }
 
     
@@ -193,7 +218,10 @@ bool HelloWorld::init()
         _addFontSys(tmp[i].summary, "FZXBSK--GBK1-0.TTF", 45, Vec2(0.5, 0.3), Vec2(0.5, 0.5), TextHAlignment::LEFT, Size(800, 0), Color3B::BLACK, 70);
         //书籍
         std::string strBook = "——" + tmp[i].book;
-        _addFontSys(strBook, "FZXBSK--GBK1-0.TTF", 40, Vec2(0.82, 0.22), Vec2(1, 0.5));
+        auto labBook = _addFontSys(strBook, "FZXBSK--GBK1-0.TTF", 40, Vec2(0.82, 0.22), Vec2(1, 0.5));
+        if (labBook->getBoundingBox().size.width > 780){
+            labBook->setScale(780.0f/labBook->getBoundingBox().size.width);
+        }
         //能量日计划
         _addFontSys(getBottomTitle(tmp[i].week), "FZXBSK--GBK1-0.TTF", 32, Vec2(0.15, 0.051), Vec2(0, 0.5));
         
@@ -205,19 +233,20 @@ bool HelloWorld::init()
         blank_image->visit();
         render->end();
 
-        render->saveToFile(tmp[i].date+".png", Image::Format::PNG);
+        std::string strIndex = _changemap[tmp[i].month] + tmp[i].date+".png";
+        render->saveToFile(strIndex.c_str(), Image::Format::PNG);
         cocos2d::log(">>>> %d", i);
     };
     
     schedule([this](float t){
-        if (m_index >= 32){
+        if (m_index >= 31){
             MessageBox("done", "make");
             this->unschedule("update");
             return;
         }
         m_lamb(m_index);
         m_index++;
-    }, 2.0f, CC_REPEAT_FOREVER, 1.5, "update");
+    }, 1.0f, CC_REPEAT_FOREVER, 1.5, "update");
     
     return true;
 }

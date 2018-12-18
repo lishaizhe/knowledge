@@ -6,6 +6,14 @@
 //  Copyright © 2018年 李帅哲. All rights reserved.
 //
 
+
+/*
+ 关于目前基于最简单的OpenGL绘制的理解
+ 1.首先，我们需要经过一些列的OpenGl Init的方式，设置OpenGl的状态
+ 
+ */
+
+
 /*
  点乘
  在math3d库中
@@ -39,3 +47,14 @@
  
  
  */
+
+/*
+ 关于单缓冲/双缓冲的区别
+ GLUT_SINGLE  0x0000 单缓冲窗口
+ GLUT_DOUBLE  0x0002 双缓冲窗口
+ GLUT_SINGLE  单缓冲,屏幕调用显示使用glFlush,将图像在当前显示缓存中直接渲染，会有图形跳动(闪烁)问题
+ GLUT_DOUBLE  双缓冲,屏幕显示调用glutSwapBuffers()将图像先绘制在另外的缓存中，渲染完毕之后，将其整个缓存贴到当前的窗口，能消除闪烁,一般动画要用双缓冲.
+ !!!以上两者的调用方式必须匹配,如果GLUT_DOUBLE模式下调用glFlush，会造成问题，可
+ 在Review/ClearWindow下试验
+ */
+

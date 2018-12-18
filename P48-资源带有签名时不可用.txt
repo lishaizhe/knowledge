@@ -1,0 +1,21 @@
+
+有的时候图片资源会带有签名，这个时候打包的时候xcode就会报编译错误
+
+CodeSign /Users/lishuaizhe/Library/Developer/Xcode/DerivedData/TestAndroid-fubxytlirdzjkfarpdiruffipxdm/Build/Products/Debug-iphonesimulator/TestAndroid-mobile.app
+    cd /Users/lishuaizhe/Documents/knowledge/工程/csv/proj.ios_mac
+    export CODESIGN_ALLOCATE=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/codesign_allocate
+    export PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin:/Applications/Xcode.app/Contents/Developer/usr/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+    
+Signing Identity:     "-"
+
+    /usr/bin/codesign --force --sign - --timestamp=none /Users/lishuaizhe/Library/Developer/Xcode/DerivedData/TestAndroid-fubxytlirdzjkfarpdiruffipxdm/Build/Products/Debug-iphonesimulator/TestAndroid-mobile.app
+
+/Users/lishuaizhe/Library/Developer/Xcode/DerivedData/TestAndroid-fubxytlirdzjkfarpdiruffipxdm/Build/Products/Debug-iphonesimulator/TestAndroid-mobile.app: replacing existing signature
+/Users/lishuaizhe/Library/Developer/Xcode/DerivedData/TestAndroid-fubxytlirdzjkfarpdiruffipxdm/Build/Products/Debug-iphonesimulator/TestAndroid-mobile.app: resource fork, Finder information, or similar detritus not allowed
+Command /usr/bin/codesign failed with exit code 1
+
+
+解决方案使用  xattr 命令
+
+1.查看有哪些资源带有签名  xattr -lr <path_to_app_bundle>
+2.清除所有签名          xattr -cr <path_to_app_bundle>
