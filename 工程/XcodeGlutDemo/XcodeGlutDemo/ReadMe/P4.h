@@ -58,3 +58,45 @@
  在Review/ClearWindow下试验
  */
 
+
+/*
+ /        RenderTexture* rt = RenderTexture::create(128, 128 * 8);
+ //        rt->beginWithClear(0.f, 0.f, 0.f, 0.f);
+ //
+ //        for( int i = 0; i < 5; i++) {
+ //            CCSprite* sprite = Warz_CCLoadSprite::createSprite(CCString::createWithFormat("edge_light_new_%d.png",i)->getCString());
+ //            sprite->setBlendFunc(BlendFunc::ALPHA_PREMULTIPLIED);
+ //            sprite->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
+ //            sprite->setPositionY(i * 128);
+ //            sprite->visit();
+ //        }
+ //        rt->end();
+ //
+ //        Texture2D::TexParams texParams = { GL_LINEAR, GL_LINEAR, GL_REPEAT, GL_REPEAT };
+ //        rt->getSprite()->getTexture()->setTexParameters(&texParams);
+ //        rt->getSprite()->getTexture()->setHasPremultipliedAlpha(true);
+ //        Vector<SpriteFrame*> tmpAniArr;
+ //        for( int i = 0; i < 5; i++ ) {
+ //            auto sf = CCSpriteFrame::createWithTexture(rt->getSprite()->getTexture(), Rect(0,i*128,2540,128));
+ //            tmpAniArr.pushBack(sf);
+ //        }
+ 
+ //            CCTexture2D* pTexture = CCTextureCache::getInstance()->getTextureForKey("edge_light_new_new.png");
+ //            CCSprite* p = CCSprite::create("edge_light_new_new.png");
+ //            edge_helper->addChild(p);
+ //            Texture2D::TexParams texParams = {GL_LINEAR, GL_LINEAR, GL_REPEAT, GL_REPEAT};
+ //            pTexture->setTexParameters(texParams);
+ //            pTexture->setHasPremultipliedAlpha(true);
+ //            auto sp = CCSprite::createWithTexture(pTexture, Rect(0,0,2540,128));
+ //            sp->setBlendFunc(BlendFunc::ADDITIVE);
+ //            sp->setFlippedY(true);
+ //            sp->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
+ //            edge_helper->addChild(sp);
+ 
+ //            auto animation = CCAnimation::createWithSpriteFrames(tmpAniArr, 1.0 / tmpAniArr.size());
+ //            animation->setLoops(std::numeric_limits<int>::max());
+ //            auto ani = CCAnimate::create(animation);
+ //            if (ani) {
+ //                sp->runAction(ani);
+ //            }
+ **/

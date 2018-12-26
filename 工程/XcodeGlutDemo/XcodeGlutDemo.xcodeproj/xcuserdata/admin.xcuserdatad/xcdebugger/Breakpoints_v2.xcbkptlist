@@ -63,7 +63,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "120"
             endingLineNumber = "120"
-            landmarkName = "SpecialKeys( int key, int x, int y )"
+            landmarkName = "SetupRC()"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -79,7 +79,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "172"
             endingLineNumber = "172"
-            landmarkName = "RenderScene()"
+            landmarkName = "SpecialKeys( int key, int x, int y )"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
@@ -95,7 +95,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "188"
             endingLineNumber = "188"
-            landmarkName = "RenderScene()"
+            landmarkName = "ChangeSize( int w, int h )"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
