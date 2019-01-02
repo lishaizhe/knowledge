@@ -12,14 +12,22 @@
 
 void myDisplay(){
     glClear(GL_COLOR_BUFFER_BIT);
+    glColor3b(255, 0, 0);
     glRectf(-0.5, -0.5, 0.5, 0.5);
     glutSwapBuffers();
 }
 
 void initHook(int argc, char* argv[]){
+//    glutInit(&argc, argv);
+//    glutInitDisplayMode(GLUT_RGBA|GLUT_DOUBLE);
+//    glutInitWindowSize(400, 400);
+//    glutInitWindowPosition(100, 100);
+//    glutCreateWindow("ClearWindow");
+//    glutDisplayFunc(&myDisplay);
+//    glutMainLoop();
     glutInit(&argc, argv);
-    glutInitWindowSize(400, 400);
     glutInitDisplayMode(GLUT_RGBA|GLUT_DOUBLE);
+    glutInitWindowSize(400, 300);
     glutInitWindowPosition(100, 100);
     glutCreateWindow("ClearWindow");
     glutDisplayFunc(&myDisplay);

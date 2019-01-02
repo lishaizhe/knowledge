@@ -26,8 +26,8 @@
 //#include "Ex/Primitive.h"
 //#include "OpenUT/P4_6.h"
 //#include "OpenUT/P5_4.h"
-//#include "Review/ClearWindow.h"
-#include "Review/RFirstDot.h"
+#include "Review/ClearWindow.h"
+//#include "Review/RFirstDot.h"
 
 int main(int argc, char * argv[]) {
     initHook(argc, argv);
