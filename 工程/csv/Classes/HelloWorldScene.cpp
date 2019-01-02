@@ -239,7 +239,7 @@ bool HelloWorld::init()
     };
     
     schedule([this](float t){
-        if (m_index >= 31){
+        if (m_index >= 250){
             MessageBox("done", "make");
             this->unschedule("update");
             return;
