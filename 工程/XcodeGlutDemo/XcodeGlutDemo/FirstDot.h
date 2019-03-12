@@ -90,7 +90,7 @@ void initHook(int argc, char* argv[]){
     glutInitWindowSize(400, 400);
     glutInitWindowPosition(200, 200);
     glutCreateWindow("绘制一个点");
-    glutDisplayFunc(displayStipple);
+    glutDisplayFunc(displayCircle);
     glutMainLoop();
 }
 
