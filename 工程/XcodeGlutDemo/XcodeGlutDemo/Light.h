@@ -28,6 +28,8 @@ void myDisplay(void)
     
     // 定义太阳光源，它是一种白色的光源
     {
+        //https://www.jianshu.com/p/1da6ae890ef3
+        //为什么是四个参数,最后一个参数代表的意思
         GLfloat sun_light_position[] = {0.0f, 0.0f, 0.0f, 1.0f};
         GLfloat sun_light_ambient[]   = {0.0f, 0.0f, 0.0f, 1.0f};
         GLfloat sun_light_diffuse[]   = {1.0f, 1.0f, 1.0f, 1.0f};

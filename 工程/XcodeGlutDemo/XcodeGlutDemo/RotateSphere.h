@@ -56,7 +56,7 @@ void initHook(int argc, char* argv[]){
     glutInitWindowPosition(100, 100);
     glutCreateWindow("Sphere");
     glutDisplayFunc(displayRoateSphere);
-    glutIdleFunc(myIdle);
+    glutIdleFunc(myIdle); //函数会不断被调用,直到有窗口时间发生
     glutMainLoop();
 }
 
