@@ -21,7 +21,6 @@
 //#include "OpenUT/Triangle.h"
 
 //按照OpenGL超级宝典图书
-//#include "P2_1-1-1-1-1.h"
 //#include "OpenUT/P2_2.h"
 //#include "OpenUT/P4_5.h"
 //#include "Ex/Primitive.h"
@@ -29,9 +28,6 @@
 //#include "OpenUT/P5_4.h"
 //#include "Review/ClearWindow.h"
 //#include "Review/RFirstDot.h"
-
-//复习
-#include "Review/R_2_1.h"
 
 int main(int argc, char * argv[]) {
     initHook(argc, argv);

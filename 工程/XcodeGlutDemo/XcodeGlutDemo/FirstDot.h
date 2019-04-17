@@ -16,7 +16,7 @@
 void displayOnePoint(){
     glClear(GL_COLOR_BUFFER_BIT);
     glBegin(GL_POINTS);
-    glVertex2f(0.5f, 0.0f);
+    glVertex2f(0.0f, 0.0f);
     glEnd();
     glFlush();
 }
@@ -49,13 +49,13 @@ void displaySin(){
     glClear(GL_COLOR_BUFFER_BIT);
 //    glLineWidth(5.0f); 设置线的宽度
 //    glPointSize(5.0f); 设置点的大小
-    glBegin(GL_LINES);
+    glBegin(GL_POINTS);
     glVertex2f(-1.0f, 0.0f);
     glVertex2f(1.0f, 0.0f);         // 以上两个点可以画x轴
     glVertex2f(0.0f, -1.0f);
     glVertex2f(0.0f, 1.0f);         // 以上两个点可以画y轴
     glEnd();
-    glBegin(GL_LINE_STRIP);         //GL_LINE_STRIP 表示一系列的连续直线,这个时候如果是两个点的情况,和GL_LINES是没有区别的,当多个点的时候，我们就可以看出来，而GL_LINES是两两匹配的
+    glBegin(GL_LINE_STRIP);
     for(x=-1.0f/factor; x<1.0f/factor; x+=0.01f)
     {
         glVertex2f(x*factor, sin(x)*factor);
@@ -90,7 +90,7 @@ void initHook(int argc, char* argv[]){
     glutInitWindowSize(400, 400);
     glutInitWindowPosition(200, 200);
     glutCreateWindow("绘制一个点");
-    glutDisplayFunc(displaySin);
+    glutDisplayFunc(displayCircle);
     glutMainLoop();
 }
 
