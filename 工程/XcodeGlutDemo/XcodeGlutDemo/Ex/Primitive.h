@@ -189,6 +189,13 @@ void SetupRC() {
     
     //开启深度测试
     glEnable(GL_DEPTH_TEST);
+    /*
+     深度缓冲区介绍,具体是什么原理：
+     其实就是建立一张深度缓冲区表->用来存储当前(x,y)对应的深度值，在绘制的时候，由颜色缓冲区和当前深度缓冲区的值采取比较,当大于深度缓冲区表的值的这些对应的点将被过滤掉
+     https://www.jianshu.com/p/4b1919af25ae
+     https://blog.csdn.net/wangdingqiaoit/article/details/52206602
+     */
+
     
     //设置变换管线以使用两个矩阵堆栈
     transformPipeline.SetMatrixStacks(modelViewMatrix, projectionMatrix);
@@ -384,15 +391,15 @@ void initHook(int argc, char* argv[]) {
     glutCreateWindow("GL_POINTS");
     
     //注册回调函数
-    glutReshapeFunc(ChangeSize);
-    glutDisplayFunc(RenderScene);
-    glutSpecialFunc(SpecialKeys);
-    glutKeyboardFunc(KeyPressFunc);
+    glutReshapeFunc(ChangeSize); //屏幕变化的回调
+    glutDisplayFunc(RenderScene); //渲染的回调
+    glutSpecialFunc(SpecialKeys); //特殊按键的回调
+    glutKeyboardFunc(KeyPressFunc); //键盘的回调
     
     GLfloat sizes[2];
     GLfloat step;
-    glGetFloatv(GL_POINT_SIZE, sizes);
-    glGetFloatv(GL_POINT_SIZE_GRANULARITY, &step);
+    glGetFloatv(GL_POINT_SIZE, sizes); //获取点的大小
+    glGetFloatv(GL_POINT_SIZE_GRANULARITY, &step); //获取增量的大小
     
     //确保驱动程序的初始化中没有出现任何问题。
     GLenum err = glewInit();

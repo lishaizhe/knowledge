@@ -7,7 +7,7 @@
 //
 
 //#include "FirstWindows.h"
-#include "FirstDot.h"
+//#include "FirstDot.h"
 //#include "Pologon.h"
 //#include "RGBA.h"
 //#include "Sphere.h"
@@ -22,7 +22,7 @@
 
 //按照OpenGL超级宝典图书
 //#include "OpenUT/P2_2.h"
-//#include "OpenUT/P4_5.h"
+#include "OpenUT/P4_5.h"
 //#include "Ex/Primitive.h"
 //#include "OpenUT/P4_6.h"
 //#include "OpenUT/P5_4.h"
