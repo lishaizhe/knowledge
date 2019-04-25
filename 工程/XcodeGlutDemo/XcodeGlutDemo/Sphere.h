@@ -36,6 +36,15 @@
     zFar 表示远裁剪面到眼睛的距离   注意zNear和zFar不能设置为负值(不能看到眼睛后面的东西)
     aspect 表示裁剪面的宽w高h比，这个影响到视野的截面有多大
  */
+
+/*
+ glFrustum() 和 glperspective()两者的关系
+ https://blog.csdn.net/zhouxuguang236/article/details/44999529
+ gluPerspective(75, 1, 1, 300);
+ =》glFrustum(-1.0, 1, -1, 1, 1, 300); 几乎相同,不完全相同哈。只是两者的计算可以这么得出
+ 所以就看的出
+ */
+
 static int day = 2;
 void displaySphere(){
     glEnable(GL_DEPTH_TEST);
@@ -43,24 +52,35 @@ void displaySphere(){
     
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(75, 1, 1, 400000000);
+//    glFrustum(-1.0, 1, -1, 1, 1, 300);
+    glOrtho(-50, 50, -50, 50, 1, 300); //正交摄像机
+//    gluPerspective(75, 1, 1, 300);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(0, -200000000, 200000000, 0, 0, 0, 0, 0, 1);
+    gluLookAt(0, 0, -40, 0, 0, 0, 0, 1, 0);
     
-    // 绘制红色的“太阳”
     glColor3f(1.0f, 0.0f, 0.0f);
-    glutSolidSphere(69600000, 20, 20);
-    // 绘制蓝色的“地球”
-    glColor3f(0.0f, 0.0f, 1.0f);
-    glRotatef(day/360.0*360.0, 0.0f, 0.0f, -1.0f);
-    glTranslatef(150000000, 0.0f, 0.0f);
-    glutSolidSphere(15945000, 20, 20);
-    // 绘制黄色的“月亮”
-    glColor3f(1.0f, 1.0f, 0.0f);
-    glRotatef(day/30.0*360.0 - day/360.0*360.0, 0.0f, 0.0f, -1.0f);
-    glTranslatef(38000000, 0.0f, 0.0f);
-    glutSolidSphere(4345000, 20, 20);
+    glutWireCube(70);
+    // 绘制红色的“太阳”
+//    glColor3f(1.0f, 0.0f, 0.0f);
+//    glutSolidSphere(69, 20, 20);
+//
+//    glBegin(GL_POLYGON);
+//    glVertex2f(-100.0, 100.0);
+//    glVertex2f(-100.0, -100.0);
+//    glVertex2f(100.0, -100.0);
+//    glVertex2f(100.0, 100.0);
+//    glEnd();
+//    // 绘制蓝色的“地球”
+//    glColor3f(0.0f, 0.0f, 1.0f);
+//    glRotatef(day/360.0*360.0, 0.0f, 0.0f, -1.0f);
+//    glTranslatef(150000000, 0.0f, 0.0f);
+//    glutSolidSphere(15945000, 20, 20);
+//    // 绘制黄色的“月亮”
+//    glColor3f(1.0f, 1.0f, 0.0f);
+//    glRotatef(day/30.0*360.0 - day/360.0*360.0, 0.0f, 0.0f, -1.0f);
+//    glTranslatef(38000000, 0.0f, 0.0f);
+//    glutSolidSphere(4345000, 20, 20);
     
     glFlush();
 }
