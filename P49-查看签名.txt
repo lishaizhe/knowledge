@@ -1,0 +1,6 @@
+查看apk文件的签名
+keytool -list -printcert -jarfile + apk的路径
+
+
+查看keystore的签名
+keytool -list -v -keystore + keystore文件的路径
