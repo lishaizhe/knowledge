@@ -1,0 +1,5 @@
+1.首先需要将设备id加入到证书里
+2.配置plist文件，详见P50-MyGame.plist文件
+	特别注意这个文件一定要放在https服务器上
+3.配置网页，详见P50-Install.html 注意里面的链接需要修改,！！链接是https的
+4.通过safari安装即可

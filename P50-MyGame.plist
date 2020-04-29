@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>items</key>
+    <array>
+        <dict>
+            <key>assets</key>
+            <array>
+                <dict>
+                    <key>kind</key>
+                    <string>software-package</string>
+                    <key>url</key>
+                    <string>http://10.0.1.98:8080/job/%E5%AE%89%E8%A3%85%E5%8C%85/ws/ls-adhoc-V3.ipa</string>
+                    <!-- it could also work with a TestFlight build inside the PUBLIC folder -->
+                    <!-- <string>https://dl.dropboxusercontent.com/u/id/MyGame.ipa</string> -->
+                </dict>
+            </array>
+            <key>metadata</key>
+            <dict>
+                <key>bundle-identifier</key>
+                <string>com.more.dayzsurvival.ios</string>
+                <key>bundle-version</key>
+                <string>versiontmp</string>
+                <key>kind</key>
+                <string>software</string>
+                <key>title</key>
+                <string>MyGame</string>
+            </dict>
+        </dict>
+    </array>
+</dict>
+</plist>
