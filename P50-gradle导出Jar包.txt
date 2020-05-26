@@ -1,0 +1,53 @@
+//////////////////////////////////
+简单导出jar包
+//生成jar包
+    task makeJar(type: Copy) {
+        delete 'build/outputs/myJar.jar'
+        from('build/intermediates/packaged-classes/release/')
+        into('build/libs/') //生成路径
+        include('classes.jar')
+        rename('classes.jar', 'myJar1.jar')
+    }
+
+    makeJar.dependsOn(build)
+
+
+//jar包中引用jar包,即将多个jar包合并成一个
+def pro_jar_name = 'myJar2'
+    def jar_path = 'libs/output'
+
+    task clearJar(type: Delete) {
+//        delete jar_path
+    }
+
+
+    task makeJar(type: Jar, dependsOn: ['build']) { //  task buildJar(type: Jar, dependsOn: ['build'])
+        //导出的jar文件的名称
+        archiveName=pro_jar_name+".jar"
+        //需打包的资源所在的路径集
+//        from('build/intermediates/classes/release')
+        from('build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/')
+//        from fileTree(dir: 'src/main')
+        from (project.zipTree('libs/myJar1.jar')) //第三方jar包
+
+        //TODO  此处可同上添加其他第三方jar包路径
+
+        destinationDir = file(jar_path)  // //导出的jar文件的存放目录（未指定则默认存放在build/libs下）  destinationDir = file('D:/libs')
+//        exclude('**/R.class')
+//        exclude('**/R\$*.class') //过虑资源文件
+        exclude "test/ind/com/myjar1/BuildConfig.class"
+        exclude "test/ind/com/myjar1/BuildConfig\$*.class" //过滤BuildConfig
+
+        exclude "test/ind/com/myjar2/BuildConfig.class"
+        exclude "test/ind/com/myjar2/BuildConfig\$*.class" //过滤BuildConfig
+
+        //        //去掉R$开头的文件
+        exclude { it.name.startsWith('R$'); }
+//        include "**/*.*"    //需要打包的类 如 // include('com/reginer/mytest/*.class')  这个会把所有的.class问价打进去，不合适
+        include "test/ind/com/myjar1/*.class"
+        include "test/ind/com/myjar2/*.class"  //第三方jar包的包路径 test/ind/com/**/*.class 多个文件目录下的class打包
+
+        //TODO  此处可同上添加其他第三方class文件，
+    }
+
+    makeJar.dependsOn(clearJar,build)
