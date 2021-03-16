@@ -1,0 +1,86 @@
+从意义上来讲是将每个接口都进行细化,尽可能的将单独的功能/属性放置在单独的接口中,这样在后续的维护过程中,当需要对接口类发生变更的时候,不需要对各个实现类进行重写.
+
+
+最初对接口进行创建的时候
+public interface IMobile
+{
+    string Name { set; get; }
+    string Ram { set; get; }
+    void RingUp();
+    void ReceiveUp();
+    void SurfInternet();
+}
+
+public class Phone : IMobile
+{
+    public string Name { get; set; }
+    public string Ram { get; set; }
+    public void RingUp()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void ReceiveUp()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void SurfInternet()
+    {
+        throw new NotImplementedException();
+    }
+}
+但是这个时候,我们发现他自己的属性和功能是融合在一起的,所以需要将其进行拆分
+
+public interface IMobileProperty
+{
+    string Name { set; get; }
+    string Ram { set; get; }
+}
+
+public interface IMobileFunction
+{
+    void RingUp();
+    void ReceiveUp();
+    void SurfInternet();
+}
+
+public class MobileProperty : IMobileProperty
+{
+    public string Name { get; set; }
+    public string Ram { get; set; }
+}
+
+public class MobileFunction : IMobileFunction
+{
+    public void RingUp()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void ReceiveUp()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void SurfInternet()
+    {
+        throw new NotImplementedException();
+    }
+}
+//采用不同接口调用的形式
+public class HUAWei
+{
+    private MobileProperty _property;
+    private MobileFunction _function;
+
+    HUAWei(MobileProperty property, MobileFunction function)
+    {
+        _property = property;
+        _function = function;
+    }
+}
+
+######################################################
+其实归根究底就是我们在最早的时候尽可能的将模块进行拆分,根据不同功能,属性这种每一类的进行拆分。
+
