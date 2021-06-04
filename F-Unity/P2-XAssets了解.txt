@@ -1,0 +1,115 @@
+XAssets 是一个资源管理的框架,其中包含资源热更,bundle管理等，是一个比较轻量的框架
+
+
+核心接口
+Assets.Initialize  初始化
+Assets.LoadAsset(Async) 加载资源
+Assets.UnloadAsset 卸载资源
+Assets.LoadSceneAsync 加载场景
+Assets.UnloadScene 卸载场景
+Asset.Release  释放资源
+
+初始化 -- 因为初始化是一个异步的过程,所以我们使用协成的方式等待
+IEnumerator Load()
+{
+	var init = Assets.Initialize();
+	yield return init
+	if (!string.IsNullOrEmpty(init.error))
+	{
+		Debug.LogError(init.error);
+		yield break;
+	}
+	... 初始化完成
+}
+初始化的底层是异步逻辑,调用Assets.Initialize后返回一个AssetsInitRequest,在业务层除了使用协程等待初始化完成外,
+还可以用AssetsInitRequest的completed时间接受初始化完成的状态返回
+
+
+资源加载---
+使用xasset的API加载资源的时候,业务层不需要先加载资源的AssetBundle然后再从AssetBundle中加载需要的这个资源，而是使用
+资源再工程中以Assets开头的相对路径来寻址
+
+var assetPath = "Assets/Demo/Prefabs/UIRoot.prefab";
+Assets.LoadAssetAsync(assetPath, typeof(UnityEngine.Object)).completed += delegate(AssetRequest request)
+{
+	if (!string.IsNullOrEmpty(request.error))
+	{
+		Debug.LogError(request.error);
+		return;
+	}
+	var go = Instantiate(request.asset);
+	go.name = request.asset.name;
+	//设置关注对象,当关注对象销毁时,回收资源
+	request.Require(go);
+	Destroy(go, 3)
+	//设置关注对象后,只需要释放一次
+	//这里如果之前没有调用Require,下一帧这个资源就会被回收
+	request.Release();
+}
+对于 AssetRequest 的 Require 接口，不建议直接使用。这种机制是为了让一开始对资源内存管理没有做好规划的项目可以有一种改动较少然后又能稳妥有效回收资源的方案。使用后可能会对性能有一定影响：底层会在每帧轮询 Require 的对象是否为空，为空了就会释放对应的引用计数。
+
+
+
+
+/****场景加载*****/
+IEnumerator LoadSceneAsync()
+{
+	var assetPath = "Assets/Demo/Scenes/Test.unity";
+	var sceneAsset = Assets.LoadSceneAsync(assetPath, true);
+	while(!sceneAsset.isDone)
+	{
+		Debug.Log(sceneAsset.progress)
+		yiled return null;
+	}
+	yield return new WaitForSeconds(3);
+	//回收场景
+	Assets.UnLoadScene(sceneAssets);//也可以写成sceneAsset.Release()
+}
+
+
+
+/**** 加载没有打 AB 的文本文件 ******/
+var url = "http://127.0.0.1:7888/OSX/versions.txt";
+var asset = Assets.LoadAssetAsync(url, typeof(TextAsset));
+asset.completed += delegate
+{
+    if (asset.error != null)
+    {
+        OnError(asset.error);
+        return;
+    }
+    var text = asset.text;
+    Debug.Log(text)
+    /// ...
+}；
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

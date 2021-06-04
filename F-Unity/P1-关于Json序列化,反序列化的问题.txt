@@ -1,0 +1,43 @@
+关于Json序列化,反序列化的问题
+
+1).如果需要对Json数据进行反序列化
+我们需要对需要反序列化的数据结构加上标签 [Serializable]
+比如 
+[System.Serializable]
+public class LoginServerListRespon
+{
+    public LoginServerInfo[] serverList;
+    public int country;
+    public string tcp;
+    public string newDesertFlag;
+    public int lastLoggedServer;
+}
+
+[System.Serializable]
+public class LoginServerInfo
+{
+    public int id;
+    public string name;
+    public string ip;
+    public int inner_port;
+    public int port;
+    public string zone;
+    public bool cnserver;
+    public int server_type;
+    public string gameUid;
+    public string uuid;
+    public string uid;
+
+    public bool merge;
+    public bool cnToOther;
+    public long daoliang_time;
+    public string ptype;
+}
+!!!!!!!! 注意是每一个需要反序列化的结构都需要加上标签,同时字段名字需要保持一致
+
+var res = JsonUtility.FromJson<LoginServerListRespon>(httpRequest.downloadHandler.text);
+
+--- 这样就可以拿到反序列化后的数据了。
+
+另外关于序列化
+var jsonStr = JsonUtility.ToJson(object obj, bool prettyPrint)
