@@ -1,0 +1,29 @@
+OnAssignMaterialModel
+OnPostprocessAnimation
+OnPostprocessAssetbundleNameChanged
+OnPostprocessAudio
+OnPostprocessCubemap
+OnPostprocessGameObjectWithAnimatedUserProperties
+OnPostprocessGameObjectWithUserProperties
+OnPostprocessMaterial
+OnPostprocessMeshHierarchy
+OnPostprocessModel
+OnPostprocessSpeedTree
+OnPostprocessSprites
+OnPostprocessTexture
+
+
+所有的完成后触发的最后一个后处理回调是  OnPostprocessAllAssets
+
+在这个过程中,某些事件的触发会导致重新刷新资源数据库
+1.如果资源导入失败
+
+2.如果在刷新的导入阶段修改了资源。例如，如果列表中的文件被修改，因此其修改日期与上次刷新的日期不符。如果在 Editor 获得焦点时开始从版本控制系统中提取文件，则会发生这种情况。
+
+3.如果资源在导入期间创建了其他资源。例如：导入 FBX 时，可以从 FBX 中提取纹理并将其置于项目中，这意味着 Unity 必须导入这些纹理（及其生成的任何 Artifact）。
+
+4.如果在某次预处理/或后处理回调期间或者在 OnPostProcessAllAssets 内强制重新导入某个文件，例如，使用 AssetDatabase.ForceReserializeAssets 或 AssetImport.SaveAndReimport。注意，如果执行此操作，必须小心，不要引起无限的重新导入循环。
+
+5.如果在编译脚本后发生程序集重新加载。如果在刷新过程中生成 C# 文件，必须先编译这个新文件，以便 Unity 重新启动刷新。
+
+6.如果将资源另存为“仅文本”，但是必须将此资源序列化为二进制文件，这时会发生重新启动。（例如，必须将包含地形的场景序列化为二进制文件，因为如果在文本文件中将地形数据视为一系列字符，则此数据将很难处理。）

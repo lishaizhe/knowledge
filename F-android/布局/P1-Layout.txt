@@ -1,0 +1,22 @@
+关于布局,在Android中会分为5中布局结构
+LinearLayout  	线性布局
+FrameLayout   	框架布局
+AbsoluteLayout  绝对布局
+RelativeLayout  相对布局   
+TableLayout     表格布局   这个只是支持多行,没有多列
+
+
+在布局xml文件中有一些不太清楚,容易混淆的字段
+android:margin  表示内部组件有一个border,所有内部组件在这个一圈内再进行填充
+android:layout_margin  这个是相对于父级的,距父级有多少dp
+android:layout_marginTop  和父级的top有多少dp
+
+在layout_width的填充时
+fill_parent = march_parent  填充这个父级
+wrap_parent 这个是占了多少算多少的尺寸
+
+
+android:gravity  和unity中的algin类似,表示靠左排列,还是靠哪个方向排列(left, center, right)
+
+在FrameLayout中是没有依次排列的概念的,如果两个在margin相同的基础之上,后一个会叠在前一个上面
+

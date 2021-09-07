@@ -1,0 +1,108 @@
+构建AssetBundle
+	BuildPipeline.BuildAssetBundles(output, BuildAssetBundleOptions.None, BuildTarget.StandloneWindows)
+	
+		BuildAssetBundleOptions.ForceRebuildAssetBundle |  ChunkBasedCompression(LSZ4)  |  StrictMode(如果有错误则直接终止) | UncompressedAssetBundle
+		在None的情况时:
+			使用LZMA压缩.这个会将文件压的更小,但是解压时间也会更长。系统在使用的时候会先解压,这个时候会重新再做一次LZ4的压缩
+
+
+关于加载AssetBundle
+	本地加载：
+	var abEntry = AssetBundle.LoadFromFile(...)
+	if (abEntry == null)
+		return
+	var prefab = abEntry.LoadAsset<GameObject>("MyObject")
+	Instantiate(prefab)
+
+
+拆分规则:
+1.将频繁更新的对象与很少更改的对象拆分到不同的 AssetBundle 中
+2.将可能同时加载的对象分到一组。例如模型及其纹理和动画
+3.如果发现多个 AssetBundle 中的多个对象依赖于另一个完全不同的 AssetBundle 中的单个资源，请将依赖项移动到单独的 AssetBundle。如果多个 AssetBundle 引用其他 AssetBundle 中的同一组资源，一种有价值的做法可能是将这些依赖项拉入一个共享 AssetBundle 来减少重复。
+4.如果不可能同时加载两组对象（例如标清资源和高清资源），请确保它们位于各自的 AssetBundle 中。
+5.如果一个 AssetBundle 中只有不到 50% 的资源经常同时加载，请考虑拆分该捆绑包
+6.考虑将多个小型的（少于 5 到 10 个资源）但经常同时加载内容的 AssetBundle 组合在一起
+7.如果一组对象只是同一对象的不同版本，请考虑使用 AssetBundle 变体
+
+
+注意!!!注意!!!!注意!!!!!
+在使用AssetBundle.LoadFromFile()的时候,如果采用的是LZ4或未压缩的AB时,只是加载了其内容信息,并没有加载实体
+
+
+
+-------------------------------------------- AB加载 ----------------------------------------------
+AssetBundle.LoadFromMemoryAsync()  这个是加载的二进制数组, 如果捆绑包采用的是 LZMA 压缩方式，将在加载时解压缩 AssetBundle。LZ4 压缩包则会以压缩状态加载。
+public class Example : MonoBehaviour
+{
+    IEnumerator LoadFromMemoryAsync(string path)
+    {
+        AssetBundleCreateRequest createRequest = AssetBundle.LoadFromMemoryAsync(File.ReadAllBytes(path));
+        yield return createRequest;
+        AssetBundle bundle = createRequest.assetBundle;
+        var prefab = bundle.LoadAsset<GameObject>("MyObject");
+        Instantiate(prefab);
+    }
+}
+
+
+AssetBundle.LoadFromFile ----- 省略
+
+
+UnityWebRequest
+IEnumerator InstantiateObject()
+{
+    string uri = "file:///" + Application.dataPath + "/AssetBundles/" + assetBundleName; 
+    UnityEngine.Networking.UnityWebRequest request 
+        = UnityEngine.Networking.UnityWebRequest.GetAssetBundle(uri, 0);
+    yield return request.Send();
+    AssetBundle bundle = DownloadHandlerAssetBundle.GetContent(request);  //从这个地方可以看出,WebRequest下载下来的时候,已经将其进行加载了。
+    GameObject cube = bundle.LoadAsset<GameObject>("Cube");
+    GameObject sprite = bundle.LoadAsset<GameObject>("Sprite");
+    Instantiate(cube);
+    Instantiate(sprite);
+}
+
+
+
+获取AssetBundle依赖,这个就需要使用到那个AssetManifest文件了
+AssetBundle assetBundle = AssetBundle.LoadFromFile(manifestFilePath);
+AssetBundleManifest manifest = assetBundle.LoadAsset<AssetBundleManifest>("AssetBundleManifest");
+string[] dependencies = manifest.GetAllDependencies("assetBundle"); //传递想要依赖项的捆绑包的名称。
+foreach(string dependency in dependencies)
+{
+    AssetBundle.LoadFromFile(Path.Combine(assetBundlePath, dependency));
+}
+
+
+
+卸载Bundle
+	AB.Unload(true/false)  true的时候卸载所有对象,包括依赖项,但是已经实例化出来的是不会卸载的,因为他已经和AB没有关系了,有种情况卸载纹理,实例化出来的东西就会出现丢图的情况
+
+
+
+Resources.UnloadUnusedAssets
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

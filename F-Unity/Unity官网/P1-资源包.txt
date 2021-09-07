@@ -1,0 +1,4 @@
+可以使用Package Manager管理项目中的资资源包,但是如果想直接访问的话,路径如下:
+
+macOS：~/Library/Unity/Asset Store
+Windows：C:\Users\accountName\AppData\Roaming\Unity\Asset Store

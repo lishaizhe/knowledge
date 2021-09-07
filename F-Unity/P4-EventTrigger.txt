@@ -1,0 +1,92 @@
+关于eventtriiger,这个是点击事件的回调,但是这个有一点比较特殊的是,这个是当点击到UI的时候才会触发的回调
+
+在这个上面如果有scrollrect,则scrollrect会对eventtrigger进行拦截,因为他们都是从点击委托中派生而来的
+
+附下面的使用样例
+UIEventTrigger.cs
+
+public class UIEventTrigger : EventTrigger
+{
+    public override void OnBeginDrag(PointerEventData data)
+    {
+        onBeginDrag?.Invoke(data);
+    }
+	
+    public override void OnDrag(PointerEventData data)
+    {
+        onDrag?.Invoke(data);
+    }
+
+    public override void OnDrop(PointerEventData data)
+    {
+        onDrop?.Invoke(data);
+    }
+
+    public override void OnEndDrag(PointerEventData data)
+    {
+        onEndDrag?.Invoke(data);
+    }
+
+    public override void OnPointerClick(PointerEventData data)
+    {
+        onPointerClick?.Invoke(data);
+    }
+	
+    public override void OnPointerDown(PointerEventData data)
+    {
+        onPointerDown?.Invoke(data);
+    }
+
+    public override void OnPointerEnter(PointerEventData data)
+    {
+        onPointerEnter?.Invoke(data);
+    }
+
+    public override void OnPointerExit(PointerEventData data)
+    {
+        onPointerExit?.Invoke(data);
+    }
+
+    public override void OnPointerUp(PointerEventData data)
+    {
+        onPointerUp?.Invoke(data);
+    }
+
+    public Action<PointerEventData> onBeginDrag;
+	
+    public Action<PointerEventData> onDrag;
+
+    public Action<PointerEventData> onDrop;
+
+    public Action<PointerEventData> onEndDrag;
+
+    public Action<PointerEventData> onPointerClick;
+
+    public Action<PointerEventData> onPointerDown;
+	
+    public Action<PointerEventData> onPointerEnter;
+
+    public Action<PointerEventData> onPointerExit;
+
+    public Action<PointerEventData> onPointerUp;
+}
+
+这个需要挂在使用的节点上
+
+同时在节点上绑定使用的脚本
+TestUIEventUI.cs
+
+public class TestUIEventUI : MonoBehaviour
+{
+    public Image[] Image;
+    private void Awake()
+    {
+        var eventTrigger = GetComponent<UIEventTrigger>();
+        eventTrigger.onDrag += OnDrag;
+    }
+
+    private void OnDrag(PointerEventData pointerEventData)
+    {
+        Debug.Log("Drag");
+    }
+}

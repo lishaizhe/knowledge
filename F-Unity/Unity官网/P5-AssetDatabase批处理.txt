@@ -1,0 +1,15 @@
+AssetDatabase.ImportAsset
+AssetDatabase.MoveAsset
+AssetDatabase.CopyAsset
+AddObjectToAsset
+
+AssetDatabase.CopyAsset("Assets/Asset1.txt", "Assets/Text/Asset1.txt");
+AssetDatabase.MoveAsset("Assets/Asset2.txt", "Assets/Text/Asset2.txt");
+AssetDatabase.DeleteAsset("Assets/Asset3.txt");
+
+
+注意在进行批处理的时候需要
+AssetDatabase.StartAssetEditing()
+AssetDatabase.StopAssetEditing()
+
+怕防止意外,注意将其放在try ... finally中

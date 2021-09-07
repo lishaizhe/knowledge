@@ -1,0 +1,28 @@
+OnPreprocessAsset   ----------------------------- 控制所有资源
+OnPreprocessAnimation  -------------------------- 控制动画
+OnPreprocessAudio ------------------------------- 控制声音
+OnPreprocessModel ------------------------------- 控制模型
+OnPreprocessSpeedTree ---------------------------   👻晓得哦
+OnPreprocessTexture ----------------------------- 控制纹理
+
+
+
+
+using UnityEditor;
+
+class MyModelPostprocessor : AssetPostprocessor
+{
+    void OnPreprocessAsset()
+    {
+        if (assetImporter.importSettingsMissing)
+        {
+            ModelImporter modelImporter = assetImporter as ModelImporter;
+            if (modelImporter != null)
+            {
+                if (!assetPath.Contains("@"))
+                    modelImporter.importAnimation = false;
+                modelImporter.materialImportMode = ModelImporterMaterialImportMode.None;
+            }
+        }
+    }
+}

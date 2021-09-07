@@ -1,0 +1,16 @@
+参数中有一个Build In Include
+这个参数的意义是是否和prefab发生关联
+
+如果不勾选的话需要手动管理图集,在加载prefab的时候会触发一个回调函数(RequestAtlas)
+  SpriteAtlasManager.atlasRequested += RequestAtlas
+void RequestAtlas(string tag, System.Action<SpriteAtlas> callback)
+{
+	var atlasAb = AssetBundle.LoadFromFile(....);
+	var _spriteAtlas = atlasAb.LoadAsset<SpriteAtlas>(tag)
+	callback(_spriteAtlas)
+}
+
+如果勾选了,在使用prefab的时候可以不做处理,但是当prefab卸载的时候,图集不会自动释放,除非使用AssetBundle.Unload(true) 
+不能使用AssetBundle.Unload(false),再调用 Resources.UnloadUnusedAssets()，就可以卸载掉这个不再用到的图集资源。
+
+参考链接  https://blog.csdn.net/qq1090504117/article/details/106250428

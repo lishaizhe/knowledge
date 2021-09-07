@@ -1,0 +1,38 @@
+在以下时间点会触发刷新资源数据库
+1.如果在启用Unity的Auto-Refresh时，当unity重新获得焦点,则会触发
+2.在菜单中选择Asset/Refresh
+3.在C#中调用AssetDatabase.Refresh()
+
+
+Unity在以下情况会重新启动数据库刷新循环
+1.如果导入资源后,导入器用过的文件在磁盘中发生变化
+2.在OnPostProcessAllAssets中调用下面任何一个  1）ForceReserializeAssets   2)AssetImporter.SaveAndImport
+3.如果所导入文件的时间戳在导入时发生变化,会使该文件排队等待重新导入
+4.导入器在导入过程中创建了文件
+
+
+原生导入器:
+AssemblyDefinitionImporter     	------------------------------------asmdef
+AssemblyDefinitionReferenceImporter  -------------------------------asmref
+AudioImporter  -----------------------------------------------------ogg, aif, aiff, flac, wav, map3, mod, it, s3m, xm
+ComputeShaderImporter
+DefaultImporter
+FBXImporter
+IHVImageFortmatImporter
+LocalizationImporter
+Mesh3DSImporter
+NativeFormatImporter
+PackageManifestImporter
+PluginImporter
+PrefabImporter
+RayTracingShaderImporter
+ShaderImporter
+SketchUpImporter
+SpeedTreeImporter
+SubstanceImporter
+TextScriptImporter
+TextureImporter
+TrueTypeFontImporter
+VideoClipImporter
+VisualEffectImporter
+
