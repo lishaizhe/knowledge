@@ -1,0 +1,2 @@
+如果google play框架不行,可以使用
+GoogleApiAvailability.makeGooglePlayServicesAvailable()

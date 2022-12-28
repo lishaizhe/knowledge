@@ -1,0 +1,17 @@
+
+
+这个的整体流程很简单。
+第一步：先经过oauth验证,获取到授权.
+第二步: 通过http命令的形式进行指定的操作
+
+1.首先进入Google Play Developer API 后台。
+	这个就是Google Cloud上的一个工具集.这个上面主要实现了商品订阅和发布版本
+	https://developers.google.com/android-publisher?hl=zh-cn
+
+2.https://developers.google.com/android-publisher/libraries?hl=zh-cn 可以通过这个地方下载官方的示例
+
+
+sudo pip3 install --upgrade google-api-python-client
+pip3 install --upgrade google-auth google-auth-oauthlib google-auth-httplib2
+pip3 install --upgrade flask
+pip3 install --upgrade requests

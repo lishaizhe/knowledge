@@ -1,0 +1,33 @@
+1.首先aab有三种模式。
+一种是安装的时候,随包下载 这种峰值是1G
+第二种是在用户下载完成apk后，后台静默下载,这个时候并不会拦住用户不让点击进入应用
+第三种就是按需下载,用户开启访问从cdn下载
+
+
+目前我们只描述第一种
+建立module在其中含有src->assets资源
+同时还需要有 build.gradle配置
+apply plugin: 'com.android.asset-pack'
+
+//For more details: https://developer.android.com/guide/app-bundle/asset-delivery/build-native-java
+assetPack {
+    // The pack name defined here will be the key to access the asset pack in code.
+    // The pack name should start with alphabet and only contain alphabets, numbers and underscore.
+    packName = "install_time_pack"
+    // deliveryType can be install-time | on-demand | fast-follow
+    dynamicDelivery {
+        deliveryType = "install-time"
+    }
+}
+
+
+然后需要在主程序中对其添加依赖和引用
+在主build.gradle中添加
+android {
+    
+    assetPacks = [":install_time_pack"]   这种即可
+}
+
+然后在打包的时候，我们需要将之前在proj_android下的assets需要拆包的移动到install_time_pack中
+同时打包命令为
+.gradlew bundleRelease

@@ -1,0 +1,19 @@
+/*
+         *  Vector3
+         *  .Lerp(from, to, t) => a+(b-1)*t 所以这个地方需要注意,我们的from不能变,否则后面的t一增加,这个渐变顺序就乱了
+         *  .MoveTowards(from, to, step) 这个只是从from向to移动,每次步频为step,所以这个地方我们的from需要一直变,为transform.position 下面只是做了个normalize(forward)*step
+         *  .RotateTowards(from, to, 最大弧度步频，最大角度步频) 这个和moveTowards相同,都是在from上做叠加.所以也需要一直是transform.forward。
+         *          另外弧度和角度给一个就行了
+         *  .Slerp() 这个是球面插值
+         *  .SmoothDamp(current, to, ref v, t) 这个是在t时间内.从current移动到to,注意这个地方有个大坑,这个v不能为当前作用域中的变量,或者说不能每次执行的时候都new出来
+         *      否则会非常慢,应该是v平滑启动,如果每次都new的话,v应该会很慢,另外也注意current是当前的pos,不是起始时候的Pos
+         */
+
+if (totalTime < 1.0 && targetPos != Vector3.zero)
+            // if (mainCam.transform.position != targetPos && targetPos != Vector3.zero)
+        {
+            totalTime += Time.deltaTime;
+            // Vector3 cur = Vector3.Lerp(mainCam.transform.position, targetPos, totalTime);
+            Vector3 cur = Vector3.SmoothDamp(mainCam.transform.position, targetPos, ref v, 1f);
+            mainCam.transform.position = cur;
+        } 

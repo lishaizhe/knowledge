@@ -1,0 +1,14 @@
+AAB是一个混合包,这个是没有办法直接安装的.所以需要我们将其汇总为一个apks的形式。然后通过命令行进行安装
+
+1.首先下载bundletool工具,这个官方给提供了。https://developer.android.com/studio/command-line/bundletool?hl=zh-cn,在git仓库中有一个jar包
+	命令行中使用jar包的形式是  java -jar xxx的形式
+
+2.在打包中我们是有提供签名的.所以我们再整合成[ apks ]包的形式的时候也需要提供 证书，签名
+	bundletool build-apks --bundle=/MyApp/my_app.aab --output=/MyApp/my_app.apks
+	--ks=/MyApp/keystore.jks
+	--ks-pass=file:/MyApp/keystore.pwd
+	--ks-key-alias=MyKeyAlias
+	--key-pass=file:/MyApp/key.pwd
+	在上方中我们可以看到有 --ks-pass=file:,也可以使用 --ks-pass=pass: xxx 的形式
+
+3.在汇总包制作好之后，我们需要通过bundletool的 install-apks的命令行才能安装包,不然是不能正常安装的

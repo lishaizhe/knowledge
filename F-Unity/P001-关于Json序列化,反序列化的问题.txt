@@ -41,3 +41,14 @@ var res = JsonUtility.FromJson<LoginServerListRespon>(httpRequest.downloadHandle
 
 另外关于序列化
 var jsonStr = JsonUtility.ToJson(object obj, bool prettyPrint)
+
+
+////////////////////////
+
+特别需要注意的是。在序列化的时候，我们必须要有一个对象与之相匹配.
+试想一下,我们可以序列化成Json,但是如果没有一个object对象怎么反序列化回来呢。
+在我之前遇到的坑里就存在，比如定义一个int[] array,在面板中给其赋值,但是tojson的时候却是{}.就是因为其不支持。
+反过来想，我总不能 FromJson<int[]>(xx) 这种啊。int[] 并不是一个object对象
+
+
+

@@ -1,0 +1,49 @@
+在本章中,我们主要了解静态合批和动态合批
+
+静态合批和动态合批的设置比较简单
+
+静态合批就是在对应的GameObject上点击static,但同时需要注意,在Edit->ProjectSetting->Player->OtherSetting->Static Batching 需要勾上.这样才能进行静态合批
+好处:降低DrawCall
+坏处:所有合并的模型必须一次全部绘制.哪怕这个模型只有一个边边角角在摄像机的视野里
+介绍:如果进行了静态合批,那么该物体在游戏是不能做任何改变的.他会直接烘焙在游戏场景中,对其进行移动,缩放等,没有效果
+
+另外对于使用了静态合批来讲会导致打包的体积和内存占用增大
+注意,如果是不开启合批,在包体中我们如果对相同的一个模型有多个引用,在应用程序或者内存中只会存在一份,绘制的时候提交模型顶点信息。然后设置每一个GameObject的材质信息,分别调用渲染API绘制。
+但是！！！如果开启了static,在我们执行BUILD操作的时候,场景中所有引用相同模型的GameObject都必须将模型顶点信息赋值,并且经过计算变化到最终的世界空间中,存储最终生成的Vertex Buffer。所以之前是一份,现在是多份,才使得安装包的体积和应用内存都将增大。
+
+
+如果一些模型引用的材质除了Texture其他参数都相同,我们可以将这些模型引用的Texture进行合并,将他们形成一个更大的Texture。这样所有的模型都可以引用相同的材质，然后通过只设置一次渲染状态进行绘制了。虽然Draw call数量没有减少，但是避免了渲染状态的切换，同样达到了合批渲染的目的（原理请参看上一篇文章《图形渲染及优化—Batch》）。这项技术称为Texture atlasing，这是美术工作中最常用的方法，具体做法有大量内容可查。
+
+
+Dynamic Batching
+
+Dynamic batching是专门为优化场景中共享同一材质的动态GameObject的渲染设计的。为了合并渲染批次，Dynamic batching每一帧都会有一些CPU性能消耗。如果我们开启了Dynamic batching，Unity会自动地将所有共享同一材质的动态GameObject在一个Draw call内绘制。
+Dynamic batching的原理也很简单，在进行场景绘制之前将所有的共享同一材质的模型的顶点信息变换到世界空间中，然后通过一次Draw call绘制多个模型，达到合批的目的。
+模型顶点变换的操作是由CPU完成的，所以这会带来一些CPU的性能消耗。并且计算的模型顶点数量不宜太多，否则CPU串行计算耗费的时间太长会造成场景渲染卡顿，所以Dynamic batching只能处理一些小模型
+目前Unity限制能进行Dynamic batching的模型最高能有900个顶点属性。这里注意不是900个顶点，而是900个定点属性。如果我们在Shader中使用了Vertex Position,Normal and single UV，那么能够进行Dynamic batching的模型最多只能够有300个顶点。如果我们在Shader中使用了Vertex Position、Normal、UV0、UV1 and Tangent那么顶点的数量就减少到180个。这个顶点属性数量的要求是Unity自己设计的，未来随着硬件性能的提升，这个值也会调整。
+
+
+Dynamic batching是否能够执行还有一些需要注意的地方：
+
+    1.Unity的文档中说，GameObject之间如果有镜像变换不能进行合批，例如，"GameObject A with +1 scale and GameObject B with –1 scale cannot be batched together"。
+
+    2.使用Multi-pass Shader的物体会禁用Dynamic batching，因为Multi-pass Shader通常会导致一个物体要连续绘制多次，并切换渲染状态。这会打破其跟其他物体进行Dynamic batching的机会。
+
+    3.Unity的Forward Rendering Path中如果一个GameObject接受多个光照那么光照的绘制会按照下面的流程进行：
+
+
+《》《《》《》《》《》《》《》《》《》》《
+在Player Setting中存在一个Vertex Compression 这个可以达到减小内存使用的效果
+其原理是:将顶点channel的数据格式改成16bit。也就是从float->half来达到减小运行时内存使用的效果
+
+Optimize Mesh Data 主要用来剔除不需要的channel数据
+
+在这个地方有个需要注意的!!!
+能否进行顶点压缩和以下三个条件有关系
+1) 是否进行动态合批
+2) 在Model Import中是否开启了 read/write
+3) 在Model Import中是否开启了Mesh Compression
+
+1>如果开启了动态合批,那么对顶点数300个以下的不会进行顶点压缩
+2>如果开启了read/write不会进行顶点压缩,除此之外还会额外在内存中保存一份mesh数据
+3>如果开启了Mesh Compression。则会override掉 Vertex Compression 和 Optimize Mesh

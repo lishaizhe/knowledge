@@ -1,0 +1,127 @@
+具体代码在下面：
+结论1.
+	在最初加载bundle的时候,因为只是加载了bundle,那么会在profiler->other->SerializeFile中出现加载的bundle
+		注意,我们加载bundle,并不是把其中涵盖的所有资源全部加到内存中,而是只是加入到一个壳子,在使用的时候再去加载
+结论2.
+	在调用bundle.LoadAsset<>()的时候,会创建对应的资源文件,比如TextAsset,这个时候会在profiler->Assets->TextAsset中出来
+结论3.
+	Resources.UnloadAsset() 会强制卸载资源,加入这个时候我们使用的是图片则纹理会丢失,但是TextAsset比较特殊,他的.text是一个内存拷贝,所以可以正常出来
+结论4.
+	bundle.Unload(true) 会强制将所有和bundle相关的全部释放掉,如果一个image正在使用texture,这个时候不仅会把bundle干掉,同时texture也会被释放掉
+结论5.
+	bundle.Unload(false)
+	这个只会将序列化文件卸载掉,同时bundle和asset的依赖关系被中断掉,bundle被干掉.这个时候需要注意。如果有一个image正在使用其中的
+	纹理,当调用unload(false)后,这个纹理不受影响,他已经单独成一份了。如果这个时候再调用 比如setSprite()再走一次加载bundle,加载纹理的操作
+	这个时候，你会发现同一份纹理在内存中会出现两份.第一份是上一次已经被脱离关系的texture,第二个是当前和bundle绑定的，这个时候如果调用
+	Resources.UnloadUnusedAssets(); 才能把第一份给释放掉
+
+
+
+
+
+public class TestScripts : MonoBehaviour
+{
+    [SerializeField]
+    public Image image;
+    public Text txt;
+
+    private string texturePath
+    {
+        get { return StreamingAssetsDataPath + "/AssetBundle/Android/assets/main/texture/activity"; }
+    }
+    private string txtPath {
+        get { return StreamingAssetsDataPath + "/AssetBundle/Android/assets/main/txt"; }
+    }
+
+    private AssetBundle textureBundle;
+    private AssetBundle txtBundle;
+
+    private Texture2D tmpTexture;
+    private TextAsset tmpTxtAsset;
+
+    private static string StreamingAssetsDataPath
+    {
+        get
+        {
+            return Application.streamingAssetsPath;
+//            if (Application.platform == RuntimePlatform.Android)
+//                return "jar:file://" + Application.dataPath + "!/assets/";
+//            else if (Application.platform == RuntimePlatform.IPhonePlayer)
+//                return Application.dataPath + "/Raw/";
+//            else
+//                return "file://" + Application.dataPath + "/StreamingAssets/";
+        }
+    }
+    
+    public void AddBundle()
+    {
+        StartCoroutine(GetRequest(texturePath));
+        StartCoroutine(GetRequest(txtPath));
+    }
+
+    IEnumerator GetRequest(string url)
+    {
+        var bundleReq = AssetBundle.LoadFromFileAsync(url);
+        yield return bundleReq;
+        if (bundleReq.isDone)
+        {
+            var bundle = bundleReq.assetBundle;
+            if (url == texturePath)
+                textureBundle = bundle;
+            else if (url == txtPath)
+                {
+                    txtBundle = bundle;
+                    UseTxt();
+                }
+            Debug.Log($"{url} is done");
+        }
+    }
+
+    public void UseTexture()
+    {
+        string imgPath = "Assets/Main/Texture/Activity/activity_icon_js.png";
+        Texture2D t = textureBundle.LoadAsset<Texture2D>(imgPath);
+        tmpTexture = t;
+        if (t != null)
+        {
+            image.sprite = Sprite.Create(t, new Rect(0,0,t.width,t.height), Vector2.zero);
+        }
+    }
+
+    public void UseTxt()
+    {
+        string txtPath = "Assets/Main/Txt/VERSION2.txt";
+        TextAsset t = txtBundle.LoadAsset<TextAsset>(txtPath);
+        tmpTxtAsset = t;
+        string tt = t.text;
+        txt.text = tt;
+        ReleaseTxtAsset();
+    }
+
+    public void ReleaseTextureAsset()
+    {
+        Resources.UnloadAsset(tmpTexture);
+    }
+
+    public void ReleaseTxtAsset()
+    {
+        Resources.UnloadAsset(tmpTxtAsset);
+    }
+
+    public void UnLoadUnused()
+    {
+        Resources.UnloadUnusedAssets();
+    }
+
+    public void UnloadTrue()
+    {
+        textureBundle.Unload(true);
+        txtBundle.Unload(true);
+    }
+    
+    public void UnloadFalse()
+    {
+        textureBundle.Unload(false);
+        txtBundle.Unload(false);
+    }
+}
