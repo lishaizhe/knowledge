@@ -1,0 +1,48 @@
+1.首先我们需要先去开发者后台申请证书. push的证书
+2.down下来之后,双击安装到钥匙串中
+3.安装完后会发现在钥匙串中一个cer,在cer下还会有一个秘钥
+4.将cer导出 apns-dev-cert.p12  设置秘钥
+5.将秘钥导出 apns-dev-key.p12  设置秘钥
+6.openssl pkcs12 -clcerts -nokeys -out apns-dev-cert.pem -in apns-dev-cert.p12
+7.openssl pkcs12 -nocerts -out apns-dev-key.pem -in apns-dev-key.p12
+	这个地方要注意,他会提示设置PEM秘钥,这个地方和p12的秘钥一定不能一样
+8.cat apns-dev-cert.pem apns-dev-key.pem > apns-dev.pem  合成完成
+
+
+
+
+在终端测试：openssl s_client -connect gateway.sandbox.push.apple.com:2195 -cert apns-dev-cert.pem -key apns-dev-key.pem
+
+终端最后显示以下内容，表示配置pem文件成功
+.............................
+Key-Arg   : None
+Start Time: 1467854873
+Timeout   : 300 (sec)
+Verify return code: 0 (ok)
+
+
+
+===============================================================================
+PS：如果不想设置密码，可以使用
+openssl rsa -in apns-dev-key.pem -out apns-dev-key-noenc.pem
+最后再来一次合并
+cat apns-dev-cert.pem apns-dev-key-noenc.pem > apns-dev.pem
+
+
+==============================================================================
+注意:最终的PEM文件格式应该是这样的
+Bag Attributes
+    friendlyName: hello world
+    localKeyID: hello world 
+subject=/UID=hello worldxxxxxx
+-----BEGIN CERTIFICATE-----
+MIIFj xxxxhello worldxxxxxx
+-----END CERTIFICATE-----
+Bag Attributes
+    friendlyName: hello world
+    localKeyID: hello world
+Key Attributes: <No Attributes>
+-----BEGIN PRIVATE KEY-----
+MIIExxxxhello world zzxxxx
+-----END PRIVATE KEY-----
+
