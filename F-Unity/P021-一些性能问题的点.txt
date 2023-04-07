@@ -1,0 +1,61 @@
+1.脚本不挂载到场景中还可以执行的方法
+[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+public static void DoSomething()
+{
+    Debug.Log(">>>RunWithoutMono");
+}
+AfterSceneLoad/BeforeSceneLoad/AfterAssembliesLoaded/BeforeSplashScreen/SubsystemRegistration
+
+
+
+2.反向播动画 speed = -1.0
+
+3.
+[SerializeField]
+private int num = 20
+[HideInInspector]
+public int num = 20;
+[FormerlySerializedAs("hp")]  //修改变量名后可继续使用
+public int m_hp = 20
+
+
+4.比较tag , 不使用 obj.tag == "tag" 会产生gc, 使用obj.CompareTag("tag")
+
+
+5.MenuItem()
+
+
+6.ContextMenu()  --- 没发现,待实验
+
+
+7.字符串拼接 
+	string  stringbuffer  stringbuilder  
+
+
+8.字符串性能优化
+void Update()
+{
+	Do("11")  //这种每次都会生成一个string
+}
+//改写成
+static readonly string str = "11";
+void Update()
+{
+	Do(str)
+}
+
+
+
+9.变量在editor下提示
+[Tooltip("移动速度")]
+public float speed = 1.0
+
+
+
+
+
+
+
+
+
+

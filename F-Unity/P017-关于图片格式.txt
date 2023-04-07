@@ -1,0 +1,58 @@
+首先我们以图片计算为例
+
+1024x1024 RGBA  =====> 1024*1024*32/8 = 4194304(byte) = 4194304/1024 = 4096(KB) = 4096/1024 = 4(M)
+
+上面就是我们计算图片大小的公式
+
+在这里有几个特殊的图片格式我们需要特别记住
+
+
+
+	格式                          使用要求                                  内存大小
+1.PVRTC (2/4)      需要资源必须是2的幂,且必须是正方形的        	以PVRTC4来讲,我们是将一个像素压缩成4位,所以以上方1024为例 => 1024*1024*4/8 = 0.5M
+2.ETC1[ETC-RGB4]   尺寸是2的幂,长宽可以不同.OpenGL2.0	     	还是将一个4x4的像素块存储到64位的数据中,其实就是一个像素占4位
+3.ETC2             尺寸是4的倍数,OpenGL3.0 				 	还是将一个4x4的像素块存储到64位的数据中,其实就是一个像素占4位
+4.ASTC             对尺寸没有要求,要求OpenGL3.2[其实要求是3.1]   astc4x4将4x4个像素   astc6x6将6x6个像素 存储在128位中
+															使用astc4x4举例 1024x1024
+															1024*1024/(4*4)*128(bit) = 8388608(bit)
+																					 = 1048576(byte)
+																					 = 1024(KB)
+																					 = 1(M)
+
+
+
+有下面两点也需要特别注意
+1.MeshType   FullRect是矩形   Tight为贴着非透明边
+2.SRGB 为存储在Gamma空间中
+3.我们经常会在TextureImport中设置compressor quality,这个可以把纹理调整成RGBA Crunched ETC2,就会在面板中看到了,这个就是一个压缩比
+
+
+
+另外我们如果发生了以下的情况,就会比较尴尬了。。。。。。
+我们使用1024*1024 ASTC4*4 在OpenGL3.0的机器上跑
+好像在profile中看到我们的内存占用并不是1M,应该是5M !!!!!!
+为什么呢????
+这就是因为我们遇到了不支持的纹理类型,就会触发解压的机制.会先将ASTC解成RGBA, 那么此时内存中的大小应该是
+RGBA + ASTC = 4(M) + 1(M) = 5(M)
+
+
+在shader方面：：：：：
+如果我们将透明图设置成etc1,那么我们在shader中怎么进行取样呢
+Properties
+{
+    _MainTex ("Base (RGB)", 2D) = "white" { }
+    _AlphaTex("AlphaTex",2D) = "white"{}
+}
+_MainTex 是主纹理  _AlphaTex 是透明度贴图,直接取,系统会直接提供
+half4 frag (v2f i) : COLOR
+{
+    half4 texcol = tex2D (_MainTex, i.uv);
+    half4 result = texcol;
+
+    result.a = tex2D(_AlphaTex,i.uv)*i.color.a ;  //对alpha纹理图直接取样,做乘法
+
+    return result;
+}
+
+
+

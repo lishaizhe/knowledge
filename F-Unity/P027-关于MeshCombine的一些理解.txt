@@ -1,0 +1,27 @@
+MeshCombine 是纹理整合的一种方式.这种方式可以适用于MeshRender,而对于SkinMeshRender不可用,因为他需要计算骨骼等属性
+
+
+void TestCombineMeshRender()
+{
+    MeshFilter[] meshFilters = GetComponentsInChildren<MeshFilter>();
+    CombineInstance[] combineInstances = new CombineInstance[meshFilters.Length];
+    for (int i = 0; i < meshFilters.Length; i++)
+    {
+        // if (meshFilters[i].transform.Equals(this.transform))
+        //     continue;
+        
+        combineInstances[i].mesh = meshFilters[i].sharedMesh;
+        combineInstances[i].transform = transform.worldToLocalMatrix * meshFilters[i].transform.localToWorldMatrix;
+        meshFilters[i].gameObject.SetActive(false);
+    }
+
+    transform.GetComponent<MeshFilter>().mesh = new Mesh();
+    transform.GetComponent<MeshFilter>().mesh.CombineMeshes(combineInstances);
+    transform.gameObject.SetActive(true); 
+}
+
+看上面这段代码,我们是遍历当前节点下的所有MeshRender,通过CombineInstance将其合并,同时将之前的节点active=false,将最终的需要渲染的节点active=true
+,并且调用 mesh.CombineMeshs() 的方式整合.
+注意上面有个 transform = xx * xx 的操作,这样可以保证我们的 position/rotation/scale 维持不变。
+
+那么问题来了,我们能不能支持动画呢。

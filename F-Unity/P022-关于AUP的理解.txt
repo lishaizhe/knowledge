@@ -1,0 +1,43 @@
+Aysnc Upload Pipline
+这个是在projectsetting->quality -> 底部进行设置的
+
+注意:AUP是在加载东西的时候才起作用的,他是对于texture/mesh,这种直接将数据送入显存。
+但是如果说加了Read/Write 或者 Collider类似这种需要计算的,或者Mipmap这种的,都是需要先在CPU先进行计算的,
+在Profile中比如说preload asset这种资源比较多的时候起作用
+
+
+Async Upload Time Slice  这个指的是GPU在每帧花费多少毫秒来进行同步数据,默认有可能是2-4ms,这个如果我们render thread明显充足的情况下
+						我们可以适当加大点,以达到在同一帧有更多数据传输到GPU,但是这个不能无脑加大,比如说我们当前GPU每帧已经需要20ms了,在一帧
+						30ms的情况下,这个时候我们给他设置成15ms,就变成了一帧需要 20+15 ms, 已经超过一帧的时间了,就会造成卡顿[这个指的是在待读入的数据足够多,
+						如果每那么多的话,应该就按照当前所用时间]
+
+
+Async Upload Buffer Size 一次读取多少东西,在相同时间内,这个是这样,如果我们手机内存比较大的情况下,如果当前内存占用并不高,可以适当加大些
+							一次读进来,后续缓慢存放到GPU中
+
+
+Async Upload Persistent Buffer  此标志控制异步上传管道的环形缓冲区在没有活动加载操作时是否保持分配状态。将其设置为 true，使环形缓冲区
+								分配在所有上传操作完成后仍然存在。如果您遇到内存使用过多的问题，可以将其设置为 false。这意味着您减少了运行时内存占用，
+								但可能会出现内存碎片。默认值是true。
+
+
+
+QualitySettings.asyncUploadPersistentBuffer
+
+
+关于Application.backgroundLoadingPriority 注意这个也不是随时都设置那么高,尤其还是加载资源的时候使用
+
+Application.backgroundLoadingPriority这个API会限制主线程的集成的时间，
+默认设置是ThreadPriority.BelowNormal，也就是每一帧执行主线程集成的操作耗时不能超过4毫秒，
+这将会导致每一帧剩余的时间用于等待或者渲染，而这些等待和渲染的时间都是无意义的耗时。
+如果把这个设置改为ThreadPriority.High，那么每一帧执行主线程集成的操作耗时可以增加到50毫秒，大大减少了所需要的帧数。
+这里主线程的集成时间体现在函数Application.Integrate Assets in Background上面，它会受到加载Texture、Mesh的Texture.AwakeFromLoad、
+Mesh.AwakeFromLoad的影响，另外对于比较复杂的Prefab（父子节点多，层数多）需要进行拼装，耗时也会体现在这个函数当中
+比如说UnityWebRequest加载一个bundle,这种他也需要从子线程同步到主线程,所以我们也需要设置这个,这样相当于在一帧中设置这些时间用来同步子线程
+
+
+
+[[[[[[  可以参考这个链接: https://blog.csdn.net/culiao6493/article/details/108645265  ]]]]]]
+
+
+

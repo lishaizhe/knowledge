@@ -1,0 +1,105 @@
+ScriptableObject 是一个数据类的资源,比如说之前我们需要保存一些数据,通常的做法是弄一个prefab,上面挂上脚本,在里面填写,但是这样有一个问题,"内存冗余",因为我们每
+新建一个prefab上面的MONO脚本就会被new一份出来,所以我们的数据也会造成冗余。
+ScriptableObject是一个单独的数据资源,在内存中只会保存一份,其他地方对数据的获取都是指针的形式,对内存不会造成冗余
+
+注意！！！ 因为是共享的,所以无论是我们在代码中对其进行修改还是编辑器中,他都是直接改变,不可恢复的
+
+=========================================================================================
+================================  使用方法    ============================================
+=========================================================================================
+
+1.新建ScriptableObject 文件
+  	1) 通过编辑器按钮的形式
+  	[CreateAssetMenu(fileName = "ObjectData", menuName = "Scriptable/NewFeishu", order = 1)]
+	public class FeishuData : ScriptableObject
+	{
+	    public string name;
+	    public string sex;
+	}
+
+	2) 通过AssetDataBase的形式
+	[MenuItem("Tools/CreateScriptable")]
+    public static void NewScriptableObj()
+    {
+        var feishuData = ScriptableObject.CreateInstance<FeishuData>();   ///注意这块是需要使用ScriptableObject.CreateInstance<ObjectType>() 的形式
+        feishuData.name = "小小11";
+        feishuData.sex = "女";
+        AssetDatabase.CreateAsset(feishuData, "Assets/A.asset");
+        AssetDatabase.Refresh();
+    }
+
+2. 关于读文件,.asset文件就是一种普通的资源文件,
+		1.	可以通过 public FeishuData data 的形式将资源拖给他使用
+		2.	SObject obj = Resource.Load<SObject>("A")  //注意 Resource.Load 中不需要带后缀名
+		3.	AssetBundle.Load<>
+
+
+3. 关于普通的读写文件,  省略  直接读进来之后进行修改即可
+
+
+4. 序列化
+	1) 转json  ---   
+		string json = JsonUtility.ToJson(obj)   //没有问题
+	
+	2) 使用json覆盖当前的sobject
+		public FeishuData feishudata
+		JsonUtility.FromJsonOverwrite("{\"name\":\"海燕燕\",\"sex\":\"女\"}", feishuData);  //使用overwrite才可以覆盖
+
+	3) 有些时候,我们可以借助这个来做 object 和 json 转换的事情
+		public class FeishuList
+		{
+		    public int index;
+		    public List<FeishuList_Item> _list;
+		}
+
+		// [Serializable]
+		public class FeishuList_Item
+		{
+		    public string name;
+		    public string sex;
+
+		    public FeishuList_Item(string _name, string _sex)
+		    {
+		        name = _name;
+		        sex = _sex;
+		    }
+		}
+
+		----
+		FeishuList _list = new FeishuList();
+        _list.index = 3;
+        _list._list = new List<FeishuList_Item>(8);
+        for (int i = 0; i < 3; i++)
+        {
+            FeishuList_Item item = new FeishuList_Item("小明"+i.ToString(), "男");
+            _list._list.Add(item);
+        }
+        
+        string json = JsonUtility.ToJson(_list);
+        Debug.Log(json);    // 使用其将其转换为json数据,但是结果却发现是  {"index":3}  list中的数据却没有,所以这点需要注意,我们在被包含的结构中需要将 [Serializable] 打开才行
+        //同样,如果我们有json数据,此时如果想转object
+        也是 FeishuList _list2 = JsonUtility.FromJson<FeishuList>(json)
+
+
+
+
+5.序列化 -- Dictionary
+	Unity没有对其进行支持.网上有些人做了部分支持,但是也只是维护了一个ScriptableObject级的一个支持,对于tojson还是不行,基本思路就是
+	继承 ISerializationCallbackReceiver 接口,实现序列化/反序列化 的一个回调,
+	我们使用两个serialized list 一个用来维护 key,一个用来维护value,需要让key,value两个序列Index保持一致,同时重写[]方法(public string this[int k])
+	在读和写的时候进行特殊处理,即可实现用list来模拟dic的情况
+	参考链接: https://blog.csdn.net/wuming2016/article/details/123205366
+
+
+
+
+
+
+
+
+
+
+
+
+
+

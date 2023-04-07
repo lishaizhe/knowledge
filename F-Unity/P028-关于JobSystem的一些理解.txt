@@ -1,0 +1,174 @@
+JobSystem 是ECS 中的一个重要部分,起到的作用是能够在子线程中做一些事情
+
+下面就由我来说一下,另外特别有意思。整篇好好看完，尤其是最后
+
+
+如果我们这么定义
+void Update()
+{
+	JobHandle job = xxxx
+	job.complete()    //你知道么，这个家伙真坑，官方也是傻逼，都在说其他线程，压根不是,就是主线程中直接运算了，一群傻逼还整天在那装逼,这个在最后For中有解释
+						//其实是所有的线程都计算成线程池,谁空闲谁来弄
+}
+
+如果真想用子线程来做得话，有这么中做法
+void update()
+{
+	JobHandler job = xxx
+	startCoroutine(JobWork( job ))
+}
+
+IEnumrator JobWork( JobHandler job )
+{
+	yield return new waitUtil(()=>job.IsComplete)
+	//use it
+}
+
+我是这么做的
+还他妈拿了个bool变量做。。。
+
+public class IJob : MonoBehaviour
+{
+    public struct ApplyVJob : Unity.Jobs.IJob
+    {
+        public float num1;
+        public float num2;
+        public NativeArray<float> num3;
+        public void Execute()
+        {
+            num3[0] = num1 + num2;  //注意到这个地方的东西了吧.我只要一个结果但是需要传一个array进来.所以,如果多个float的话,其实可以通过num3传进来,然后
+        }								//分别使用Num3[0]  num3[1] 这样的形式返回
+    }
+    
+    
+    // Start is called before the first frame update
+    void Start()
+    {
+        for (int i = 0; i < m_instCnt; ++i)
+        {
+            m_dicNum3[i] = new NativeArray<float>(1, Allocator.TempJob);  //注意,Native分配只能在生命周期回调中,不能在外部做
+        }			//这个地方也有个问题,有这么三种分配类型  Allocator.Temp[感觉没啥用] TempJob[可使用四帧的生命周期]  Persistence[永久]
+    }
+    
+    private Dictionary<int, NativeArray<float>> m_dicNum3 = new Dictionary<int, NativeArray<float>>();
+
+    private static int m_instCnt = 10;
+    private bool[] m_beginNewJob = new bool[m_instCnt];
+    private ApplyVJob[] m_IJob = new ApplyVJob[m_instCnt];
+    private Dictionary<int, JobHandle> m_dicJobHandles = new Dictionary<int, JobHandle>();
+
+    /*
+    	注意看我的思路,因为JobHandler是一个struct,所以如果说是这么写 private JobHandler job,在下面用 if(job == null) 是没有意义的
+    	所以这个地方我是用了一个bool来判定的,这样做了一个多并发的东西,但是我再profile中发现一个很奇怪的问题
+    	在第一帧都执行了，第二帧都不执行,第三帧又开始执行,会间隔发生,不确定为什么
+
+    	另外一个在官方的例子
+    */
+
+    public void StartNewJob(int index)
+    {
+        m_beginNewJob[index] = true;
+        m_IJob[index] = new ApplyVJob();
+        m_IJob[index].num1 = Time.deltaTime;
+        m_IJob[index].num2 = Time.deltaTime * 2;
+        m_IJob[index].num3 = m_dicNum3[index];
+        m_dicJobHandles[index] = m_IJob[index].Schedule();
+    }
+
+    // private ApplyVJob m_IJob;
+    // Update is called once per frame
+    void Update()
+    {
+        for (int i = 0; i < m_instCnt; ++i)
+        {
+            if (m_beginNewJob[i] == false)
+            {
+                StartNewJob(i);
+            }
+            else
+            {
+                if (m_dicJobHandles[i].IsCompleted)
+                {
+                    m_beginNewJob[i] = false;
+                    m_dicJobHandles[i].Complete();
+                    Debug.Log(m_dicNum3[i][0]);
+                }
+            }
+        }
+    }
+
+    private void OnDestroy()
+    {
+        for (int i = 0; i < m_instCnt; ++i)
+        {
+            m_dicNum3[i].Dispose();
+        }
+
+        m_dicNum3 = null;
+    }
+}
+
+
+************************************************************************************************
+******************************* IJobParallelFor ************************************************
+************************************************************************************************
+
+public class IJobParallelFor : MonoBehaviour
+{
+    public struct MyParallelJob : Unity.Jobs.IJobParallelFor
+    {
+        public NativeArray<float> a;
+        public NativeArray<float> b;
+        public NativeArray<float> result;
+
+        public void Execute(int index)
+        {
+            result[index] = a[index] + b[index];
+        }
+    }
+
+    void ScheduleParallelJob()
+    {
+        NativeArray<float> a = new NativeArray<float>(10, Allocator.TempJob);
+        NativeArray<float> b = new NativeArray<float>(10, Allocator.TempJob);
+        NativeArray<float> result = new NativeArray<float>(10, Allocator.TempJob);
+
+        int dataCount = 10;
+        for (int i = 0; i < dataCount; i++)
+        {
+            a[i] = i * 0.3f;
+            b[i] = i * 0.5f;
+        }
+
+        MyParallelJob jobData = new MyParallelJob();
+        jobData.a = a;
+        jobData.b = b;
+        jobData.result = result;
+        JobHandle handle = jobData.Schedule(5, 1);
+        handle.Complete();
+
+        for (int i = 0; i < dataCount; i++)
+        {
+            Debug.LogError(result[i]);
+        }
+
+        a.Dispose();
+        b.Dispose();
+        result.Dispose();
+    }
+
+    private void Update()
+    {
+        ScheduleParallelJob();
+    }
+}
+
+这个特别有意思,这个在使用complete的时候,主线程和子线程同时变成线程池,谁空闲谁去处理。在主线程会有一个WaitForJobGroupID来将主线程锁住
+那么这个有点意思.这个其实就是可以利用所有线程一起加速运算.不错。。。
+注意在 IJobParallelFor, 这个情况下 JobHandler.Schedule([第一个参数表示,需要执行几次]) 在IJob中毛都没有
+
+
+
+
+
+

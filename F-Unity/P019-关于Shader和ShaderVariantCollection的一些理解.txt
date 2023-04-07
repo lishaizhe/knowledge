@@ -1,0 +1,145 @@
+
+注意!!!!   在不使用ShaderVariantCollection的情况下
+在shader中我们经常会用到类似于if..else..的处理,
+比较常用的做法是
+#pragma multi_compile A B
+#pragma shader_feature A B
+#pragma shader_feature _ A
+上面说的这种都是定义keyword的形式,我们在shader代码中可以通过使用
+#ifdef A
+	...
+#endif
+
+这样的形式来做处理,这样我们就可以将不同的类型组合成多个变体.以供我们再后续的使用中处理
+同时 每个着色器最多有 64 个唯一性的keyword
+
+=========== 如果
+如果在shadervariantcollect中设置了,则会将其都参与编译!!!!!!![简言之就是只要我们设置了这个,不管我们有没有在材质上使用或者代码中使用,unity都会认为需要参与编译]
+
+如果没有设置,注意下面的这些结论是建立在没有设置shadervariantcollection的基础上的
+#pragma multi_compile A B C  正常
+
+#pragma shader_feature _ A
+#pragma shader_feature _ B
+#pragma shader_feature _ C  无论是不是将shader和mat打在一个bundle中,都正常[这种情况比较特殊]
+
+
+#pragma shader_feature A B C 如果不把shader和mat打在一起,没有任何信息,为紫色
+#pragma shader_feature A B C 放在一起不在mat中定义任何keyword,则默认是A,同时设置keyword不起作用
+#pragma shader_feature A B C 放在一起,在mat中定义B,则A,B可以正常,C不正常
+******* 骚操作 ******
+#pragma shader_feature A B C 将其放在project_setting->graphics->always include shaders中, 等价于multi_compile,都可以使用
+但是这个设置里的东西会放在resource里,不会放在assetbundle里,assetbundle里只是对这个的引用
+
+
+============= 数量上限 ===============
+对于multi_compile shader_feature 这种定义关键字的,我们的关键字都为全局的关键字
+在Unity中全局关键字的数量上限为(256个,另外再加64个内部关键字,但是其中256个全局关键字中有60个左右已经被系统占用)
+所以在Unity中我们衍生出来了"局部关键字"
+shader_feature_local
+multi_compile_local
+1.对keyword的开关只能使用Material.EnableKeyword/DisableKeyword
+2.局部关键字性能要优于全局关键字(理论上)
+3.如果局部关键字和全局关键字重名,优先本地关键字
+
+限制:
+1.不能将本地关键字与进行全局关键字更改的 API 一起使用（例如 Shader.EnableKeyword 或 CommandBuffer.EnableShaderKeyword）。
+2.每个着色器最多有 64 个唯一性的本地关键字。
+3.如果材质启用了本地关键字，并且其着色器变为不再声明的着色器，Unity 将创建新的全局关键字
+
+
+============== 在不使用ShaderVariantCollection的情况下 =========================
+-> 默认定义的宏,在我们宏定义都可以使用的前提下,
+#pragma shader_feature A    	使用nokeyword
+#pragma shader_feature A B C  	使用A
+#pragma multi_compile A     	使用A
+#pragma multi_compile A B C  	使用A
+
+-> 如何控制变体的生成
+     生成方式							优点									缺点
+shader+mat在一个bundle        根据mat中的keyword自动生成			1.有多个mat,可能会造成生成相同的shader变体,资源冗余
+							 避免过多的keyword参与编译			    2.如果动态改变keyword,可能不生效,因为变体可能还没生成
+
+shader单独打包,				全部变体都生成了,keyword都能用			1.变体过多,严重浪费内存
+使用multi_compile
+
+
+shader+variantcollection    有效控制变体数量						1.不一定能将keyword收集全
+
+
+======================= 变体优化 =========================
+其他减少变体数量的方案&注意事项
+1.内存中ShaderLab的大小和变体成正比关系。从减少内存方面应该尽量减少变体数量，可以使用 #pragma skip_variants。
+
+2.在使用ShaderVariantCollection收集变体打包时，只对shader_feature定义的宏有意义，multi_compile的变体不用收集也会被全部打进包体。
+
+3.2018.2新功能OnProcessShader可以移除无用的shader变体。比#pragma skip_variants更合理。
+
+4.项目前期介入美术效果制作流程，规范shader宏定义使用，防止TA为了美术效果过度使用宏定义的情况，以过往项目经验来看，到后期进行此项工作导致的资源浪费非常之大。
+
+5.ShaderLab在相关shader加入内存时就已经产生，但如果没有被渲染的话不会触发CreateGPUProgram操作，如果提前在ShaderVariantCollection中收集了相关变体并执行了warmup的话，第一次渲染时就不会再CreateGPUProgram，对卡顿会有一定好处。
+
+补充一条近期的发现：
+
+ShaderVariantsCollection主要是针对自定义的keyword，而丢与引擎内建的keyword并不起作用，
+ShaderGraph中没有自定义keyword，全部为引擎内建keyword，所以ShaderVariantsCollection资产对ShaderGraph不起作用，
+要想剔除ShaderGraph的变体，就只能通过IPreprocessShaders接口来重写剔除方法实现自己想要的变体剔除。
+
+
+
+
+
+=========== 关于使用 ===========
+在使用方面,我们通常是将shader统一放在一个bundle中,另外有一点需要注意.[[[ shadervariantcollection一定要和对应的shader放在一个bundle中 ]]],这样我们再加载bundle
+后,先筛选出来 ShaderVariantCollection 进行warmup[原因见下面的解释],然后再使用shader,这样效率会比较高
+需要注意:我们之前通常的做法是在模拟器模式下使用bundle。我们之前的做法通常是在platform==android的情况下,打bundle.
+但是shader这块有点问题,如果想在电脑上跑,就必须出platform==pc版本的bundle,才能在电脑上使用
+
+
+
+
+public void LoadShaderAssetBundle()
+{
+    string _path = Path.Combine(StreamAsset, "assets/shaders/shade.bundle");   //加载bundle
+    abShader = AssetBundle.LoadFromFile(_path);
+    var _shadercol = abShader.LoadAsset<ShaderVariantCollection>("Assets/Shaders/shadercollect.shadervariants"); //shadervariantcollection
+    _shadercol.WarmUp();
+    _shader = abShader.LoadAsset<Shader>("Assets/Shaders/UI.shader");   //加载shader
+}
+
+public void InstanceUIObject()
+{
+    var obj = abUIObject.LoadAsset<GameObject>("UI");
+    objUI = Instantiate(obj, root);
+    //替换shader
+    Image[] images = objUI.GetComponentsInChildren<Image>();
+    foreach (var image in images)
+    {
+        var mat = new Material(_shader);  //根据shader创建mat
+        image.material = mat;
+    }
+}
+
+public void SetKeyWord()
+{
+    Image[] images = objUI.transform.GetComponentsInChildren<Image>();
+    foreach (var image in images)
+    {
+        foreach (var key in keywords)
+        {
+            image.material.DisableKeyword(key);
+        }
+        image.material.EnableKeyword(keywords[index%3]);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+

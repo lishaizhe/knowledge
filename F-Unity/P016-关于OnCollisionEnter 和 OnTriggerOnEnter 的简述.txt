@@ -1,0 +1,12 @@
+关于OnCollisionEnter 和 OnTriggerOnEnter 的简述
+
+首先要触发这两个东西,首先两个GameObject上都必须要有Collider,两个中至少要有一个有rigidbody
+
+如果不勾选IsTrigger 就会触发 Collistion 的响应,但是不会触发trigger的响应
+如果勾选了IsTrigger 会触发 Trigger 的响应,但是不会触发 Collistion 的响应
+
+简言之:如果不勾选IsTrigger就会发生物理碰撞,那么这个时候，发生的是collision
+而如果勾选了,不会发生物理碰撞,只是作为检测触发的是trigger的响应
+
+
+在A,B两个物体上都挂了响应的脚本,两个都会触发回调

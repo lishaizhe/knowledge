@@ -1,0 +1,165 @@
+UNITY_SETUP_INSTANCE_ID   设置着色器ID,
+	自定义着色器不需要每个实例数据,但他们确实需要一个实例ID,因为世界矩阵需要一个实例ID才能正常工作,表面着色器会自动设置实例ID,但是自定义VF着色器不会,需要手动为他设置,
+	需要在着色器开头部分使用 UNITY_SETUP_INSTANCE_ID
+
+
+需要设置的东西 [[[ 注意表面着色器和顶点着色器不同 ]]]
+#pragma multi_compile_instancing      				生成实例变体    VF必须/Surface可选
+-------------------------------------------------------------------------------------------------------------------------------------
+#pragma instancing_options 							设置实例的选项
+-------------------------------------------------------------------------------------------------------------------------------------
+UNITY_VERTEX_INPUT_INSTANCE_ID 						定义实例ID,如果需要使用此宏,我们需要设置 INSTANCING_ON 这个关键字,否则Unity不会设置实例化ID
+-------------------------------------------------------------------------------------------------------------------------------------
+UNITY_INSTANCING_BUFFER_START(buffername)			设置缓冲区
+-------------------------------------------------------------------------------------------------------------------------------------
+UNITY_INSTANCING_BUFFER_PROP(buffername, propname) 	访问缓冲区中的变量
+-------------------------------------------------------------------------------------------------------------------------------------
+UNITY_INSTANCING_BUFFER_END(buffername)				设置缓冲区结束
+-------------------------------------------------------------------------------------------------------------------------------------
+UNITY_SETUP_INSTANCE_ID(v)							设置实例化ID [ 注意这个是在vert/frag里都需要设置的]
+-------------------------------------------------------------------------------------------------------------------------------------
+UNITY_TRANSFER_INSTANCE_ID(v,o)						将实例化ID从输入结构复制到顶点着色器中的输出结构
+-------------------------------------------------------------------------------------------------------------------------------------
+UNITY_ACCESS_INSTANCED_PROP(buffername, propname)	访问实例化着色器属性
+
+
+
+**********************************************************************************************************************
+当使用多个实例属性的时候,不需要将他们全都填充到  MaterialPropertyBlock  对象中,一个实例缺少属性的时候,Unity会从引用的材质中获取默认值,如果unity没有属性的
+默认值,unity会设置为0, !!!格外注意!!! 不要将非实例化属性放在 MaterialPropertyBlock 中,因为这会禁用实例化,相反为他们创建不同的材料
+
+将实例数据添加到多通道着色器时，请记住以下几点：
+
+如果多通道着色器有两个以上的通道，Unity 只会实例化第一个通道。这是因为 Unity 渲染后会为每个对象一起传递，这会强制更改材质。
+如果在 Built-in Render Pipeline 中使用 Forward 渲染路径，Unity 无法高效实例化受多个灯光影响的对象。
+Unity 只能有效地将实例化用于基础通道，而不能用于其他通道。有关光照通道的更多信息，请参阅有关正向渲染和通道标签的文档。
+
+
+#############################################################################################################################
+表面着色器示例
+Shader "Custom/InstancedColorSurfaceShader" 
+{
+    Properties 
+    {
+        _Color ("Color", Color) = (1,1,1,1)
+        _MainTex ("Albedo (RGB)", 2D) = "white" {}
+        _Glossiness ("Smoothness", Range(0,1)) = 0.5
+        _Metallic ("Metallic", Range(0,1)) = 0.0
+    }
+
+    SubShader
+    {
+        Tags { "RenderType"="Opaque" }
+        LOD 200
+        CGPROGRAM
+        // Uses the physically based standard lighting model with shadows enabled for all light types.
+        #pragma surface surf Standard fullforwardshadows
+        // Use Shader model 3.0 target
+        #pragma target 3.0
+        sampler2D _MainTex;
+        struct Input 
+        {
+            float2 uv_MainTex;
+        };
+        half _Glossiness;
+        half _Metallic;
+        UNITY_INSTANCING_BUFFER_START(Props)
+           UNITY_DEFINE_INSTANCED_PROP(fixed4, _Color)    //// 设置实例化属性
+        UNITY_INSTANCING_BUFFER_END(Props)
+        void surf (Input IN, inout SurfaceOutputStandard o) {
+            fixed4 c = tex2D (_MainTex, IN.uv_MainTex) * UNITY_ACCESS_INSTANCED_PROP(Props, _Color);  ///获取实例化属性
+            o.Albedo = c.rgb;
+            o.Metallic = _Metallic;
+            o.Smoothness = _Glossiness;
+            o.Alpha = c.a;
+        }
+        ENDCG
+    }
+    FallBack "Diffuse"
+}
+
+
+
+
+
+
+
+顶点和片段着色器示例
+
+Shader "Custom/SimplestInstancedShader"
+{
+    Properties
+    {
+        _Color ("Color", Color) = (1, 1, 1, 1)
+    }
+
+    SubShader
+    {
+        Tags { "RenderType"="Opaque" }
+        LOD 100
+
+        Pass
+        {
+            CGPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+            #pragma multi_compile_instancing	///标明生成实例化变体
+            #include "UnityCG.cginc"
+
+            struct appdata
+            {
+                float4 vertex : POSITION;
+                UNITY_VERTEX_INPUT_INSTANCE_ID  //定义实例化变体ID
+            };
+
+            struct v2f
+            {
+                float4 vertex : SV_POSITION;
+                UNITY_VERTEX_INPUT_INSTANCE_ID // use this to access instanced properties in the fragment shader.
+            };
+
+            UNITY_INSTANCING_BUFFER_START(Props)
+                UNITY_DEFINE_INSTANCED_PROP(float4, _Color)   //设置属性
+            UNITY_INSTANCING_BUFFER_END(Props)
+
+            v2f vert(appdata v)
+            {
+                v2f o;
+
+                UNITY_SETUP_INSTANCE_ID(v);    // 设置属性ID -- 1
+                UNITY_TRANSFER_INSTANCE_ID(v, o); 	//将实例化ID将顶点部分传递到片元部分
+                o.vertex = UnityObjectToClipPos(v.vertex);
+                return o;
+            }
+
+            fixed4 frag(v2f i) : SV_Target
+            {
+                UNITY_SETUP_INSTANCE_ID(i);   // 设置属性ID -- 2
+                return UNITY_ACCESS_INSTANCED_PROP(Props, _Color);  //访问属性数据
+            }
+            ENDCG
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

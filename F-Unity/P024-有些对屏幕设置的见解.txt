@@ -1,0 +1,42 @@
+1.设置屏幕分辨率
+	Screen.SetResolution(width, height, fullscreen)
+	这个刚设置了,当前帧不会生效   fullscreen的意思是是否需要漏出来导航栏
+
+2.ScalableBufferManager.ResizeBuffers(m_widthScale, m_heightScale);  这个也是修改相机分辨率的
+
+两者的区别:
+第一个设置的是对于所有相机的一个修改
+对于1来讲我们之前会存在闪屏的情况
+第二个我们针对的是世界相机的,和UI相机没有关系
+
+
+3.调节屏幕亮度
+Screen.brightness 这个是调节屏幕亮度的一个API,但是只是针对IOS生效
+
+
+4.OnDemandRendering.renderFrameInterval  这个是限制渲染帧率的,之前我们都是通过
+	Application.targetFrameRate[设置渲染帧数] / Vsync 是否开启垂直同步 [为0的时候表示关闭] -- 这两种做法据说会影响效率
+
+	-> get/set设置的渲染帧间隔,确定帧率, 渲染间隔是确定 Application.targetFrameRate及QualitySettings.vSyncCount间隔的要素
+	打个比方，我们将Application.targetFrameRate设置为60，将OnDemandRendering.renderFrameInterval设置为2，则系统会每隔一帧渲染一次，最终帧率便为30fps。
+	所以[[[[  表示将帧率降为当前的几分之几   ]]]]
+
+
+OnDemandRendering.effectiveFrameRate
+	该属性会给出应用渲染帧率的估算值。
+
+
+垂直同步 开启和不开启 帧率的计算是不一样的：
+
+（2.1）开启了垂直同步：
+If QualitySettings.vSyncCount is greater than 0 it is calculated by:
+FPS = Resolution.refreshRate / QualitySettings.vSyncCount / OnDemandRendering.renderFrameInterval
+FPS = 设备分辨率的刷新 / 垂直同步等级/ 渲染刷新间隔
+
+（2.2）未开启垂直同步：
+
+If QualitySettings.vSyncCount is 0 and Application.targetFrameRate is also greater than 0:
+FPS = Application.targetFrameRate / OnDemandRendering.renderFrameInterval
+FPS = 目标帧率 / 渲染刷新间隔
+
+

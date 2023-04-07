@@ -1,0 +1,184 @@
+对于assetbundle的理解
+
+关于设置assetbundle
+对于gameobject我们就不用说了正常设置bundle
+对于UI,我们设置通常会设置一个SpriteAtlas,用来整合散图
+对于散图来讲我们是肯定要设置bundlename的,不然在打图的时候,unity是不知道其依赖关系的
+比如prefabA引用了UIB,那么根据guid,我们可以知道两者存在依赖关系,但是对于atlas来讲,Prefab是不知道的。
+
+那么spriteatlas有没有必要设置bundlename呢 ===> 没有必要,经过测试在打图的时候bundle中会包含散图已经一个sactx的一个合集
+不仅设置与不设置都会打成一个完成的bundle,设置后反倒还会大出来一点,不知道是什么东西
+
+
+另外在spriteatlas中我们还存在一个build Include,
+这个是什么呢。
+1.如果勾选了这个选项,我们在加载了UI的bundle后,unity会自动帮我们将图集加入内存,否则
+2.不勾选,需要通过
+	SpriteAtlasManager.atlasRequested += (s, action) =>
+        {
+            string path = $"Assets/Atlas/{s}.spriteatlas";
+            SpriteAtlas sa = abTexture.LoadAsset<SpriteAtlas>(path);
+            action(sa);
+        };
+ 来设置。
+
+ =====================================================================================
+
+ 在游戏中我们通常应该这么做：
+ 1.加载Android.manifest 这个文件是用来做统筹管理的(bundle之间的依赖关系就是靠他来做得)
+ 2.加载bundle,加载的时候我们也需要通过 manifest.GetAllDependencies("assets/prefabs.bundle"); 来获取他的依赖项,将这些东西也都加进去
+ 3.从bundle中加载 asset
+ 4.根据asset 实例化出来
+ 5.销毁 object
+ 6.unload assetbundle
+ .....
+ 	
+ =====================================================================================
+
+ 关于bundle的变体:
+ 他的这个变体其实就是 "后缀名"
+ 对bundle A来讲 
+ 如果设置variant 为 bundle 则 为 A.bundle
+ 如果设置variant 为 ab 则 为 A.ab
+ 这么做的作用是我们可以做 高中低不同的纹理。在代码中我们只需要对不同的机型设置
+ A.high  A.middle  A.low
+ 这种加载bundle的机制就可以了
+
+ =====================================================================================
+
+bundle是什么呢,就是一个二进制文件,每一个bundle都是一个数据集。
+Android「统筹管理的一个文件,包含文件索引的一个东西」
+	---A.bundle
+	---B.bundle
+1.在AssetBundle.LoadFromFile 之后会在内存中产生一个镜像文件。前缀CAB...的一个文件 + 一个AB 文件，这个时候还不是真正的bundle
+2.我们需要使用AB.Load<>() 才能真正获取到bundle内的东西
+3.在AB.Unload(false) 的时候,我们也只能卸载掉bundle,但是并不能立刻卸载掉 asset, 因为asset正在被其他对象引用, 但此时两者的链接会丢失,如果还需要在创建一个同样问题的话，那么这个时候内存中会出现重复的,当引用的对象销毁后,asset会自动销毁
+4.如果AB.Unload(true) 的话,bundle和asset会直接销毁,此时有引用的对象会直接missing
+
+==========================================================================================
+
+public class Mono : MonoBehaviour
+{
+    string[] str = new[]
+    {
+        "LoadManifest",
+        "LoadPrefabBundle",
+        "LoadUIBundle",
+        "Instantiate",
+        "DestroyInst",
+        "UnLoadABTexture",
+        "UnloadABPrefab",
+        "UnloadABManifest",
+        "一轮结束",
+    };
+    private GameObject inst;
+    private AssetBundleManifest manifest;
+    private AssetBundle abPrefab;
+    private AssetBundle abTexture;
+    private AssetBundle abManifest;
+    private int index = 0;
+    public Text text;
+    public Transform root;
+    // Start is called before the first frame update
+    public void OnClick()
+    {
+        index++;
+        text.text = str[index - 1];
+        switch (index)
+        {
+            case 1: LoadManifest();
+                break;
+            case 2: LoadPrefabBundle();
+                break;
+            case 3: LoadUIBundle();
+                break;
+            case 4: Instantiate();
+                break;
+            case 5: DestroyInst();
+                break;
+            case 6: UnLoadABTexture();
+                break;
+            case 7: UnloadABPrefab();
+                break;
+            case 8: UnloadABManifest();
+                break;
+            case 9:
+                index = 0;
+                break;
+        }
+    }
+
+    private void LoadManifest()
+    {
+        string manifest_Android = Path.Combine(Application.streamingAssetsPath, "Android");
+        abManifest = AssetBundle.LoadFromFile(manifest_Android);
+        manifest = abManifest.LoadAsset<AssetBundleManifest>("AssetBundleManifest");
+        // var deps = manifest.GetAllDependencies("assets/prefabs.bundle");
+    }
+    
+    private void LoadPrefabBundle()
+    {
+        string path = Path.Combine(Application.streamingAssetsPath, "assets/prefabs.bundle");
+        abPrefab = AssetBundle.LoadFromFile(path);
+    }
+
+    private void LoadUIBundle()
+    {
+        string path = Path.Combine(Application.streamingAssetsPath, "assets/image/ui/activity.bundle");
+        abTexture = AssetBundle.LoadFromFile(path);
+    }
+
+    private void Instantiate()
+    {
+        GameObject obj = abPrefab.LoadAsset<GameObject>("Obj");
+        inst = Instantiate(obj, root);
+    }
+
+    private void DestroyInst()
+    {
+        DestroyImmediate(inst);
+        inst = null;
+    }
+
+    private void UnLoadABTexture()
+    {
+        abTexture.Unload(true);
+        abTexture = null;
+    }
+
+    private void UnloadABPrefab()
+    {
+        abPrefab.Unload(true);
+        abPrefab = null;
+    }
+
+    private void UnloadABManifest()
+    {
+        abManifest.Unload(true);
+        abManifest = null;
+    }
+
+    private void Start()
+    {
+        // SpriteAtlasManager.atlasRequested += (s, action) =>
+        // {
+        //     string path = $"Assets/Atlas/{s}.spriteatlas";
+        //     SpriteAtlas sa = abTexture.LoadAsset<SpriteAtlas>(path);
+        //     action(sa);
+        // };
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

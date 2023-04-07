@@ -1,0 +1,43 @@
+Unity UI 优化
+
+在profile中如果是overlay摄像机,则会放在Canvas.RenderOverlays中
+否则则会显示在Render.transparentGeometry中
+
+
+1.rebatch/batch build 负责将UI所包含的mesh进行合批,生成合适的渲染命令提交给unity的图形系统
+2.rebuild Layout和Graphic的更新成为rebuild。指重新计算布局和网格的过程,这个过程在CanvasUpdateRegistry中执行
+
+填充率: GPU每帧、每秒能够渲染的像素数
+
+UI常见的热点:
+1.GPU填充率过高
+2.Rebuild 时间太长,这个是计算布局等数据的计算
+3.过多的rebuild
+4.顶点数据太多
+
+1)Canvas.BuildBatch 或者 Canvas::UpdateBatches 占用过多 CPU 时间，说明 batch build 过度，需要考虑拆分成多个 Canvas。
+2)填充率过高，则考虑优化 overdraw。
+3)WillRenderCanvas 大部分时间花在 IndexedSet_Sort 或者 CanvasUpdateRegistry_SortLayoutList 方法上(代表了过多的 Layout 	  		
+ 	rebuild，不一定只是这两方法，具体看源码），则考虑减少布局组件的使用，UI Profiler 中 Layout 也是同理。
+4)UI Profiler 中 Graphics 或者PopulateMesh 之类的方法开销占比大，则说明 Graphic 的 rebuild 是性能热点。这个要结合具体组件分析。
+如果发现 Canvas.SendWillRenderCanvases 每帧都被调用，那就要找找是什么导致了 Canvas 的频繁 rebuild，考虑通过拆分 Canvas 来缓解
+
+解决方案:
+填充率过高->
+	1.隐藏不可见的UI
+	2.简化UI结构
+	3.关闭不可见的摄像机
+	4.使用更简单的shader
+
+Rebuild太耗 -> 因为这个是计算数据的环节
+	导致问题的主要方面是UI过多
+	尽可能的做到动静canvas分离
+
+
+利用 RectTransform 代替 Layout 来实现简单的布局需求。
+隐藏 Canvas（Canvas 组件而不是 Canvas 所在节点） 而不是具体 ui 节点，这样需要显示回来的时候不需要 rebuild Canvas。！！！！！！！！
+直接修改ui源码（一定要慎重考虑，仔细分析性能热点是否真的需要改源码而不是其他手段来解决）
+
+
+
+

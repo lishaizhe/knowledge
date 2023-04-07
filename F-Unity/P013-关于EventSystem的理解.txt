@@ -1,0 +1,188 @@
+EventSystem是Unity中的一个事件系统,其中主要是负责处理UI以及3D场景中的点击,滑动，这种处理
+
+EventSystem 是一个整体管理类
+
+BaseInput 点击,输入模块
+    BaseInputModule  二次封装
+        PointerInputModule  三次封装
+            StandaloneInputModule 标准模块,这个直接在unity中需要添加到场景中
+            TouchInputModule 已废弃
+
+BaseEventData  基础数据传输对象
+    PointerEventData  真实的数据传输对象
+    AxisEventData 基于轴的一种定义
+
+整体的大致流程如下:
+1.StandaloneInputModule先调用Onenable 在其中调用EventSystem中的UpdateModules,来统计当前可以使用的InputModule,将其加入自身列表 m_SystemInputModules
+2.一直执行EventSystem中的Update事件
+    1）TickModules  用来遍历m_SystemInputModules,让其更新当前模块中的坐标变量,实时更新为当前点击的坐标位置
+    2）遍历 m_SystemInputModules, 查看当前active的module是不是发生了改变
+        【1】如果发生了改变,需要执行InputModule的ActivateModule[其实就是预设现在的点击位置.同时调用SetSelectedGameObject为null]
+        【2】如果还是之前的则一直执行StandaloneInputModule的Process 内部解释见下面
+
+
+StandaloneInputModule -- Process
+
+public override void Process()
+{
+    //是否聚焦,在没有聚焦的时候,忽略事件的发送
+    if (!eventSystem.isFocused && ShouldIgnoreEventsOnNoFocus())
+        return;
+    //如果当前有已经选择的对象,则发送一直更新的状态给object
+    bool usedEvent = SendUpdateEventToSelectedObject();
+    /*
+     * 在processTouchEvent中我们根据Input.touchCount > 0 来做返回值,在移动设备上是起作用的,但是在电脑上touchCount 为 0,
+     * 同时当mousePresent的时候,我们认为是鼠标的操作
+     */
+    if (!ProcessTouchEvents() && input.mousePresent)
+        ProcessMouseEvent();
+
+    if (eventSystem.sendNavigationEvents)
+    {
+        if (!usedEvent)
+            usedEvent |= SendMoveEventToSelectedObject();
+
+        if (!usedEvent)
+            SendSubmitEventToSelectedObject();
+    }
+}
+/****  处理移动设备上的点击操作  ****/
+private bool ProcessTouchEvents()
+{
+    for (int i = 0; i < input.touchCount; ++i)
+    {
+        //记住Touch是一个基础屏幕的一个数据结构
+        Touch touch = input.GetTouch(i);
+        if (touch.type == TouchType.Indirect)
+            continue;
+
+        bool released;
+        bool pressed;
+        /*
+         * 找到当前射线检测的结果返回给pointer变量,在这个里面我们通过检测是否是新点击的还是之前的,对PointerEventData数据进行赋值
+         * 同时我们在此方法中我们也返回当前的操作到底是 按压 还是 释放
+         */
+        var pointer = GetTouchPointerEventData(touch, out pressed, out released); //这块只是获取数据
+        //处理是否是点击操作
+        ProcessTouchPress(pointer, pressed, released); //这块才是根据数据.来真正的进行action处理       ----------------> 这里处理 按下 、 释放
+        
+        //如果不是释放操作,则是移动操作
+        if (!released)
+        {
+            ProcessMove(pointer);
+            ProcessDrag(pointer);                                                                ----------------> 这里处理 拖动
+        }
+        else //移除当前数据
+            RemovePointerData(pointer);
+    }
+    return input.touchCount > 0;
+}
+
+/****  处理移动设备上的点击操作  ****/
+/*
+获取PointerEventData 这个里面包含当前点击的屏幕的坐标,按压状态,delta,等基于屏幕的东西.同时通过raycast还存放了 pointerCurrentRaycast
+这个是当前点是否点击到了IEventSystemHandler物体,这里面包含gameobject,距离 等信息
+*/
+protected PointerEventData GetTouchPointerEventData(Touch input, out bool pressed, out bool released)
+{
+    PointerEventData pointerData;
+    //根据fingerid获取当前缓存中的数据,如果没有则创建一个加入到列表中,注意这个返回值是没有在缓存列表中找到,同时创建了一个新的
+    var created = GetPointerData(input.fingerId, out pointerData, true);
+    //对获取出来的数据reset,这个reset表示将此行数据设置为参与检测的行为 use = true 的操作
+    pointerData.Reset();
+    //如果说系统抛过来的touch是刚进入点击屏幕,并且上方是新创建出来的,则表示当前操作是点击行为
+    pressed = created || (input.phase == TouchPhase.Began);
+    //如果状态是cancle或者ended,则表示是释放按钮的操作
+    released = (input.phase == TouchPhase.Canceled) || (input.phase == TouchPhase.Ended);
+    //如果新创建出来的,设置当前坐标
+    if (created)
+        pointerData.position = input.position;
+    //如果是第一次进入则设置delta(表示移动的一个数据)为 0 
+    if (pressed)
+        pointerData.delta = Vector2.zero;
+    else //否则表示移动,我们将delta设置为本地点击的坐标 减去 上次获取上次坐标的位置 为移动的距离
+        pointerData.delta = input.position - pointerData.position;
+
+    pointerData.position = input.position;
+
+    //设置buttonid为左键
+    pointerData.button = PointerEventData.InputButton.Left;
+
+    //如果当前行为为取消状态,需要new一个空的对象,回传给PointerClick类似的函数
+    if (input.phase == TouchPhase.Canceled)
+    {
+        pointerData.pointerCurrentRaycast = new RaycastResult();
+    }
+    else
+    {
+        //获取所有碰撞的东西,存放在 m_RaycastResultCache 中,并且根据优先级以及深度进行排序
+        eventSystem.RaycastAll(pointerData, m_RaycastResultCache);
+        //找到第一个raycastResult,如果cache里没有则 new 一个空的出来
+        var raycast = FindFirstRaycast(m_RaycastResultCache);
+        //将上方找出来的射线检测结果赋值
+        pointerData.pointerCurrentRaycast = raycast;
+        m_RaycastResultCache.Clear();
+    }
+    return pointerData;
+}
+
+==================
+注意  GetPointerData(fingerId)  这个是fingerId,不是坐标什么的.比如左键是 -1, 这个类似于一个枚举值,在projectsetting中设置的
+==================
+
+ProcessTouchPress / ProcessDrag  
+这种我们就不做过多解释了,其主要的作用就是预设一些状态,通过不同的情况,来决定当前的操作是按下/释放/拖动
+来通过ExecuteEvents.Execute来发送给指定的对象回调
+
+
+
+****************************************************************
+那么说了那么多,我们的【EventTrigger】呢.
+我们可以看EventTrigger的源码他继承了很多接口 比如 IPointerEnterHandler、IPointerExitHandler 他们都是从 IEventSystemHandler 派生下来的
+那么在ExecuteEvents.Execute这个里面就使用到了,
+public static bool Execute<T>(GameObject target, BaseEventData eventData, EventFunction<T> functor) where T : IEventSystemHandler
+{
+    var internalHandlers = s_HandlerListPool.Get();
+    GetEventList<T>(target, internalHandlers);
+    for (var i = 0; i < internalHandlers.Count; i++)
+    {
+        T arg;
+        try
+        {
+            arg = (T)internalHandlers[i];
+        }
+        try
+        {
+            functor(arg, eventData);
+        }
+    }
+    var handlerCount = internalHandlers.Count;
+    s_HandlerListPool.Release(internalHandlers);
+    return handlerCount > 0;
+}
+private static void GetEventList<T>(GameObject go, IList<IEventSystemHandler> results) where T : IEventSystemHandler
+{
+        ...
+    var components = ListPool<Component>.Get();
+    go.GetComponents(components);                       ------->获取所有的component
+    for (var i = 0; i < components.Count; i++)
+    {
+        if (!ShouldSendToComponent<T>(components[i]))  ----> 在其中会通过 component is T 的操作来确定是否是 IEventSystemHandler
+            continue;
+        results.Add(components[i] as IEventSystemHandler);
+    }
+    ListPool<Component>.Release(components);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

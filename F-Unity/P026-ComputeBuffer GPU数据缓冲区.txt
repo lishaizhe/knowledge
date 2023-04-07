@@ -1,0 +1,20 @@
+ComputeBuffer GPU数据缓冲区,主要是用来计算着色器
+	主要是将任意数据读取和写入内存缓冲区
+
+可以使用SystemInfo.supportsComputeShaders 来查看是否支持ComputeBuffer
+
+public ComputeBuffer(int count, int stride, ComputeBufferType type)
+count:表示多少个
+stride:每一个占多大
+
+ComputeBufferType
+	Default:  这个对应于 StructuredBuffer<T> / RWStructuredBuffer<T>  ->stride 必须是4的倍数,且小于2048
+	Raw : 这个对应于ByteAddressBuffer / RWByteAddressBuffer   ->  字节
+	Append: AppendStructuredBuffer<T> or ConsumeStructuredBuffer<T> -> stride 必须是4的倍数,且小于2048
+	IndirectArguments:   就直接理解成直接的参数的意思吧    至少是12个字节  
+		var argsBuffer = new ComputeBuffer(1, args.Length * sizeof(uint), ComputeBufferType.IndirectArguments);
+
+
+
+个人感觉,有些是在shader中使用结构的,我们就会default或者其他的形式。
+有些只是传直接数值的就用indirect
