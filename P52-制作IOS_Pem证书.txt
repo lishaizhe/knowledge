@@ -46,3 +46,7 @@ Key Attributes: <No Attributes>
 MIIExxxxhello world zzxxxx
 -----END PRIVATE KEY-----
 
+注意在PHP推送的时候,如果说证书有秘钥的话,需要在代码里增加代码设置秘钥
+//如果你的pem存有密码，需要加一个密码登陆语句          
+//$pass = ”123123“；  
+//stream_context_set_option($ctx, ‘ssl’, ‘passphrase’, $pass);  
