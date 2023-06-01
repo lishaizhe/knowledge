@@ -1,0 +1,190 @@
+相机分为 透视相机和正交相机
+
+关于Unity2D 相机的size和分辨率
+var camera = camera_obj.GetComponent ();
+float orthographicSize = camera.orthographicSize;
+float aspectRatio = Screen.width * 1.0f / Screen.height;
+————————————————
+版权声明：本文为CSDN博主「n5」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
+原文链接：https://blog.csdn.net/n5/article/details/50083205
+
+
+如果我们在透视相机下,我们需要实现镜头的放大和缩小。两种做法
+1.调整FOV
+2.调整相机距渲染物体的距离
+在正交相机下我们可以通过调整 orthographicSize
+
+那么现在有个问题,我们现在想做这么一个东西
+原始相机是透视相机,我们想在远离渲染物体的过程中,将相机改成正交相机,那么这种该怎么处理呢
+
+=> 在相机渲染中,我们都是以近平面为渲染目标.
+float nearClipPlane = camera.nearClipPlane
+float halfFov = camera.fieldOfView * 0.5 * Mathf.Deg2Rad
+float halfHeight = Mathf.Tan(halfFov) * nearClipPlane
+
+我们分析一下 以摄像机。摄像机(A)对应近截面的中心点(B),近截面的最高点(C) 三个点组成一个三角形.
+在相机处的夹角为 fov/2,  A-B 的距离是nearClipPlane,这样我们根据三角函数可以计算出halfY
+
+===========
+之前我们做过一种尝试,在两个DoTween中,或者在一个Update中,我们一边线性的修改相机的Y值.一边线性的修改FOV,法线这种情况不行
+为什么呢.因为在距离物体更远的时候,修改FOV导致的影响会更大,所以我们必须通过公式计算求出来对应的值
+
+==========
+
+那么回到正题.我们如果想两者无缝切换.只能将FOV缩小到非常小的值,这样才能减少在切换到Orth时,透视的跳变
+
+大致代码如下,里面有个需要注意的就是nearClipPlane/farClipPlane 也需要动态调整.因为我们在移动相机的过程中,如果近/远裁面不处理,那么就可能会造成
+相机的平截头体不包含待渲染的物体,而为什么是下方的N呢,我们根据勾股定理计算出来的值没有和相机位置牵扯到关系,只是纯数学计算,表明我们当前应该在的一个相机的distance
+这个时候我们将distance直接给near保证了我们当near为0的时候,近平面保持不变
+
+
+public class TestChange : MonoBehaviour
+{
+    public Transform tCamera;
+    private Camera camera;
+    private MobileTouchCamera _mobileTouchCamera;
+    
+    public float startFov = 18f;
+    public float targetFov = 0.1f;
+    
+    private float startHalfOfHeight = 0;
+    public float targetHalfOfHeight = 10.0f;
+    private Vector3 oldPos;
+
+    private Action m_callback;
+    
+    private void Awake()
+    {
+        camera = tCamera.GetComponent<Camera>();
+        _mobileTouchCamera = tCamera.GetComponent<MobileTouchCamera>();
+    }
+
+    private float m_fovDelta = 0.1f;
+    private bool m_end = false;
+    private bool m_toMin = false;
+    private bool m_toMax = false;
+    private float m_orthSize = 0.0f;
+    
+    //根据h和fov求相机据近平面距离
+    private float GetCameraN(float halfOfHeight, float fovDeg)
+    {
+        var halfOfFovRad = fovDeg * 0.5f * Mathf.Deg2Rad;
+        var n = halfOfHeight / Mathf.Tan(halfOfFovRad);
+        return n;
+    }
+    
+    
+    private bool startChange = false;
+    private float dt = 0.0f;
+    private float totalTime = 0.5f;
+    
+    public void StartToMin(Action callback)
+    {
+        //当前近平面
+        var n = camera.nearClipPlane;
+        var halfOfFov = camera.fieldOfView * 0.5f * Mathf.Deg2Rad;
+        var halfOfHeight = (Mathf.Tan(halfOfFov) * n);
+        startHalfOfHeight = halfOfHeight;
+        oldPos = camera.transform.position;
+        startChange = true;
+        m_toMin = true;
+        dt = 0.0f;
+        m_callback = callback;
+    }
+
+    private float m_distance = 0.0f;
+    private Vector3 m_deltaPos;
+    public void StartToMax(Action callback, Vector3 targetPos)
+    {
+        camera.orthographic = false;
+        oldPos = camera.transform.position;
+        startChange = true;
+        m_toMax = true;
+        dt = 0.0f;
+        
+        var curHalfOfHeight = targetHalfOfHeight;
+        var curFov = targetFov;
+        var n = GetCameraN(curHalfOfHeight, curFov);
+        m_distance = n;
+        m_orthSize = camera.orthographicSize;
+        m_callback = callback;
+        _mobileTouchCamera.enabled = true;
+        Vector3 center = _mobileTouchCamera.GetCameraTargetPos();
+        _mobileTouchCamera.enabled = false;
+        m_deltaPos = targetPos - center;
+    }
+
+    private void Calc(float curHalfOfHeight, float curFov)
+    {
+        camera.fieldOfView = curFov;
+        var n = GetCameraN(curHalfOfHeight, curFov);
+        Vector3 offset = -camera.transform.forward * n;
+        camera.transform.position = offset + oldPos;
+        
+        camera.nearClipPlane = n;
+        camera.farClipPlane = n + 5000;
+    }
+    
+    private void LateUpdate()
+    {
+        if (startChange)
+        {
+            ToMin();
+            ToMax();
+        }
+    }
+
+    private void ToMin()
+    {
+        if (m_toMin == false)
+            return;
+        if (dt >= totalTime)
+        {
+            Calc(targetHalfOfHeight, targetFov);
+            startChange = false;
+            camera.orthographicSize = targetHalfOfHeight;
+            camera.orthographic = true;
+            m_toMin = false;
+            Debug.Log(">>>>>>To Min");
+            m_callback?.Invoke();
+            return;
+        }
+            
+        var curHalfOfHeight = Mathf.Lerp(startHalfOfHeight, targetHalfOfHeight, dt / totalTime);
+        var curFov = Mathf.Lerp(startFov, targetFov, dt / totalTime);
+        camera.fieldOfView = curFov;
+        var n = GetCameraN(curHalfOfHeight, curFov);
+        Vector3 offset = -camera.transform.forward * n;
+        camera.transform.position = offset + oldPos;
+        camera.nearClipPlane = n;
+        camera.farClipPlane = n + 5000;
+        dt += Time.deltaTime;
+    }
+    
+    private void ToMax()
+    {
+        if (m_toMax == false)
+            return;
+        if (dt >= totalTime)
+        {
+            m_toMax = false;
+            m_callback?.Invoke();
+            Debug.Log(">>>>>>To Max");
+            return;
+        }
+            
+        var curHalfOfHeight = Mathf.Lerp(m_orthSize, startHalfOfHeight, dt / totalTime);
+        var curFov = Mathf.Lerp(targetFov, startFov, dt / totalTime);
+        Vector3 offset1 = Vector3.Lerp(Vector3.zero, m_deltaPos, dt / totalTime);
+        camera.fieldOfView = curFov;
+        var n = GetCameraN(curHalfOfHeight, curFov);
+        float xxxx = n - m_distance;
+        Vector3 offset = -camera.transform.forward * (xxxx);
+        camera.transform.position = offset + oldPos + offset1;
+        camera.nearClipPlane = n;
+        camera.farClipPlane = n + 5000;
+        dt += Time.deltaTime;
+    }
+
+
+}

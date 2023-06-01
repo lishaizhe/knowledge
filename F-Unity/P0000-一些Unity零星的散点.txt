@@ -1,0 +1,2 @@
+1.我们在Unity中LoadAsset<>出来的资源,如果只有在C#脚本中持有,如果此时是Mono的变量持有,Resource.UnloadUnusedAssets 不会释放
+	其他情况,(一)局部变量(二)非MONO类,这种情况下都会被释放掉

@@ -1,0 +1,13 @@
+关于StreamAsset下资源的加载,正常来讲我们只能通过UnityWebRequest进行异步加载，那么涉及到一个问题，就是路径的问题
+
+string path = Path.Combine(Application.streamingAssetsPath, "survival_gp.txt");
+#if UNITY_EDITOR 
+        path = "file://" + path;
+#elif UNITY_IOS
+        path = "file://" + path;
+#elif UNITY_ANDROID
+        path = path;//不用变，已经带了jar:file://路径
+#endif
+var req = UnityWebRequest.Get(path);  就行了
+
+这个地方不需要判定文件是否存在,因为你用File.Exist()也是没有办法处理的
