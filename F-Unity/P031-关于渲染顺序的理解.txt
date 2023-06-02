@@ -1,0 +1,43 @@
+1.在canvas同样为overlay的情况下,Unity有个很诡异的现象.
+	先后叠加顺序依次为 [从下到上]A-B-C  按照预想我们应该是A在最下面,C在最上面,但是从测试结果来看不是这样,
+	最后一个激活的显示在最上面,我们可以做一个尝试,先将B隐藏,然后再激活,这个时候B在最上面.所以感觉Unity这块做的不太好,
+	但是好在在Overlay的这个模式上我们有一个参数是Sort Order,这个是用来调整渲染顺序的,越小则越先渲染,我们可以通过这个值来调整
+	渲染顺序
+
+2.在Built-In 渲染管线中,每个相机都会有一个depth值,这个值越小越先渲染
+
+3.[SortingLayer / Layer / Sort Order]
+	在我们将相机调整为ScreenSpace的时候,我们出现了SortingLayer + SortOrder
+	经测试可得出结论,在Unity中Layer只是用来实现分组,他和SortingLayer没有关系,各自是各自的,当渲染的时候sortingLayer中越小的越先渲染
+	当是同一个sortingLayer时,再根据sortOrder来进行渲染,越小的越先渲染
+
+整体来讲,摄像机渲染为,
+	首先根据摄像机的depth来进行渲染  [越小越先渲染]
+	在overlay的情况下,根据sortorder来 [越小越先渲染]
+	在screenSpace的情况下,先根据sorting layer [越小越先渲染], 在相同层级的时候 根据sortOrder来 [越小越先渲染]
+
+
+那么其中还有一个是render queue,这个也是控制渲染顺序的,越小的越先渲染
+
+[[[ 那么问题来了,他们的渲染优先级到底是什么样子的呢 ]]]
+相机depth值 > sorting layer > renderqueue
+也就是说,先将摄像机A的所有渲染完之后才会渲染摄像机B的. A中也是先渲染完 layerC的才会渲染 layerD的
+
+
+4.关于UI和粒子
+	粒子和UI不是同时渲染的,所以会发生粒子穿透或者粒子在UI下层的问题
+	示例1: 相机是overlay,此时我们的粒子是受主相机影响的,所以在这个地方有两点需要注意
+		1.主相机需要为clear depth或者don't clear 才行
+		2.粒子位置需要在相机视野内,从frame debugger上可以看到粒子的渲染是和主相机一起的,canvas在最后，所以
+			会导致粒子在UI的后面
+	示例2: canvas为screen space,这样我们可以使用我们自己的UI相机。
+		使用了UI相机后,我们还是会遇到问题.粒子和我们的UI不在同一层,这个改怎么处理呢。利用我们的渲染原理,在同一相机里,我们根据sorting order进行排序,所以我们就需要将每一层UI设置一个canvas,动态调整我们的sorting order,同样也需要动态调整粒子的sorting order。
+		来达到此目的
+
+	UICamera	
+		-- UI1 	canvas order[1]
+				particle  order[2]
+		-- UI2  canvas order[2]
+				particle  order[3]
+	这样的一个形式才可以
+
