@@ -1,0 +1,1 @@
+1.在animator中我们不一定非要在animatorcontroller中进行连线,连线只是用来做自动流程控制,我们可以直接通过
