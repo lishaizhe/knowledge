@@ -1,0 +1,56 @@
+IJobParallelForTransform
+
+这个是一个基于Transform更新的 IJobParallerFor 方式
+
+看下面示例。但是有个需要注意的就是 TransformAccessArray 一定一定要给一个空间,不然妥妥的报错啊
+transformAccessArray = new TransformAccessArray(1); -- 至少是一个.后续add的时候会自动扩容
+
+public struct tranJob : IJobParallelForTransform
+{
+    public float dt;
+    public void Execute(int index, TransformAccess transform)
+    {
+        transform.position += Vector3.right  * dt;
+    }
+}
+
+public class BulletMgr1 : MonoBehaviour
+{
+    public GameObject bulletObj;
+    private Random _random = new Random(10002);
+    TransformAccessArray transformAccessArray;
+    
+    private void OnEnable()
+    {
+        transformAccessArray = new TransformAccessArray(10000);
+        StartCoroutine(InstBullet());
+    }
+
+
+    IEnumerator InstBullet()
+    {
+        yield return new WaitForSeconds(1.0f);
+        float x = -5;
+        float y = _random.Next(-3, 3);
+        var obj = Instantiate(bulletObj);
+        obj.transform.position = new Vector3(x, y, 0);
+        transformAccessArray.Add(obj.transform);
+        StartCoroutine(InstBullet());
+    }
+
+    private void Update()
+    {
+        tranJob job = new tranJob()
+        {
+            dt = Time.deltaTime
+        };
+        var handler = job.Schedule(transformAccessArray);
+        handler.Complete();
+
+    }
+
+    private void OnDestroy()
+    {
+        transformAccessArray.Dispose();
+    }
+}
