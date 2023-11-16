@@ -1,0 +1,14 @@
+使用的AimIK / AimBoxing
+
+比如说我们想做角色朝向一个指定的方向
+
+1.在prefab上添加AimIK脚本
+2.找到一个头部的节点 Head_M,在这个节点下面添加节点aimTarget[这个在头部前面一些位置,同时将aimTarget赋值到aimIK脚本]
+3.在prefab根节点出添加一个节点 punch,注意这个节点最好比aimTarget更远一些。
+4.在平级在建一个cube[作为目标],在这个上面添加aimBoxing,将model 和 punch进行赋值到aimBoxing脚本上
+5.找到Spine1_M / Spine2_M 这两个是肚子的节点,将其赋值到AimIK,bone上,同时先调节权重为 0.5,然后再微调[不然头转的像麻花]
+
+
+在做完上述工作后,我们可以先预览一下,怎么预览呢,在GIZMOS上有个IK的选项,将这个选上,就会出来几个关键点的小球,看这几个小球是否正常
+
+另外不需要必须是humanoid,只要有明显的骨骼节点就可以正常使用
