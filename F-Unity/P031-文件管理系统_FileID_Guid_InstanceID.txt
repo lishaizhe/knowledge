@@ -1,0 +1,110 @@
+在Unity引擎中,我们需要对其资源进行管理,使用的是YAML文件,那么具体是怎么样的一个形式呢。
+这里面涉及三个术语
+1.GUID  文件唯一标识符
+2.FileID(LocalID)  在同一个文件中的内部管理标识符
+3.InstanceID  运行起来的时候的唯一标识符
+
+有些人会经常说localID,其实就是FileID,这一点很容易被误导,两者是一个概念
+
+让我们来看一段YAML文件
+
+
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+[[[ !!! 注意 !!!!]]]
+
+--- !u!1 &6031395092245677853   --!u! 之后的第一个数字表示对象的类  &符号后面的数字是文件中非重复的对象ID号,但该数字是任意分配给每个对象的
+  -- 怎么理解上面说的呢, !u! 后面的第一个数字是 1 ,查看文档 https://docs.unity3d.com/cn/current/Manual/ClassIDReference.html 
+  -- 发现 1,是GameObject,表明当前是一个GameObject的一块文件记录 
+  -- 后面的 6031395092245677853,其实就是 fileID[LocalID],搜索这个可以发现,其他地方在指向他
+  -- 思考后得出结论 YAML 文件将每个Component,分块在文件中存储,然后在需要引用的时候直接通过fileID指向他.这样在文件配置中比较容易存放
+
+
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6031395092245677854}
+  - component: {fileID: 6031395092245677840}
+  - component: {fileID: 6031395092245677855}
+  m_Layer: 0
+  m_Name: YAML
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &6031395092245677854
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6031395092245677853}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 280, y: 280}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &6031395092245677840
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6031395092245677853}
+  m_CullTransparentMesh: 1
+--- !u!114 &6031395092245677855
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6031395092245677853}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 1802b883d746e5d40a60253e99c14d71, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+
+
+那么在Atlas中又是什么样子的呢
+可以直接在文本编辑器中打开一个atlas看一下,这里就不粘贴文件了.也仅仅是指出来 每个资源类型 21300000[上方文档中的值 * 100000],以及每个的guid
+
+比如prefab中对其进行引用,只是做了一个guid的关联而已
+
+
+整体来讲文件之间的引用仅仅是通过guid
+
+
+
+

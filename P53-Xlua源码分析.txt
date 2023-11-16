@@ -1,0 +1,2 @@
+有这么几个类文件需要注意下:
+1.StaticLuaCallbacks.cs 这个文件是绑定了一些lua直接回调到cs端的一些函数,我们在做每一个函数或者对象创建的时候都会通过 Utils.BeginObjectRegister 将一些 _gc, _tostring函数进行绑定,这样lua中的对象就能访问到C#方法

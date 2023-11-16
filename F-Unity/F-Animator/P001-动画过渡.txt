@@ -1,0 +1,63 @@
+问题引入,目前我接了一个需求是开关门,普通来讲,我们简单做法是 Play("open") / Play("close") 这种做法
+但是现在深入想一下,如果我们在门口频繁的开/关门,当开门动画播到一半,直接调用 close, 动画效果肯定不好了
+
+这个时候是不是要做一个过渡呢。。。。。
+
+所以我是这么做的
+	CrossFadeInFixedTime("open", 0.5f)
+	CrossFadeInFixedTime("close", 0.5f)
+这样通过代码的形式,做了一个过渡,但是还是有一个不太好的是: 比如我开门开了 0.5,这个时候执行 close, 此时并不是从 0.5开始关,两者还是会做一个动作融合
+
+上方这种做法是在animator中不做状态关联的做法
+----------------------------------------------------------------
+下面我们开始说一下animator状态机的事情
+
+我们可以添加三个动画  A/B/C
+A -> toopen(bool)  -> B
+B -> toclose(bool) -> A
+如果这样的话,我是这么做的,,,,,哈哈哈,有点扯淡。。。。
+public void ToOpen()
+{
+    if (_Animator.GetCurrentAnimatorClipInfo(0).Length == 0)
+    {
+        _Animator.Play("open");
+    }
+    else
+    {
+        _Animator.SetBool("toopen", true);
+        _Animator.SetBool("toclose", false);
+    }
+}
+public void ToClose()
+{
+    if (_Animator.GetCurrentAnimatorClipInfo(0).Length == 0)
+    {
+        _Animator.Play("close");
+    }
+    else
+    {
+        _Animator.SetBool("toopen", false);
+        _Animator.SetBool("toclose", true);
+    }
+}
+在动画过渡这个地方有这么几个选项
+HasExitTime -> 是否固定时间,勾选这个表示必须要播放完动画A后才会开始融合
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

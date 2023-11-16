@@ -1,3 +1,24 @@
+关于整体相机渲染顺序的梳理:
+
+
+
+																				| z远 | z近     |
+											                   	 |renderqueue低 | renderqueue高 |
+											      |sortingorder1 |        sortingorder2         |
+							      | Sortinglayer1 |         sortinglayer2                       | 
+				| 不透明物品 ->     |                 RenderQueue >= 2500                         | 
+------Camera1---------------------------Camera2--------------------------Camera3------
+相机的排序是按照depth来的
+
+参考链接 https://zhuanlan.zhihu.com/p/55762351
+
+
+
+
+
+
+
+
 1.在canvas同样为overlay的情况下,Unity有个很诡异的现象.
 	先后叠加顺序依次为 [从下到上]A-B-C  按照预想我们应该是A在最下面,C在最上面,但是从测试结果来看不是这样,
 	最后一个激活的显示在最上面,我们可以做一个尝试,先将B隐藏,然后再激活,这个时候B在最上面.所以感觉Unity这块做的不太好,

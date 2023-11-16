@@ -1,0 +1,15 @@
+关于xlua的一些理解
+
+
+xlua作为一个Unity与lua交互的一个工具其大致的做法是
+
+在Unity中导出一系列的函数提供给xlua,xlua在c层开启lua虚拟机,当在lua里调用Unity里的东西的时候回调到Unity里。xlua检测是否已经加入过functionlist里面过
+如果没有则将
+
+StaticLuaCallback 这个里面绑定了很多C#的回调函数
+
+例如
+	ImportType()   这个是当有不存在的C#对象声明就会回调到这个地方
+			那么怎么进行回调的呢。这个就很有意思了.我们在LuaEnv里写了一段lua代码，自己查看就会发现。
+			我们其实所有的包装都封装在了CS = {} 这个里面,我们设置了一个元表,如果没有找到的话,我们就通过input_type回调到c#端来查找
+			在我们第一次进行register的时候,就已经把该类中暴露的所有函数进行加载到lua中了

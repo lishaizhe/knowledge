@@ -1,0 +1,56 @@
+Shader "Unlit/NewUnlitShader"
+{
+    Properties
+    {
+        _Color("Color", Color) = (1,1,1,1)
+        [Toggle(_DISSOLVE_ON)] _DISSOLVE_ON("DISSOLVE_ON", Float) = 0
+    }
+    SubShader
+    {
+        
+        Pass
+        { 
+            #pragma shader_feature_local _DISSOLVE_ON
+
+            float4 _Color;
+
+            v2f vert (appdata v)
+            {
+                v2f o;
+                o.vertex = UnityObjectToClipPos(v.vertex);
+                return o;
+            }
+
+            fixed4 frag (v2f i) : SV_Target
+            {
+                #ifdef _DISSOLVE_ON
+                    return fixed4(1-_Color.r, 1-_Color.g, 1-_Color.b, 1-_Color.a)
+                #endif
+                return _Color;
+            }
+            ENDCG
+        }
+    }
+}
+上面是一个摘录的一个shader,在这个里面我们有两个参数 一个是 _Color[值类型]  ,一个是 _DISSOLVE_ON,用来做宏使用[keyword]
+我们传统的做法是 objs[0].GetComponent<Renderer>().material / sharedMaterial .SetColor("_Color", red) 类似这种
+
+在这个里面有几个知识点
+
+1. material / sharedMaterial
+    当我们调用material的时候,unity会单独给我们实例化一个出来,我们只修改我们当前的这个mat
+    但是当调用 sharedMaterial,我们修改的会对所有未实例化的同一个mat生效
+
+2.对于.mat生效这种
+    我们还可以使用另一种方法 MaterialPropertyBlock, 这个是一个复用数据结构的一个做法
+    var _render0 = objs[0].GetComponent<Renderer>();
+    _render0.GetPropertyBlock(_materialPropertyBlock);
+    _materialPropertyBlock.SetColor(Key_Color, Color.black);
+    _render0.SetPropertyBlock(_materialPropertyBlock);
+
+上述需要注意的是 都不可以合批,但是第二种从内存上来讲应该会更好一些,因为并未单独生成实体.同时第二种效率更高
+
+
+
+
+另外对于上面的 _DISSOLVE_ON , 这个其实就是一个 keyword。外界需要使用 EnableKeyword 这种方式
