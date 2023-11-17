@@ -1,3 +1,4 @@
+方法1.
 使用的AimIK / AimBoxing
 
 比如说我们想做角色朝向一个指定的方向
@@ -12,3 +13,29 @@
 在做完上述工作后,我们可以先预览一下,怎么预览呢,在GIZMOS上有个IK的选项,将这个选上,就会出来几个关键点的小球,看这几个小球是否正常
 
 另外不需要必须是humanoid,只要有明显的骨骼节点就可以正常使用
+
+
+
+
+方法2.
+使用AimIK + AimController
+
+1.在prefab上添加AimIK脚本
+2.找到一个头部的节点 Head_M,在这个节点下面添加节点aimTransform[这个在头部前面一些位置,同时将 aimTransform 赋值到aimIK脚本],记住很重要的一点
+	这个节点要稍微往前点
+3.在root根节点建一个aimTarget节点,这个节点要更靠前一点
+4.在prefab上添加脚本 AimController ,同时将 aimTarget 赋值给脚本
+
+!!!!!! 尤其非常重要的一点。我们在scene的时候，会看到IK GIZMOS下，有向关联的骨骼点和朝向[红色的小球和箭头],一定要确保箭头是朝向我们的目标点的
+	如果是旋转的,我们可以调整aimTransform的旋转来使箭头朝向我们的aimTarget,这样运行起来才是正常的
+
+
+方法3.
+使用AimIK + AimSwing
+1.在prefab上添加AimIK脚本
+2.找到一个头部的节点 Head_M,在这个节点下面添加节点aimTransform[这个在头部前面一些位置,同时将 aimTransform 赋值到aimIK脚本],记住很重要的一点
+	这个节点要稍微往前点
+3.在root根节点建一个aimTarget节点,这个节点要更靠前一点,将其赋值给 AIMIK中的target变量
+4.在prefab上添加脚本 AimSwing ,同时将 IK 赋值给脚本
+
+
