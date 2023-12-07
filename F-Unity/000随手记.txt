@@ -1,0 +1,7 @@
+inline float UnityGet2DClipping(in float2 position, in float4 clipRect)
+{
+	float2 inside = step(clipRect.xy, position.xy) * step(position.xy, clipRect.zw);
+	return inside.x * inside.y;
+}
+//这个的作用是判断一个点是否在矩形范围内,如果返回1则表示在范围内，0不在
+//https://blog.csdn.net/wodownload2/article/details/94003716
