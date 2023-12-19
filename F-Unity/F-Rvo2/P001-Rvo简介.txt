@@ -1,0 +1,38 @@
+RVO是一个动态规避的一个算法.
+基本原则是:
+1)定义全局设置 默认Agent,包括默认临近范围,临近数量,提前避障等
+2)设置obstacle,目前这个是2d的,所以设置AABB
+3)设置agent,只不过目前这个只是数值
+4)在Agent的mono里我们根据句柄从 simulator中获取当前agent的位置,进行 position 的设置
+5)关于agent的速度,我们通过使用 Simulator.Instance.setAgentPrefVelocity(sid, goalVector * speed); 来处理
+
+
+
+
+
+一个简单实例
+
+public void setAgentDefaults(float neighborDist, 
+								int maxNeighbors, 
+								float timeHorizon, 
+								float timeHorizonObst, 
+								float radius, 
+								float maxSpeed, 
+								Vector2 velocity)
+
+Simulator.Instance.setTimeStep(0.05f);
+Simulator.Instance.setAgentDefaults(15.0f, 
+							        10, 
+							        5.0f, 
+							        5.0f, 
+							        2.0f, 
+							        2.0f, 
+							        new Vector2(0.0f, 0.0f));
+/*
+    neighborDist 表示多少范围内算作近邻 , 当小于这个值的时候开始计算规避
+    maxNeighbors 在临近范围内最多计算多少个近邻
+    timeHorizon 预测提前规避时间,他和速度有关系,预测的越早的话,提前就会做出速度的修正
+*/
+
+// add in awake
+Simulator.Instance.processObstacles();
