@@ -36,3 +36,5 @@ Simulator.Instance.setAgentDefaults(15.0f,
 
 // add in awake
 Simulator.Instance.processObstacles();
+
+Simulator.Instance.doStep()

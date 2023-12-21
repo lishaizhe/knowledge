@@ -1,0 +1,157 @@
+少扯理论那些没用的,来点真格的吧。
+
+
+public class Mono : MonoBehaviour
+{
+    public GameObject _objCube;
+
+    private List<RVOAgent> _agentList = new List<RVOAgent>();
+
+    private int index = 0;
+    // Start is called before the first frame update
+    void Start()
+    {
+        var _mobileTouchCamera = GetComponent<MobileTouchCamera>();
+        _mobileTouchCamera.touchInputController.OnFingerDown += pos =>
+        {
+            //这个时候返回的是屏幕坐标,我们需要通过射线的形式捕捉到Plane对应的世界坐标系
+            var worldPos = _mobileTouchCamera.GetFinger0PosWorld();
+            if (index > 0)
+            {
+                RVO.Vector2 dest = new RVO.Vector2(worldPos.x, worldPos.z);
+                for (int i = 0; i < _agentList.Count; ++i)
+                {
+                    _agentList[i].SetDestination(dest);
+                }
+
+                return;
+            }
+
+            index++;
+            CreateAgent(worldPos);
+        };
+        InitRVO();
+    }
+
+    /// <summary>
+    /// 初始化RVO
+    /// </summary>
+    private void InitRVO()
+    {
+        Simulator.Instance.setTimeStep(0.1f);
+        Simulator.Instance.setAgentDefaults(15.0f, 
+            10, 
+            15, 
+            1, 
+            1.0f, 
+            2,  
+            new RVO.Vector2(0,0));
+        Simulator.Instance.processObstacles();  //最好先塞入Obstacle,然后再进行处理
+    }
+
+    private void CreateAgent(Vector3 worldPos)
+    {
+        //构建RVO Agent
+        int agentId = Simulator.Instance.addAgent(new RVO.Vector2(worldPos.x, worldPos.z));
+        var obj = Instantiate<GameObject>(_objCube);
+        worldPos.y = 0.5f;
+        obj.transform.position = worldPos;
+        var _agentMono = obj.GetComponent<RVOAgent>();
+        _agentMono.SetAgentId(agentId);
+        _agentList.Add(_agentMono);
+    }
+
+
+    // Update is called once per frame
+    void Update()
+    {
+        Simulator.Instance.doStep();   //驱动RVO
+    }
+}
+
+
+//收集障碍物
+public class ObstacleCollect1 : MonoBehaviour
+{
+    IList<RVO.Vector2> obsList = new List<RVO.Vector2>();
+    //RVO目前这个是基于2D的,所以我们需要收集Collider的AABB
+    private void Awake()
+    {
+        var _meshRender = GetComponent<MeshRenderer>();
+        var _center = _meshRender.bounds.center;
+        var _extents = _meshRender.bounds.extents;
+        //计算在2D平面上的四个点
+        //!!!!这里有个特别需要注意的大坑,这几个障碍点必须要按照这个顺序进行 RT/LT/LD/RD
+        
+        var _LD = new RVO.Vector2(_center.x - _extents.x, _center.z - _extents.z);
+        var _LT = new RVO.Vector2(_center.x - _extents.x , _center.z + _extents.z);
+        var _RD = new RVO.Vector2(_center.x + _extents.x, _center.z - _extents.z);
+        var _RT = new RVO.Vector2(_center.x + _extents.x, _center.z + _extents.z);
+        obsList.Add(_RT);
+        obsList.Add(_LT);
+        obsList.Add(_LD);
+        obsList.Add(_RD);
+        Simulator.Instance.addObstacle(obsList);
+    }
+}
+
+
+/********** Agent ************/
+public class RVOAgent : MonoBehaviour
+{
+    //RVO AgentId
+    private int AgentID;
+
+    public void SetAgentId(int id)
+    {
+        AgentID = id;
+        gameObject.name = id.ToString();
+    }
+
+    public RVO.Vector2 destination = new RVO.Vector2(0,0);
+    private bool isMoving = false;
+
+    // Start is called before the first frame update
+    public void SetDestination(RVO.Vector2 targetPos)
+    {
+        if (Mathf.Approximately(targetPos.x(), destination.x()) &&
+            Mathf.Approximately(targetPos.y(), destination.y()))
+        {
+            isMoving = false;
+        }
+        else
+        {
+            isMoving = true;
+            destination = targetPos;
+        }
+    }
+    void Update()
+    {
+        if (!isMoving)
+            return;
+        //获取当前agent的坐标
+        RVO.Vector2 _curAgentPos = Simulator.Instance.getAgentPosition(AgentID);
+        transform.position = new Vector3(_curAgentPos.x(), 0.5f, _curAgentPos.y());
+        var disX = _curAgentPos.x() - destination.x();
+        var disY = _curAgentPos.y() - destination.y();
+        if (Mathf.Pow(disX, 2) + Mathf.Pow(disY, 2) < 0.5f)
+        {
+            isMoving = false;
+            //注意停止的时候还需要将物体的v归零,不然在反复进行几次setDest后,获取agent的位置就会发生错误
+            Simulator.Instance.setAgentPrefVelocity(AgentID, new RVO.Vector2(0, 0));  
+            return;
+        }
+
+        RVO.Vector2 dis = destination - _curAgentPos;
+        dis = RVO.RVOMath.normalize(dis);
+        var speed = 3; //通过speed进行速度的修正
+        Simulator.Instance.setAgentPrefVelocity(AgentID, dis * speed);
+    }
+}
+
+
+
+
+
+
+
