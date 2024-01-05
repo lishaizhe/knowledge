@@ -1,0 +1,16 @@
+关于Mesh这块我们有几个入手的地方
+
+Model中 MeshCompression 这块处理的是压缩mesh数据,指的是硬盘上的存储大小,而非内存的大小
+
+在PlayerSetting中存在
+	Vertex Compression -- 对什么压缩
+		他本质上是将顶点的数据格式设置为16bit,继从float -> half
+	Optimize Mesh Data  -- 是否剔除无用的mesh数据  
+		主要用来剔除不需要的channel，即剔除额外的数据
+
+是否可以进行vertex Compression 和是否动态合批以及是否对模型开启了RW权限有关,以及和Model的MeshCompression都相关
+
+
+1.如果开启了动态合批,300个顶点一下的mesh不会进行顶点压缩[300个顶点,其实是900个顶点相关的数据]
+2.如果对模型开启了RW,也不会进行压缩
+3.如果开启了模型的MeshCompression,也不会进行顶点压缩

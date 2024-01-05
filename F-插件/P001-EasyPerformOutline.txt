@@ -1,0 +1,5 @@
+这个是一个进行描边的插件
+
+我们如果是使用URP的,他会UniversalRender中添加RF,在相机中需要添加Outliner脚本，进行模糊等参数的设置,同时设置layerMask
+
+对于需要进行描边的物体,添加Outlinable脚本,这个里面可以设置OutlineLayer,我们可以在这个里面设置layerMask

@@ -1,0 +1,35 @@
+第一代：SSAA（超级采样抗锯齿Super-Sampling Anti-Aliasing )
+
+第二代：（URP目前主要方案）
+MSAA（多重采样抗锯齿 Multi Sampling Anti-Aliasing）
+FXAA（快速近似抗锯齿Fast Approximate Anti-Aliasing)
+SMAA（增强子像素形变抗锯齿Enhanced Subpixel Morphological Anti-Aliasing )
+
+第三代：TAA（时间序列抗锯齿Temporal Anti-Aliasing），目前还没有接入URP，可以使用PPV2包，但是不支持urp的motion vector，鬼影会比较严重
+
+第四代：DLSS（基于深度学习的超级采样Deep Learning super Sampling )，需要特殊硬件支持，目前只有hdrp的pc平台（康康fsr）
+
+
+URP中的反走样解决方案
+
+
+MSAA 		默认支持,适合多大多数非延迟渲染的游戏        显卡硬件支持,反走样效果好 	仅支持前向渲染,静态画面表现好,运动画面一般,支持MRT的情况下
+																			效率较差，只能消除Geometry的反走样,对高光像素部分无能为力
+
+FXAA 		urp支持,对硬件有要求,                     开销较小,适合移动端 		没有格外像素辅助,在高频颜色变化快的地方,动态场景会出现闪烁，
+																			对图形所有颜色边缘进行柔滑处理,导致画面整体比较模糊
+
+SMAA 		适合一些对低端硬件有要求的   				开销小,适合低端PC 			没有格外像素辅助 ，在高频颜色变化快的地方，动态场景会出现闪烁
+																			，三次pass，开销相对FXAA高一些，切换RT开销在手机上可能造成开销
+																			边缘处理比FXAA精细些，但依然有模糊表现
+
+TAA 		目前不支持 				支持延迟渲染,反走样效果好,性能开销小 			动态场景下，低帧率下可能出现鬼影，无法处理半透明物体、
+																			贴图序列帧动画物体，需要额外内存开销,需要MotionVector Buffer
+
+
+
+效率方面比较
+FXAA > SMAA > TAA > MSAA
+
+质量
+MSAA > SMAA > TAA > FXAA

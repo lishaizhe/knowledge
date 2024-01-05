@@ -1,0 +1,36 @@
+在C#中存在一个坑
+遇到过在印尼小数点的问题,在个别几个国家比如 俄语，法语，德文、印尼文、越南文、葡萄牙语 1.2 中的小数点 被用作逗号,所以float.parse是存在问题的，在protobuf中是做了这么一个处理
+private static T ParseNumericString<T>(string text, Func<string, NumberStyles, IFormatProvider, T> parser)
+        {
+            // Can't prohibit this with NumberStyles.
+            if (text.StartsWith("+"))
+            {
+                throw new InvalidProtocolBufferException($"Invalid numeric value: {text}");
+            }
+            if (text.StartsWith("0") && text.Length > 1)
+            {
+                if (text[1] >= '0' && text[1] <= '9')
+                {
+                    throw new InvalidProtocolBufferException($"Invalid numeric value: {text}");
+                }
+            }
+            else if (text.StartsWith("-0") && text.Length > 2)
+            {
+                if (text[2] >= '0' && text[2] <= '9')
+                {
+                    throw new InvalidProtocolBufferException($"Invalid numeric value: {text}");
+                }
+            }
+            try
+            {
+                return parser(text, NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent, CultureInfo.InvariantCulture);
+            }
+            catch (FormatException)
+            {
+                throw new InvalidProtocolBufferException($"Invalid numeric value for type: {text}");
+            }
+            catch (OverflowException)
+            {
+                throw new InvalidProtocolBufferException($"Value out of range: {text}");
+            }
+        }

@@ -1,0 +1,15 @@
+关于MeshSimplify这个插件使用方式
+首先这个也是可以编辑器模式下运行的,我们可以直接简化下纹理直接导出mesh数据
+
+1.在Prefab上添加MeshSimplify脚本
+2.先不勾选 Enable Prefab Usage 选项
+3.我们先设置压缩比,点击 Compute Mesh 选项，进行压缩,直到我们满意的一个程度 [ 如果我们想对某些地方进行细节处理,可以使用Add Sphere 进行细化处理 ]
+4.对于prefab来讲 - 在编辑器模式下,此时点击 Enable Prefab Usage,选择一个mesh保存的路径,此时简化后的mesh就存储在本地了
+
+
+那么有一个问题。
+经过上面一系列的处理后,我们已经有了新的mesh数据,但是美术给的FBX中也有一份mesh数据啊,你如果直接用FBX的prefab去加载,那也是要加载两套mesh啊
+得不偿失,所以，要解绑,也就是说prefab unpack complete,这样才能直接替换mesh,并且只加载一份
+
+
+在实验过程中遇到过一个坑.也就是点击Restore Origin Mesh,有的时候会出现什么都看不到的情况,不知道为什么,但我们将外面保存的那份mesh数据删除就好了
