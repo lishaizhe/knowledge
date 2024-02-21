@@ -1,0 +1,5 @@
+我们在Android部分,找到UnityPlayerActivity.java部分
+找到这个函数
+updateUnityCommandLineArguments
+你可以看到他的注释,根据返回的字符串来决定使用什么渲染
+-force-gles20, -force-gles30, -force-gles31, -force-gles31aep, -force-gles32, -force-gles, -force-vulkan
