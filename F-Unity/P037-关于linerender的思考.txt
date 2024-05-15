@@ -1,0 +1,96 @@
+因为LineRender是一个连线的组件,但是这个组件有个不好的问题,我们传入一系列的坐标点,他会把所有的点依次连接到一起
+那么我们现在想做一个功能是做几个分隔的线段
+
+A -- B   C -- D  
+
+这样在lineRender下,我们只能做2个linerender来处理
+
+
+换个方式想,我们根据坐标点,自己封装数据形成mesh，通过 Graphics.DrawMesh 来进行处理呢
+
+下面是如下代码
+
+public struct LinePoint
+{
+    public Vector3 src;
+    public Vector3 dst;
+}
+
+/// <summary>
+/// 我们做的这个是基于X,Z平面的
+/// </summary>
+public class DrawTriangle : MonoBehaviour
+{
+    private Mesh mesh;
+    public Material mat;
+    public List<Vector3> wayPoint = new List<Vector3>();
+    public static float lineWidth = 0.5f;
+    public static Vector3 OffSet_Top = new Vector3(0, 0, lineWidth);
+    public static Vector3 OffSet_Down = new Vector3(0, 0, -lineWidth);
+    List<Vector3> vertexList = new List<Vector3>(256);
+    List<int> triangleList = new List<int>(256);
+    List<Vector2> uvList = new List<Vector2>(256);
+    
+    private int VertexCount = 0;
+    //这个地方我们目前只做水平线,正确做法应该计算出该线段的朝向,计算出偏移后乘以quaternion
+    private void CalMesh(List<LinePoint> wayList)
+    {
+        if (mesh == null)
+            mesh = new Mesh();
+        mesh.Clear(false);
+        vertexList.Clear();
+        for (int i = 0; i < wayList.Count; ++i)
+        {
+            VertexCount += 4; //因为是做直线,所以需要4个顶点
+            Vector3 ld = wayList[i].src + OffSet_Down;
+            Vector3 rd = wayList[i].dst + OffSet_Down;
+            Vector3 rt = wayList[i].dst + OffSet_Top;
+            Vector3 lt = wayList[i].src + OffSet_Top;
+            vertexList.Add(ld);
+            vertexList.Add(rd);
+            vertexList.Add(rt);
+            vertexList.Add(lt);
+            
+            triangleList.Add(VertexCount-4);
+            triangleList.Add(VertexCount-2);
+            triangleList.Add(VertexCount-3);
+            triangleList.Add(VertexCount-1);
+            triangleList.Add(VertexCount-2);
+            triangleList.Add(VertexCount-4);
+            
+            uvList.Add(new Vector2(0, 0));
+            uvList.Add(new Vector2(1, 0));
+            uvList.Add(new Vector2(1, 1));
+            uvList.Add(new Vector2(0, 1));
+        }
+
+        mesh.vertices = vertexList.ToArray();
+        mesh.triangles = triangleList.ToArray();
+        mesh.uv = uvList.ToArray();
+    }
+
+
+    
+    private void Start()
+    {
+        List<LinePoint> _wayList = new List<LinePoint>(8);
+        for (int i = 0; i < 6; )
+        {
+            var line = new LinePoint()
+            {
+                src = new Vector3(i*5, 0, 0),
+                dst = new Vector3((i+1)*5, 0, 0)
+            };
+            _wayList.Add(line);
+            i += 2;
+        }
+
+        CalMesh(_wayList);
+    }
+
+    private void Update()
+    {
+        if (mesh != null)
+            Graphics.DrawMesh(mesh, Matrix4x4.identity, mat, 0);
+    }
+}
